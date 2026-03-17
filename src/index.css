@@ -4849,22 +4849,33 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 0;
 }
 
+.risk-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 .risk-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: start;
+  flex: 1;
+  min-height: 0;
 }
 
 .risk-main {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex: 1;
+  min-height: 0;
 }
 
 .risk-list-container {
   overflow-y: auto;
-  height: calc(100vh - 360px);
+  flex: 1;
+  min-height: 0;
 }
 
 .risk-loading-state {

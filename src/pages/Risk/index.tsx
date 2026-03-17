@@ -240,14 +240,14 @@ export default function RiskPage() {
   };
 
   return (
-    <div className="risk-page" data-testid="risk-page" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+    <div className="risk-page" data-testid="risk-page">
       <RiskOverviewStrip metrics={data?.metrics ?? []} />
 
       {data ? <RiskTabs activeTab={queryState.tab} tabs={data.tabs} onChange={handleTabChange} /> : null}
 
-      <div className="risk-layout" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-        <div className="risk-main" style={{ flex: 1, minHeight: 0 }}>
-          <section className="card" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+      <div className="risk-layout">
+        <div className="risk-main">
+          <section className="card">
             <div className="card-header">
               <div className="source-card-head">
                 <span className="card-title">{data?.tabs[queryState.tab].title ?? '风险视图'}</span>
@@ -261,7 +261,7 @@ export default function RiskPage() {
               </div>
             ) : null}
 
-            <div ref={listRef} className="risk-list-container" style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+            <div ref={listRef} className="risk-list-container">
             {loading ? (
               <div className="risk-loading-state">
                 <div className="spinner" />
