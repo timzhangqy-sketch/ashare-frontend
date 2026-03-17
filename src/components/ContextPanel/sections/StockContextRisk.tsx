@@ -13,7 +13,7 @@ interface StockContextRiskProps {
   data: StockContextRiskData | null;
 }
 
-export default function StockContextRisk({ status, note, data }: StockContextRiskProps) {
+export default function StockContextRisk({ status, note: _note, data }: StockContextRiskProps) {
   if (status === 'empty' && !data) return null;
 
   return (

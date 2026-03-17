@@ -16,7 +16,7 @@ interface StockContextLifecycleProps {
   data: StockContextLifecycleData | null;
 }
 
-export default function StockContextLifecycle({ status, note, data }: StockContextLifecycleProps) {
+export default function StockContextLifecycle({ status, note: _note, data }: StockContextLifecycleProps) {
   if (status === 'empty' && !data) return null;
 
   return (

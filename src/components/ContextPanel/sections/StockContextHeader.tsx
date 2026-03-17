@@ -35,6 +35,7 @@ export default function StockContextHeader({
   sourceStrategy,
 }: StockContextHeaderProps) {
   const [klineBtnHover, setKlineBtnHover] = useState(false);
+  void getSourceLabel(sourcePage);
 
   return (
     <header className="global-context-stock-header">
