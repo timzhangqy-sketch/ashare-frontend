@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(cp:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(node:*)",
+      "Bash(npx tsc:*)",
+      "Bash(curl:*)",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(npm list:*)",
+      "Bash(rm -rf /d/opt_work/*)",
+      "Bash(mkdir -p /d/opt_work/ashare-api /d/opt_work/sql)",
+      "Read(//d/opt_work//**)",
+      "Bash(source /opt/ashare_env.sh)",
+      "Read(//opt/ashare-api/**)",
+      "Read(//opt/**)",
+      "Bash(ls /opt/*.sh)",
+      "Bash(cd D:/ashare-frontend && python fix_colors.py)",
+      "Bash(cd D:/ashare-frontend && python fix_colors.py 2>&1)",
+      "Bash(grep -rn \"dashboard-state\\\\|handleSourceChange\\\\|handleMockStateChange\\\\|Round 4\\\\|Real Summary\" \"D:\\\\ashare-frontend\\\\src\" --include=\"*.tsx\" --include=\"*.ts\" 2>/dev/null | head -30)",
+      "Bash(cd D:/ashare-frontend && npx vite build 2>&1 | tail -20)",
+      "Bash(cd D:/ashare-frontend && node --disable-warning=ExperimentalWarning --input-type=module -e \"\nimport fs from 'fs';\nlet css = fs.readFileSync\\('src/index.css', 'utf8'\\);\n\nconst replacements = [\n  ['var\\(--red\\)', 'var\\(--up\\)'],\n  ['var\\(--green\\)', 'var\\(--down\\)'],\n  ['var\\(--blue\\)', 'var\\(--info\\)'],\n  ['var\\(--cyan\\)', 'var\\(--accent\\)'],\n  ['var\\(--gold\\)', 'var\\(--warn\\)'],\n  ['var\\(--red-bg\\)', 'var\\(--up-bg\\)'],\n  ['var\\(--green-bg\\)', 'var\\(--down-bg\\)'],\n  ['var\\(--blue-bg\\)', 'var\\(--info-bg\\)'],\n  ['var\\(--cyan-bg\\)', 'var\\(--accent-bg\\)'],\n  ['var\\(--gold-bg\\)', 'var\\(--warn-bg\\)'],\n  ['var\\(--border-light\\)', 'var\\(--border-strong\\)'],\n];\n\nlet totalReplaced = 0;\nfor \\(const [old, rep] of replacements\\) {\n  const count = css.split\\(old\\).length - 1;\n  if \\(count > 0\\) {\n    css = css.split\\(old\\).join\\(rep\\);\n    totalReplaced += count;\n    console.log\\(old + ' -> ' + rep + ': ' + count\\);\n  }\n}\n\n// var\\(--border\\) -> var\\(--border-default\\) using negative lookahead\nconst borderRegex = new RegExp\\('var\\\\\\\\\\\\\\\\\\(--border\\\\\\\\\\\\\\\\\\)\\(?![\\\\\\\\\\\\\\\\w-]\\)', 'g'\\);\nconst borderMatches = \\(css.match\\(borderRegex\\) || []\\).length;\ncss = css.replace\\(borderRegex, 'var\\(--border-default\\)'\\);\nconsole.log\\('var\\(--border\\) -> var\\(--border-default\\): ' + borderMatches\\);\ntotalReplaced += borderMatches;\n\nconsole.log\\('Total: ' + totalReplaced\\);\nfs.writeFileSync\\('src/index.css', css\\);\n\")",
+      "Bash(cd D:/ashare-frontend && node -e \"\nvar fs = require\\('fs'\\);\nvar css = fs.readFileSync\\('src/index.css', 'utf8'\\);\n// Simple approach: split on 'var\\(--border\\)' but rejoin with care for --border-default/strong\n// Since --border-light already replaced to --border-strong, only bare var\\(--border\\) remain\n// Check if followed by a dash \\(part of longer token name\\)\nvar parts = css.split\\('var\\(--border\\)'\\);\nvar count = 0;\nvar result = parts[0];\nfor \\(var i = 1; i < parts.length; i++\\) {\n  if \\(parts[i].charAt\\(0\\) === '-'\\) {\n    // This is var\\(--border-something\\), keep original\n    result += 'var\\(--border\\)' + parts[i];\n  } else {\n    result += 'var\\(--border-default\\)' + parts[i];\n    count++;\n  }\n}\nconsole.log\\('Replaced: ' + count\\);\nfs.writeFileSync\\('src/index.css', result\\);\n\")",
+      "Bash(sudo -u postgres psql -d ashare -c \"SELECT snap_date, position_count, total_nav, cash FROM ashare_sim_portfolio_snapshot ORDER BY snap_date DESC LIMIT 5;\")",
+      "Bash(ssh root@43.139.107.97 'su - postgres -c \"psql -d ashare -c \\\\\"GRANT ALL ON ashare_market_breadth TO ashare_user;\\\\\"\"')"
+    ]
+  }
+}

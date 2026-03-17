@@ -1,0 +1,46 @@
+---
+description: A股量化交易系统前端项目规则
+alwaysApply: true
+---
+
+# 项目背景
+这是一个A股量化交易系统的React/TypeScript前端，部署在生产环境。
+
+# 技术栈
+- React + TypeScript
+- 样式：纯CSS（src/index.css，约6200行），不使用Tailwind
+- 图表：lightweight-charts@5.1.0
+- 构建：Vite + npm run build
+- 部署：scp dist/* root@43.139.107.97:/var/www/ashare-ui/
+
+# CSS规范（严格遵守）
+- 所有颜色必须使用CSS变量，禁止硬编码hex/rgba
+- 涨跌色：var(--up) / var(--down)
+- 禁止自行发明新的CSS token
+- 禁止使用旧token：--bg-item / --th-bg / --tr-odd 等已废弃alias
+
+# 数据来源标识
+- 统一使用 src/components/SourceStrip.tsx 组件
+- 类型：real / fallback / mock / observing
+- 禁止使用旧的 SourceSummaryBar / SourceNotice 组件
+
+# 架构约定
+- 数据层：src/adapters/*.ts（real-first + fallback模式）
+- 全局股票上下文：GlobalContextPanel（不在Dashboard显示）
+- GlobalContextPanel的useEffect依赖数组必须使用标量值，禁止使用panel对象引用
+
+# 导航标签（中文）
+Dashboard→工作台 / Signals→信号中心 / Watchlist→观察池 / Portfolio→持仓中心 / Execution→模拟执行 / Risk→风控中心 / Research→研究中心 / System→系统监控
+
+# 修改原则
+- 只改被要求改的内容，不要自作主张重构其他部分
+- CSS修改优先只动index.css，非必要不改TSX
+- 改完说明改了哪些文件的哪些部分
+
+## 构建与部署
+
+每次修改前端代码后，必须执行：
+1. `npm run build` — 确认无 TypeScript 报错
+2. 如果 build 成功无报错，接着执行：`scp -r dist/* root@43.139.107.97:/var/www/ashare-ui/`
+
+build 失败则不部署，先修复错误。

@@ -1,0 +1,27 @@
+    # 6. 最近3年年报财务数据（归母净利润 = eps_basic × 总股本，与同花顺口径一致）
+    cur.execute(
+        """
+        WITH latest_shares AS (
+            SELECT ROUND(db.total_mv * 10000 / NULLIF(dp.close, 0)) AS total_shares
+            FROM public.ashare_daily_basic db
+            JOIN public.ashare_daily_price dp USING (ts_code, trade_date)
+            WHERE db.ts_code = %s
+            ORDER BY db.trade_date DESC LIMIT 1
+        )
+        SELECT
+            EXTRACT(YEAR FROM end_date)::int                                          AS year,
+            ROUND(revenue      / 100000000, 2)                                        AS revenue_yi,
+            ROUND(total_profit / 100000000, 2)                                        AS total_profit_yi,
+            ROUND(eps_basic * (SELECT total_shares FROM latest_shares) / 100000000, 2) AS net_income_yi
+        FROM public.ashare_fin_income_core
+        WHERE ts_code = %s
+          AND TO_CHAR(end_date, 'MMDD') = '1231'
+          AND report_type = '1'
+        ORDER BY end_date DESC
+        LIMIT 3
+        """,
+        (ts_code, ts_code),
+    )
+    fin_rows = cur.fetchall()
+    result["financials"] = [dict(r) for r in fin_rows]
+

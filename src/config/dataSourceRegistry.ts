@@ -1,0 +1,28 @@
+import type { DataSourceRegistryEntry } from '../types/dataSource';
+
+export const dataSourceRegistry: DataSourceRegistryEntry[] = [
+  { page: 'dashboard', section: 'kpis', state: 'real', source_label: 'Dashboard summary', source_detail: 'Summary API is live; field nulls are handled per widget.' },
+  { page: 'dashboard', section: 'today_summary', state: 'real', source_label: 'Dashboard summary', source_detail: 'Today summary comes from real summary payload; missing text is treated as degraded.' },
+  { page: 'dashboard', section: 'opportunity', state: 'real', source_label: 'Dashboard summary', source_detail: 'Opportunity section is backed by real summary payload.' },
+  { page: 'dashboard', section: 'risk', state: 'real', source_label: 'Dashboard summary', source_detail: 'Risk section is backed by real summary payload.' },
+  { page: 'dashboard', section: 'portfolio', state: 'real', source_label: 'Dashboard summary', source_detail: 'Portfolio summary is backed by real summary payload.' },
+  { page: 'dashboard', section: 'system_health', state: 'real', source_label: 'Dashboard summary', source_detail: 'System health summary is backed by real summary payload.' },
+  { page: 'research', section: 'summary', state: 'real', source_label: 'Backtest summary API', source_detail: 'Backtest summary uses live summary rows when available.' },
+  { page: 'research', section: 'factor_ic', state: 'real_empty', source_label: 'Factor IC API', source_detail: 'API is connected but currently returns an empty table.' },
+  { page: 'research', section: 'attribution', state: 'real_empty', source_label: 'Attribution API', source_detail: 'API is connected but currently returns an empty table.' },
+  { page: 'research', section: 'resonance', state: 'real', source_label: 'Resonance API', source_detail: 'Resonance data is coming from the live API.' },
+  { page: 'research_detail', section: 'chart_placeholders', state: 'placeholder', source_label: 'Research detail charts', source_detail: 'Placeholder chart blocks remain synthetic until chart-specific data is wired.' },
+  { page: 'execution', section: 'orders', state: 'real_observing', source_label: 'Execution APIs', source_detail: 'Live orders feed is connected but sample volume is still small.' },
+  { page: 'execution', section: 'positions', state: 'real_observing', source_label: 'Execution APIs', source_detail: 'Live positions feed is connected but sample volume is still small.' },
+  { page: 'execution', section: 'fills', state: 'real_observing', source_label: 'Execution APIs', source_detail: 'Live fills feed is connected but sample volume is still small.' },
+  { page: 'execution', section: 'constraints', state: 'real_observing', source_label: 'Execution checks', source_detail: 'Execution checks are live; sample volume and downstream constraints still need observation.' },
+  { page: 'system', section: 'pipeline', state: 'real', source_label: 'System pipeline API', source_detail: 'Pipeline runs come from live system APIs.' },
+  { page: 'system', section: 'coverage', state: 'real', source_label: 'System coverage API', source_detail: 'Coverage rows come from live system APIs.' },
+  { page: 'system', section: 'api', state: 'real', source_label: 'System API health API', source_detail: 'API health rows come from live system APIs.' },
+  { page: 'system', section: 'runlog', state: 'real', source_label: 'System version/runlog APIs', source_detail: 'Version and latest runlog rows are live.' },
+  { page: 'risk', section: 'gate', state: 'real', source_label: 'Risk gate API', source_detail: 'Gate rows are backed by live risk APIs.' },
+  { page: 'risk', section: 'scores', state: 'real', source_label: 'Risk score API', source_detail: 'Score rows are backed by live risk APIs.' },
+  { page: 'risk', section: 'breakdown', state: 'mixed', source_label: 'Risk detail + score APIs', source_detail: 'Breakdown combines live detail/score data and compatibility-derived fields.' },
+  { page: 'risk', section: 'events', state: 'fallback', source_label: 'Risk derived events', source_detail: 'Event flow is still synthesized from current risk rows.' },
+  { page: 'context_panel', section: 'stock_context', state: 'mixed', source_label: 'Context panel aggregate', source_detail: 'Main, kline, risk, and lifecycle subblocks can come from different source states.' },
+];

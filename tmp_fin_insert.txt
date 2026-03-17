@@ -1,0 +1,21 @@
+
+    # 6. 最近3年年报财务数据
+    cur.execute(
+        """
+        SELECT
+            EXTRACT(YEAR FROM end_date)::int           AS year,
+            ROUND(revenue      / 100000000, 2)         AS revenue_yi,
+            ROUND(total_profit / 100000000, 2)         AS total_profit_yi,
+            ROUND(net_profit   / 100000000, 2)         AS net_income_yi
+        FROM public.ashare_fin_income_core
+        WHERE ts_code = %s
+          AND TO_CHAR(end_date, 'MMDD') = '1231'
+          AND report_type = '1'
+        ORDER BY end_date DESC
+        LIMIT 3
+        """,
+        (ts_code,),
+    )
+    fin_rows = cur.fetchall()
+    result["financials"] = [dict(r) for r in fin_rows]
+
