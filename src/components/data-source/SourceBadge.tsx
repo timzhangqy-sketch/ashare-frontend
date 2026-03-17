@@ -12,6 +12,7 @@ export default function SourceBadge({
   showWhenReal = false,
   className,
 }: SourceBadgeProps) {
+  return null;
   if (!shouldShowSourceMeta(meta, showWhenReal)) return null;
   if (!meta) return null;
   const resolvedMeta = meta;

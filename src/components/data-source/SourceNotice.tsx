@@ -17,6 +17,7 @@ export default function SourceNotice({
   showWhenReal = false,
   className,
 }: SourceNoticeProps) {
+  return null;
   if (!shouldShowSourceMeta(meta, showWhenReal)) return null;
   if (!meta) return null;
   const resolvedMeta = meta;

@@ -112,12 +112,14 @@ function NavItemLink({ item }: { item: AppRouteDefinition }) {
     <NavLink
       to={item.path}
       className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
-      style={isLegacyHidden ? { display: 'none' } : undefined}
+      style={() => ({
+        ...(isLegacyHidden ? { display: 'none' } : null),
+        padding: '8px 16px',
+      })}
     >
       <span className="nav-icon"><Icon /></span>
       <span className="nav-label-wrap">
         <span className="nav-label">{copy.label}</span>
-        <span className="nav-badge">{copy.description}</span>
       </span>
     </NavLink>
   );

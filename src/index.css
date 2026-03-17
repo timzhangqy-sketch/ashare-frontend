@@ -8535,3 +8535,26 @@ textarea {
   text-align: left !important;
   align-self: flex-start !important;
 }
+
+/* ── UI 优化 v2：KPI 标签色统一为灰色 ── */
+.stat-label {
+  color: var(--text-muted) !important;
+  font-weight: 400 !important;
+}
+
+/* ── UI 优化 v2：stat-card 描述文字隐藏 ── */
+.stat-sub {
+  display: none !important;
+}
+
+/* ── UI 优化 v2：策略专页 sticky 表头 ── */
+.strategy-list-container {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+.strategy-list-container .data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-surface);
+}
