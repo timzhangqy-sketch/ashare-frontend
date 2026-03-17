@@ -20,7 +20,7 @@ export default function SourceNotice({
   return null;
   if (!shouldShowSourceMeta(meta, showWhenReal)) return null;
   if (!meta) return null;
-  const resolvedMeta = meta;
+  const resolvedMeta: DataSourceMeta = meta!;
 
   const tone = getSourceTone(resolvedMeta.data_source);
   const classes = ['source-notice', `source-notice-${tone}`, className].filter(Boolean).join(' ');

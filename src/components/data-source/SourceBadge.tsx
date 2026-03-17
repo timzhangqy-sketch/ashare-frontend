@@ -15,7 +15,7 @@ export default function SourceBadge({
   return null;
   if (!shouldShowSourceMeta(meta, showWhenReal)) return null;
   if (!meta) return null;
-  const resolvedMeta = meta;
+  const resolvedMeta: DataSourceMeta = meta!;
 
   const tone = getSourceTone(resolvedMeta.data_source);
   const classes = ['source-badge', 'status-badge', 'tag-pill', `source-badge-${tone}`, className].filter(Boolean).join(' ');
