@@ -8,7 +8,6 @@ import {
 } from '../../adapters/system'
 import SourceBadge from '../../components/data-source/SourceBadge'
 import SourceNotice from '../../components/data-source/SourceNotice'
-import SourceStrip from '../../components/SourceStrip'
 import { getSourcePanelText, getSourcePanelTitle } from '../../components/data-source/sourceLabels'
 import { useApiData } from '../../hooks/useApiData'
 import type { ApiHealthRow, CoverageItemRow, PipelineStepRow, RunlogVersionRow, SystemRow, SystemTab } from '../../types/system'
@@ -134,8 +133,11 @@ export default function SystemPage() {
   const unsupportedText = getSourcePanelText(activeDataSource) ?? viewModel.unsupportedState.description
 
   return (
-    <div className="domain-page system-page" data-testid="system-page">
-      <SourceStrip meta={viewModel.dataSource} showWhenReal />
+    <div
+      className="domain-page system-page"
+      data-testid="system-page"
+      style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
+    >
 
       <section className="system-metrics">
         {(() => {
@@ -171,8 +173,8 @@ export default function SystemPage() {
         ))}
       </section>
 
-      <section className="system-workspace">
-        <div className="system-main card">
+      <section className="system-workspace" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+        <div className="system-main card" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
           <div className="card-header section-header system-section-header">
             <div className="source-section-head">
               <h2>{getSystemTabTitle(viewModel.query.tab)}</h2>
@@ -181,7 +183,7 @@ export default function SystemPage() {
             <SourceBadge meta={activeDataSource} showWhenReal />
           </div>
 
-          <div className="card-body">
+          <div className="card-body" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
             {error ? <div className="page-banner warning">{error}</div> : null}
 
             {viewModel.dataState === 'unsupported' ? (
@@ -195,7 +197,7 @@ export default function SystemPage() {
                 <p>{emptyStateText}</p>
               </div>
             ) : (
-              <div ref={listRef} className="system-list-container">
+              <div ref={listRef} className="system-list-container" style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
               <div className="system-list">
                 {rows.map((row) => {
                   const metaItems = getRowMeta(row)
