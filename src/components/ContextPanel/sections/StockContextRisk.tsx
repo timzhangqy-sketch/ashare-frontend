@@ -19,7 +19,6 @@ export default function StockContextRisk({ status, note, data }: StockContextRis
   return (
     <section className="global-context-section">
       <div className="global-context-section-title">风险拆解</div>
-      <div className="global-context-inline-note">{note}</div>
       {status === 'loading' ? (
         <div className="global-context-empty">正在加载风险信息...</div>
       ) : data ? (

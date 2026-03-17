@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { loadStockContextViewModel } from '../../adapters/contextPanel'
 import { useDate } from '../../context/useDate'
 import type {
@@ -22,7 +22,7 @@ function readStockPayload(payload: ContextPanelState['payload']): StockContextPa
 
 function getPanelKicker(sourcePage: ContextPanelState['sourcePage']) {
   if (sourcePage === 'signals') return '股票详情'
-  return '全局上下文'
+  return ''
 }
 
 function getLoadingCopy(sourcePage: ContextPanelState['sourcePage']) {
@@ -113,7 +113,6 @@ export default function GlobalContextPanel({ panel }: { panel: ContextPanelState
     <aside className="context-panel-slot" aria-label="右侧详情">
       <div className="context-panel-card global-context-panel" data-testid="context-panel">
         <StockContextHeader name={title} tsCode={stockCode} sourcePage={panel.sourcePage} sourceStrategy={sourceStrategy} />
-        {viewModel && panel.sourcePage !== 'signals' ? <div className="global-context-inline-note">{viewModel.statusText}</div> : null}
         <StockContextTags tags={viewModel?.tags ?? payload.tags ?? []} />
         <StockContextBasic
           data={viewModel?.main ?? null}

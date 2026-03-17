@@ -22,7 +22,6 @@ export default function StockContextLifecycle({ status, note, data }: StockConte
   return (
     <section className="global-context-section">
       <div className="global-context-section-title">生命周期</div>
-      <div className="global-context-inline-note">{note}</div>
       {status === 'loading' ? (
         <div className="global-context-empty">正在加载生命周期...</div>
       ) : data ? (

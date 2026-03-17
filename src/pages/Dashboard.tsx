@@ -108,14 +108,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page" data-testid="dashboard-page">
       <section className="dashboard-hero">
-        <div className="dashboard-hero-actions">
-          <Link className="btn-primary dashboard-link-btn" to="/signals">
-            进入信号中心
-          </Link>
-          <Link className="btn-secondary dashboard-link-btn" to="/portfolio">
-            进入持仓中心
-          </Link>
-        </div>
+        <div className="dashboard-hero-actions" />
       </section>
 
       <SourceSummaryBar meta={viewModel?.dataSource} className="dashboard-source-summary" />
