@@ -5,6 +5,7 @@ interface StockContextActionsProps {
 }
 
 export default function StockContextActions({ actions }: StockContextActionsProps) {
+  return null;
   if (!actions.length) return null;
 
   return (

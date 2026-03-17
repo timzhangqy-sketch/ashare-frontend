@@ -1,4 +1,5 @@
 import type { RiskScoreRow } from '../../types/risk';
+import { PieChart } from 'lucide-react';
 
 interface RiskScorePanelProps {
   rows: RiskScoreRow[];
@@ -67,7 +68,14 @@ export default function RiskScorePanel({
                 <td>
                   <div>{row.riskLevelLabel}</div>
                   <div className="risk-inline-actions">
-                    <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }}>查看拆解</button>
+                    <button
+                      type="button"
+                      title="查看拆解"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}
+                      onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }}
+                    >
+                      <PieChart size={16} />
+                    </button>
                     <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenWatchlist(row.watchlistHref); }}>交易标的池</button>
                     <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenPortfolio(row.portfolioHref); }}>持仓</button>
                   </div>

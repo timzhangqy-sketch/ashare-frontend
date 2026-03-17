@@ -521,7 +521,10 @@ function RowActionGroup({ actions, detailOpenTestId }: { actions: SignalsActionV
 
   return (
     <div className="signals-row-actions">
-      <div className="signals-row-actions-line">
+      <div
+        className="signals-row-actions-line"
+        style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', gap: 6, alignItems: 'center' }}
+      >
         {primaryActions.map(({ action, variant }, index) => (
           <ActionButton
             key={`${action.label}-${action.kind}-${variant}`}
@@ -909,18 +912,15 @@ export default function Signals() {
             {workspace?.tabs[tab].label ?? tab}
           </button>
         ))}
+        {!loading && !error && activeVm ? (
+          <div style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: 12 }}>
+            共 {activeRows.length} 条
+          </div>
+        ) : null}
       </div>
 
       <div className="signals-layout">
         <div className="signals-main">
-          {!loading && !error && activeVm ? (
-            <section className="signals-inline-summary">
-              <div className="signals-inline-summary-text">
-                共 {activeRows.length} 条
-              </div>
-            </section>
-          ) : null}
-
           {loading ? (
             <section className="card">
               <div className="signals-loading-state">

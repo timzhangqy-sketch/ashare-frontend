@@ -31,16 +31,6 @@ const STEP_LABEL: Record<string, string> = {
   healthcheck: '健康检查',
 }
 
-function buildSourceHint(source: string) {
-  if (source === 'dashboard') return '当前页承接自 Dashboard，可继续核对首页摘要背后的运行明细。'
-  if (source === 'risk') return '当前页承接自风险中心，用于补看运行链路和数据覆盖状态。'
-  if (source === 'execution') return '当前页承接自执行工作域，用于补看接口、运行与版本状态。'
-  if (source === 'signals') return '当前页承接自信号页，用于核对信号生成链路的运行状态。'
-  if (source === 'watchlist') return '当前页承接自交易标的池，用于查看候选样本和数据覆盖状态。'
-  if (source === 'portfolio') return '当前页承接自持仓中心，用于查看持仓相关运行状态。'
-  return ''
-}
-
 function getRowMeta(row: SystemRow) {
   if (row.objectType === 'pipeline-step') {
     const pipelineRow = row as PipelineStepRow
@@ -145,20 +135,27 @@ export default function SystemPage() {
 
   return (
     <div className="domain-page system-page" data-testid="system-page">
-      <section className="system-hero">
-        <div className="system-source-hint">{buildSourceHint(viewModel.query.source)}</div>
-      </section>
-
       <SourceStrip meta={viewModel.dataSource} showWhenReal />
 
       <section className="system-metrics">
-        {viewModel.metrics.map((metric) => (
-          <article key={metric.key} className="system-metric-card stat-card">
-            <span>{metric.label}</span>
-            <strong className="numeric">{metric.value}</strong>
-            <p>{metric.note}</p>
-          </article>
-        ))}
+        {(() => {
+          const KPI_LABEL_SET = new Set(['流程步骤', '数据覆盖', '接口健康', '版本快照'])
+          return viewModel.metrics.map((metric) => (
+            <article key={metric.key} className="system-metric-card stat-card">
+              <span
+                style={
+                  KPI_LABEL_SET.has(metric.label)
+                    ? { fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }
+                    : undefined
+                }
+              >
+                {metric.label}
+              </span>
+              <strong className="numeric">{metric.value}</strong>
+              {KPI_LABEL_SET.has(metric.label) ? null : <p>{metric.note}</p>}
+            </article>
+          ))
+        })()}
       </section>
 
       <section className="page-tabs system-tabs">
@@ -170,7 +167,6 @@ export default function SystemPage() {
             onClick={() => setTab(tab.key)}
           >
             <span className="system-tab-label">{tab.label}</span>
-            <small className="system-tab-desc">{tab.description}</small>
           </button>
         ))}
       </section>
@@ -180,7 +176,6 @@ export default function SystemPage() {
           <div className="card-header section-header system-section-header">
             <div className="source-section-head">
               <h2>{getSystemTabTitle(viewModel.query.tab)}</h2>
-              <p>{viewModel.dataStateNote}</p>
               <SourceNotice meta={activeDataSource} showWhenReal />
             </div>
             <SourceBadge meta={activeDataSource} showWhenReal />
@@ -266,69 +261,6 @@ export default function SystemPage() {
           </div>
         </div>
 
-        <aside className="system-context">
-          {viewModel.context ? (
-            <div className="card system-context-card">
-              <div className="risk-context-body">
-                <header className="system-context-header">
-                  <div className="system-context-kicker">运行上下文</div>
-                  <h3>{viewModel.context.title}</h3>
-                  <p>{viewModel.context.subtitle}</p>
-                  <span>{viewModel.context.sourceSummary}</span>
-                </header>
-
-                {viewModel.context.sections.map((section) => (
-                  <section key={section.title} className="system-context-section">
-                    <h4>{section.title}</h4>
-                    <div className="system-context-grid">
-                      {section.items.map((item) => (
-                        <div key={item.label} className="system-context-stat">
-                          <span>{item.label}</span>
-                          <strong className="numeric">{item.value}</strong>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                ))}
-
-                <section className="system-context-section">
-                  <h4>后续动作</h4>
-                  <div className="system-next-steps">
-                    {viewModel.context.nextSteps.map((step) => (
-                      <article key={step.label} className="system-next-step">
-                        <strong>{step.label}</strong>
-                        <p>{step.note}</p>
-                      </article>
-                    ))}
-                  </div>
-                </section>
-              </div>
-            </div>
-          ) : (
-            <div className="card system-context-card">
-              <div className="risk-context-body">
-                <div className="system-context-empty-kicker">运行上下文</div>
-                <div className="system-context-empty-summary">
-                  <span>{getSystemTabTitle(viewModel.query.tab)}</span>
-                  <strong className="numeric">{viewModel.filterChips.find((chip) => chip.key === 'source')?.value ?? '直接进入'}</strong>
-                </div>
-                <h3>{viewModel.noFocus.title}</h3>
-                <p className="execution-empty-text">{viewModel.noFocus.description}</p>
-                <div className="system-context-empty-list">
-                  <div className="system-context-empty-item">
-                    <strong>查看运行对象</strong>
-                    <span>选中一条流程、覆盖、接口或日志记录后，会在右侧展示上下文信息。</span>
-                  </div>
-                  <div className="system-context-empty-item">
-                    <strong>状态承接</strong>
-                    <span>当前页会保留来源页与 focus 信息，便于回查问题链路。</span>
-                  </div>
-                </div>
-                <p className="system-context-empty-note">{buildSourceHint(viewModel.query.source)}</p>
-              </div>
-            </div>
-          )}
-        </aside>
       </section>
     </div>
   )

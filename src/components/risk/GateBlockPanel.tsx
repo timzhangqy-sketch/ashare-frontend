@@ -1,4 +1,5 @@
 import type { GateBlockRow } from '../../types/risk';
+import { ArrowLeft, PieChart } from 'lucide-react';
 
 interface GateBlockPanelProps {
   rows: GateBlockRow[];
@@ -62,8 +63,22 @@ export default function GateBlockPanel({
                 <td>
                   <div>{row.suggestion}</div>
                   <div className="risk-inline-actions">
-                    <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }}>查看拆解</button>
-                    <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenSource(row.sourceHref); }}>返回来源</button>
+                    <button
+                      type="button"
+                      title="查看拆解"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}
+                      onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }}
+                    >
+                      <PieChart size={16} />
+                    </button>
+                    <button
+                      type="button"
+                      title="返回来源"
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}
+                      onClick={(event) => { event.stopPropagation(); onOpenSource(row.sourceHref); }}
+                    >
+                      <ArrowLeft size={16} />
+                    </button>
                   </div>
                 </td>
               </tr>

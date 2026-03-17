@@ -27,8 +27,16 @@ export default function ContextPanelSlot() {
     return <GlobalContextPanel panel={panel} />;
   }
 
-  // 模拟执行页不展示右侧占位面板，仅保留全局 ContextPanel（选中行时由 openPanel 打开）
-  if (pathname.startsWith('/execution')) {
+  // 这些工作域不展示右侧占位面板，仅保留全局 ContextPanel（选中行时由 openPanel 打开）
+  if (
+    pathname.startsWith('/execution')
+    || pathname.startsWith('/system')
+    || pathname.startsWith('/dashboard')
+    || pathname.startsWith('/research')
+    || pathname.startsWith('/ignition')
+    || pathname.startsWith('/retoc2')
+    || pathname.startsWith('/pattern')
+  ) {
     return null;
   }
 

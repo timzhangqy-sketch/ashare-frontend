@@ -102,7 +102,6 @@ export default function IgnitionList() {
           <div className="card">
             <div className="card-header">
               <span className="card-title">能量蓄势候选列表</span>
-              <span className="c-muted" style={{ fontSize: 12 }}>点击行查看详情与买点上下文</span>
             </div>
 
             {loading && <div className="page-loading"><div className="spinner" />加载中...</div>}

@@ -5,6 +5,7 @@ import { fetchWatchlist, type WatchlistItem } from '../api';
 import type { StockDetail } from '../types/stock';
 import { CrossTags } from './CrossTags';
 import { getStrategyDisplayName } from '../utils/displayNames';
+import { ArrowRight } from 'lucide-react';
 
 const SIGNAL_CFG: Record<string, string> = {
   PULLBACK: 'status-badge source-badge source-badge-info',
@@ -168,7 +169,6 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
       <div className="card">
         <div className="card-header">
           <span className="card-title">交易标的池列表</span>
-          <span className="card-subtitle">按入池日期、池天数、最新涨跌和信号状态快速查看候选变化。</span>
         </div>
 
         {loading ? <div className="page-loading"><div className="spinner" />正在加载...</div> : null}
@@ -252,7 +252,20 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                       <td className="center"><SignalBadge label={s.buy_signal} /></td>
                       <td className="center"><SignalBadge label={s.sell_signal} /></td>
                       <td className="center" onClick={(e) => e.stopPropagation()}>
-                        <button type="button" className="btn-primary" onClick={() => (onBuy ?? onOpen)(detail)}>承接</button>
+                        <button
+                          type="button"
+                          title="承接"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: 'var(--text-muted)',
+                            padding: '4px',
+                          }}
+                          onClick={() => (onBuy ?? onOpen)(detail)}
+                        >
+                          <ArrowRight size={16} />
+                        </button>
                       </td>
                     </tr>
                   );

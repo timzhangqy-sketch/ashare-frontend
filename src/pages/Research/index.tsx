@@ -4,7 +4,6 @@ import { buildResearchQuery, loadResearchWorkspace } from '../../adapters/resear
 import { buildResearchDetailHref } from '../../adapters/researchDetail'
 import SourceBadge from '../../components/data-source/SourceBadge'
 import SourceNotice from '../../components/data-source/SourceNotice'
-import SourceStrip from '../../components/SourceStrip'
 import { getSourcePanelText, getSourcePanelTitle } from '../../components/data-source/sourceLabels'
 import { useContextPanel } from '../../context/useContextPanel'
 import { useApiData } from '../../hooks/useApiData'
@@ -18,13 +17,6 @@ const TAB_LABELS: Record<ResearchTab, string> = {
   ic: '因子 IC',
   attribution: '归因分析',
   resonance: '共振研究',
-}
-
-const TAB_DESCRIPTIONS: Record<ResearchTab, string> = {
-  summary: '查看策略样本、收益表现和回撤概览。',
-  ic: '聚焦因子 IC、ICIR 与分桶结果。',
-  attribution: '查看分组收益、胜率和回撤贡献。',
-  resonance: '查看策略组合共振、样本强度和超额收益。',
 }
 
 function formatPercent(value: number | null | undefined, digits = 2) {
@@ -207,7 +199,12 @@ export default function ResearchPage() {
         {(data?.metrics ?? []).map((metric) => (
           <article key={metric.label} className="research-summary-card compact stat-card">
             <div className="stat-label">{metric.label}</div>
-            <div className="stat-value numeric">{metric.value}</div>
+            <div
+              className="stat-value numeric"
+              style={metric.label.includes('聚焦') || metric.label.includes('数据来源') ? { fontSize: 16 } : undefined}
+            >
+              {metric.value}
+            </div>
             <div className="stat-sub">{metric.helper}</div>
           </article>
         ))}
@@ -226,14 +223,11 @@ export default function ResearchPage() {
         ))}
       </div>
 
-      <SourceStrip meta={activeDataSource} showWhenReal />
-
       <div className="research-layout">
         <section className="card research-main">
           <div className="card-header research-section-header">
             <div className="source-section-head">
               <span className="card-title">{activeTab?.title ?? TAB_LABELS[query.tab]}</span>
-              <p>{activeTab?.description ?? TAB_DESCRIPTIONS[query.tab]}</p>
               {!loading && !error ? <SourceNotice meta={activeDataSource} showWhenReal /> : null}
             </div>
             <SourceBadge meta={activeDataSource} showWhenReal />
@@ -260,13 +254,6 @@ export default function ResearchPage() {
             <div className="card-body research-table-shell">
               {data && tableModel ? (
                 <>
-                  <div className="section-header research-section-header">
-                    <div className="source-section-head">
-                      <h2>{tableModel.title}</h2>
-                      <p>{TAB_DESCRIPTIONS[query.tab]}</p>
-                    </div>
-                  </div>
-
                   {tableModel.rows.length === 0 ? (
                     <div className="empty-state research-empty-state">
                       <h3>{emptyTitle}</h3>

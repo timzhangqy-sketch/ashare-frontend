@@ -69,7 +69,6 @@ function T2Table({ selectedDate, onOpen, listRef }: { selectedDate: string; onOp
       <section className="card">
         <div className="card-header">
           <span className="card-title">T-2 强势形态</span>
-          <span className="c-muted" style={{ fontSize: 12 }}>形态策略样本列表，承接旧形态扫描页语义</span>
         </div>
 
         {loading ? <div className="page-loading"><div className="spinner" />加载中...</div> : null}
@@ -171,7 +170,6 @@ function WeakBuyTable({ selectedDate, onOpen, listRef }: { selectedDate: string;
       <section className="card">
         <div className="card-header">
           <span className="card-title">弱市吸筹</span>
-          <span className="c-muted" style={{ fontSize: 12 }}>弱市中发现有聪明资金逆势放量吸筹的超跌票</span>
         </div>
 
         {loading ? <div className="page-loading"><div className="spinner" />加载中...</div> : null}

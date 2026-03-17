@@ -6,6 +6,7 @@ import SourceStrip from '../../components/SourceStrip'
 import { useContextPanel } from '../../context/useContextPanel'
 import { useApiData } from '../../hooks/useApiData'
 import type { StockContextPanelPayload } from '../../types/contextPanel'
+import { getStrategyDisplayName } from '../../utils/displayNames'
 import type {
   ExecutionConstraintRow,
   ExecutionRow,
@@ -82,6 +83,7 @@ function calculateObservingDays(tradeDate: string) {
 }
 
 function buildExecutionContextPanelPayload(row: ExecutionRow): StockContextPanelPayload {
+  const strategyLabel = row.sourceStrategy ? (getStrategyDisplayName(row.sourceStrategy) ?? row.sourceStrategy) : row.strategyLabel
   return {
     title: row.name,
     name: row.name,
@@ -91,14 +93,14 @@ function buildExecutionContextPanelPayload(row: ExecutionRow): StockContextPanel
     summary: row.summary,
     tags: [
       { label: row.sourceLabel, tone: 'source' },
-      { label: row.strategyLabel, tone: 'strategy' },
+      { label: strategyLabel, tone: 'strategy' },
       { label: row.tradeAllowedLabel, tone: 'state' },
       { label: row.riskLevelLabel, tone: 'risk' },
     ],
     summaryItems: [
       { label: '对象', value: TAB_TITLES[row.objectType === 'order' ? 'orders' : row.objectType === 'position' ? 'positions' : row.objectType === 'fill' ? 'fills' : 'constraints'] },
       { label: '来源', value: row.sourceLabel },
-      { label: '策略', value: row.strategyLabel },
+      { label: '策略', value: strategyLabel },
       { label: '交易结论', value: row.tradeAllowedLabel },
       { label: '风控等级', value: row.riskLevelLabel },
       { label: '仓位倍率', value: row.positionCapText },
@@ -317,7 +319,9 @@ export default function ExecutionPage() {
                     <div className="execution-row-summary">{row.summary}</div>
                     <div className="execution-row-bottom">
                       <span style={getExecutionBadgeStyle(row.sourceLabel, 'source')}>{row.sourceLabel}</span>
-                      <span style={getExecutionBadgeStyle(row.strategyLabel, 'strategy')}>{row.strategyLabel}</span>
+                      <span style={getExecutionBadgeStyle(row.strategyLabel, 'strategy')}>
+                        {row.sourceStrategy ? (getStrategyDisplayName(row.sourceStrategy) ?? row.sourceStrategy) : row.strategyLabel}
+                      </span>
                       <span style={getExecutionBadgeStyle(row.tradeAllowedLabel, 'allow')}>{row.tradeAllowedLabel}</span>
                       <span style={getExecutionBadgeStyle(row.riskLevelLabel, 'risk')}>{row.riskLevelLabel}</span>
                       <span style={getExecutionBadgeStyle(row.positionCapText, 'cap')}>{row.positionCapText}</span>

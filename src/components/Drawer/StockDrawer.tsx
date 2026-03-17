@@ -39,6 +39,13 @@ const BEAR_POOL = [
   '交易层面仍需结合风控约束执行。',
 ]
 
+const RISK_LEVEL_MAP: Record<string, string> = {
+  low: '低风险',
+  medium: '中风险',
+  high: '高风险',
+  critical: '极高风险',
+}
+
 function seed(code: string, offset = 0): number {
   let hash = offset * 7919
   for (const char of code) hash = ((hash << 5) - hash + char.charCodeAt(0)) & 0x7fffffff
@@ -93,12 +100,6 @@ function getAdviceTone(advice: AIAnalysisResp['advice']): 'neutral' | 'warning' 
   return 'neutral'
 }
 
-function getRiskTone(level: string | null | undefined) {
-  if (level === 'high') return 'warning'
-  if (level === 'mid') return 'neutral'
-  return 'info'
-}
-
 function ConfidenceBar({ value }: { value: number }) {
   return (
     <div className="drawer-confidence">
@@ -118,15 +119,6 @@ function InfoItem({ label, value, numeric = false }: { label: string; value: Rea
     <div className="drawer-info-item">
       <div className="drawer-info-label">{label}</div>
       <div className={numeric ? 'drawer-info-value numeric' : 'drawer-info-value'}>{value}</div>
-    </div>
-  )
-}
-
-function FlatRow({ label, value }: { label: string; value: ReactNode }) {
-  return (
-    <div className="drawer-flat-row">
-      <span className="drawer-flat-label">{label}</span>
-      <span className="drawer-flat-value">{value}</span>
     </div>
   )
 }
@@ -559,14 +551,34 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
                       <span>正在加载风险信息...</span>
                     </div>
                   ) : risk ? (
-                    <>
-                      <FlatRow label="交易限制" value={<span>{risk.tradeAllowed == null ? '--' : risk.tradeAllowed ? '允许交易' : '限制交易'}</span>} />
-                      <FlatRow label="风险等级" value={<ToneBadge label={risk.riskLevel ?? '--'} tone={getRiskTone(risk.riskLevel)} />} />
-                      <FlatRow label="风险总分" value={<span className="numeric">{formatNumber(risk.riskScoreTotal, 1)}</span>} />
-                      <FlatRow label="阻断原因" value={<span>{risk.blockReason ?? '--'}</span>} />
-                      <FlatRow label="阻断来源" value={<span>{risk.blockSource ?? '--'}</span>} />
-                      <FlatRow label="仓位上限系数" value={<span className="numeric">{risk.capMultiplier != null ? `${risk.capMultiplier.toFixed(2)}x` : '--'}</span>} />
-                    </>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%' }}>
+                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>交易限制</div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{risk.tradeAllowed == null ? '--' : risk.tradeAllowed ? '允许交易' : '限制交易'}</div>
+                      </div>
+                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>风险等级</div>
+                        <div style={{ fontSize: '13px', fontWeight: 700 }} className={risk.riskLevel ? `risk-level-${risk.riskLevel}` : ''}>
+                          {RISK_LEVEL_MAP[risk.riskLevel ?? ''] ?? risk.riskLevel ?? '--'}
+                        </div>
+                      </div>
+                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>风险总分</div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{risk.riskScoreTotal != null ? risk.riskScoreTotal.toFixed(1) : '--'}</div>
+                      </div>
+                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>仓位上限系数</div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{risk.capMultiplier != null ? `${risk.capMultiplier.toFixed(2)}x` : '--'}</div>
+                      </div>
+                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>阻断原因</div>
+                        <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>{risk.blockReason ?? '--'}</div>
+                      </div>
+                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
+                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>阻断来源</div>
+                        <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>{risk.blockSource ?? '--'}</div>
+                      </div>
+                    </div>
                   ) : (
                     <div className="drawer-inline-note">当前没有可用的风险摘要。</div>
                   )}
