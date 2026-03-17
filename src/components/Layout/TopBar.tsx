@@ -234,7 +234,6 @@ export default function TopBar() {
     <header className="topbar">
       <div className="topbar-title">
         {displayMeta.title}
-        <span className="topbar-title-desc">{displayMeta.description}</span>
         {dashboardHint ? <span className="topbar-title-hint">{dashboardHint}</span> : null}
       </div>
 

@@ -11,7 +11,6 @@ export default function MetricStrip({ items }: MetricStripProps) {
         <div key={item.label} className="dashboard-metric-card">
           <div className="dashboard-metric-label">{item.label}</div>
           <div className={`dashboard-metric-value tone-${item.tone}`}>{item.value}</div>
-          <div className="dashboard-metric-helper">{item.helperText}</div>
         </div>
       ))}
     </div>

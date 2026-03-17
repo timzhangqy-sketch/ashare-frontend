@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { loadStockContextViewModel } from '../../adapters/contextPanel'
 import { useDate } from '../../context/useDate'
 import type {
-  ContextPanelPayloadBase,
   ContextPanelState,
   StockContextPanelPayload,
   StockContextViewModel,
@@ -30,28 +29,8 @@ function getLoadingCopy(sourcePage: ContextPanelState['sourcePage']) {
   return '正在加载上下文信息...'
 }
 
-function getFallbackSubtitle(sourcePage: ContextPanelState['sourcePage']) {
-  if (sourcePage === 'signals') return '当前对象的补充信息会在这里展示。'
-  return '当前对象的补充说明、标签和后续动作会在这里展示。'
-}
-
-function GenericContextPanel({
-  panel,
-  payload,
-}: {
-  panel: ContextPanelState
-  payload: ContextPanelPayloadBase
-}) {
-  return (
-    <aside className="context-panel-slot" aria-label="右侧详情">
-      <div className="context-panel-card global-context-panel" data-testid="context-panel">
-        <div className="context-panel-kicker">{getPanelKicker(panel.sourcePage)}</div>
-        <div className="context-panel-title">{payload.title || panel.entityKey}</div>
-        <p className="context-panel-copy">{payload.subtitle || getFallbackSubtitle(panel.sourcePage)}</p>
-        {payload.summary ? <p className="context-panel-copy">{payload.summary}</p> : null}
-      </div>
-    </aside>
-  )
+function GenericContextPanel() {
+  return null
 }
 
 export default function GlobalContextPanel({ panel }: { panel: ContextPanelState }) {
@@ -92,7 +71,7 @@ export default function GlobalContextPanel({ panel }: { panel: ContextPanelState
   }, [requestKey, selectedDate])
 
   if (!panel.isOpen || !panel.entityType || !panel.entityKey) return null
-  if (panel.entityType !== 'stock' || !stockCode) return <GenericContextPanel panel={panel} payload={payload} />
+  if (panel.entityType !== 'stock' || !stockCode) return <GenericContextPanel />
 
   if (!viewModel && loading) {
     return (

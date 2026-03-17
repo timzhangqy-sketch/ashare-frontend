@@ -19,7 +19,6 @@ export default function TodaySummarySection({
   return (
     <SectionCard
       title="今日摘要"
-      badge="作战室"
       actions={<SourceBadge meta={data?.dataSource} />}
     >
       <SourceNotice meta={data?.dataSource} />

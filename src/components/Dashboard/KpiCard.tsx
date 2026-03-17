@@ -53,10 +53,6 @@ export default function KpiCard({ item }: KpiCardProps) {
       >
         {item.value}
       </div>
-      <div className="dashboard-kpi-meta">
-        <span>{item.helperText}</span>
-        <span className="dashboard-kpi-link">查看</span>
-      </div>
     </Link>
   );
 }
