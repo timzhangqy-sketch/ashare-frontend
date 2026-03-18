@@ -137,8 +137,8 @@ function T2Table({ selectedDate, onOpen, listRef }: { selectedDate: string; onOp
                       <td className="right numeric c-muted">--</td>
                       <td className="right numeric">20</td>
                       <td className="right numeric">{amountYiComputed != null ? amountYiComputed.toFixed(2) : '--'}</td>
-                      <td className="center c-muted">--</td>
-                      <td className="center c-muted">--</td>
+                      <td className="center">{(row as any).buy_signal ? <span className="status-badge source-badge source-badge-info">{(row as any).buy_signal}</span> : <span className="c-muted">--</span>}</td>
+                      <td className="center">{(row as any).sell_signal ? <span className="status-badge source-badge source-badge-warning">{(row as any).sell_signal}</span> : <span className="c-muted">--</span>}</td>
                       <td className="center" onClick={(e) => e.stopPropagation()}>
                         <button
                           type="button"

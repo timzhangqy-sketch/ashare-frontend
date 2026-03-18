@@ -70,6 +70,8 @@ export interface Retoc2Item {
   close:         number | null;
   ma20:          number | null;
   amount_yi:     number | null; // 成交额(亿)
+  buy_signal?:   string | null;
+  sell_signal?:  string | null;
 }
 
 export interface PipelineStepResp {
@@ -135,6 +137,10 @@ export interface PatternT2up9Item {
   ret_2d:          number;
   in_pool:         boolean;
   in_continuation: boolean;
+  close?:          number | null;
+  amount_yi?:      number | null;
+  buy_signal?:     string | null;
+  sell_signal?:    string | null;
 }
 
 export interface PatternGreen10Item {

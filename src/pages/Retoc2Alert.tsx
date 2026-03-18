@@ -144,6 +144,8 @@ export default function Retoc2Alert() {
                     <th className="right">收盘</th>
                     <th className="right">MA20</th>
                     <th className="right">成交(亿)</th>
+                    <th className="center">买入信号</th>
+                    <th className="center">卖出信号</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -169,6 +171,8 @@ export default function Retoc2Alert() {
                       <td className="right" style={{ fontVariantNumeric: 'tabular-nums' }}>{fmt(item.close)}</td>
                       <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>{fmt(item.ma20)}</td>
                       <td className="right c-muted">{fmt(item.amount_yi)}</td>
+                      <td className="center">{item.buy_signal ? <span className="status-badge source-badge source-badge-info">{item.buy_signal}</span> : <span className="c-muted">--</span>}</td>
+                      <td className="center">{item.sell_signal ? <span className="status-badge source-badge source-badge-warning">{item.sell_signal}</span> : <span className="c-muted">--</span>}</td>
                     </tr>
                   ))}
                 </tbody>
