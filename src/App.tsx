@@ -15,6 +15,7 @@ import ResearchPage from './pages/Research';
 import ResearchDetailPage from './pages/ResearchDetail';
 import RiskPage from './pages/Risk';
 import Retoc2Alert from './pages/Retoc2Alert';
+import WeakBuyPage from './pages/WeakBuyPage';
 import Signals from './pages/Signals';
 import Watchlist from './pages/Watchlist';
 import SystemPage from './pages/System';
@@ -43,6 +44,7 @@ export default function App() {
                   <Route path="ignition" element={<IgnitionList />} />
                   <Route path="retoc2" element={<Retoc2Alert />} />
                   <Route path="pattern" element={<PatternScreen />} />
+                  <Route path="weak-buy" element={<WeakBuyPage />} />
                   <Route path="holdings" element={<Holdings />} />
                   <Route path="backtest" element={<BacktestPage />} />
                 </Route>

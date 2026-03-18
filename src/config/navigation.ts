@@ -10,6 +10,7 @@ export type AppRouteKey =
   | 'ignition'
   | 'retoc2'
   | 'pattern'
+  | 'weak-buy'
   | 'holdings'
   | 'backtest';
 
@@ -150,6 +151,16 @@ export const appRouteDefinitions: AppRouteDefinition[] = [
     path: '/pattern',
     label: '形态策略',
     title: '形态策略',
+    description: '',
+    showInMainNav: false,
+    isLegacy: true,
+    icon: 'legacy',
+  },
+  {
+    key: 'weak-buy',
+    path: '/weak-buy',
+    label: '弱市吸筹',
+    title: '弱市吸筹',
     description: '',
     showInMainNav: false,
     isLegacy: true,
