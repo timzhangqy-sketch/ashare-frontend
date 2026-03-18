@@ -96,7 +96,7 @@ function normalizeQuery(searchParams: URLSearchParams): SystemQueryModel {
     tab: normalizeTab(searchParams.get('tab')),
     source: normalizeSource(searchParams.get('source')),
     focus: searchParams.get('focus')?.trim() ?? '',
-    tradeDate: searchParams.get('trade_date')?.trim() ?? '2026-03-09',
+    tradeDate: searchParams.get('trade_date')?.trim() || '',
     step: searchParams.get('step')?.trim() ?? '',
     dataset: searchParams.get('dataset')?.trim() ?? '',
     api: searchParams.get('api')?.trim() ?? '',
