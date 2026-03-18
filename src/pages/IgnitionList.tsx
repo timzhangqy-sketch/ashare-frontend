@@ -12,9 +12,10 @@ type MainTab = 'today' | 'watchlist';
 
 export default function IgnitionList() {
   const { selectedDate } = useDate();
+  // 单次调用 /api/watchlist/active，与持续观察池同一数据源；按 entry_date 拆分为今日入选 / 全部
   const { data, loading, error, refetch } = useApiData(
     () => fetchWatchlist(),
-    [selectedDate],
+    [],
   );
   const [selected, setSelected] = useState<StockDetail | null>(null);
   const [buyMode, setBuyMode] = useState(false);
@@ -41,9 +42,8 @@ export default function IgnitionList() {
   }
 
   const all = (data ?? []) as WatchlistItem[];
-  const rows = all.filter(
-    (item) => item.strategy === 'VOL_SURGE' && item.entry_date === selectedDate,
-  );
+  const allVolSurge = all.filter((item) => item.strategy === 'VOL_SURGE');
+  const rows = allVolSurge.filter((item) => item.entry_date === selectedDate);
   const buySignalCount = rows.filter((item) => item.buy_signal && item.buy_signal !== '').length;
   const sellSignalCount = rows.filter((item) => item.sell_signal && item.sell_signal !== '').length;
 
