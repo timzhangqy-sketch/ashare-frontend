@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { useDate } from '../context/useDate';
 import StockDrawer from '../components/Drawer/StockDrawer';
 import WatchlistTab from '../components/WatchlistTab';
@@ -6,18 +7,8 @@ import { getMockDetail } from '../utils/score';
 import { useApiData } from '../hooks/useApiData';
 import { fetchWatchlist, type WatchlistItem } from '../api';
 import type { StockDetail } from '../types/stock';
-import { CrossTags } from '../components/CrossTags';
 
 type MainTab = 'today' | 'watchlist';
-
-const pctFmt = (v: number | null | undefined, d = 2) => v != null ? `${v >= 0 ? '+' : ''}${v.toFixed(d)}%` : '--';
-const pnlColor = (v: number | null | undefined) =>
-  v == null ? 'var(--text-muted)' : v > 0 ? 'var(--up)' : v < 0 ? 'var(--down)' : 'var(--text-muted)';
-
-function getStrategyLabel(strategy: string) {
-  if (strategy === 'VOL_SURGE') return '连续放量蓄势';
-  return strategy;
-}
 
 export default function IgnitionList() {
   const { selectedDate } = useDate();
@@ -111,44 +102,55 @@ export default function IgnitionList() {
               <table className="data-table">
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>代码</th>
                     <th>名称</th>
-                    <th>策略</th>
-                    <th className="center">入池日期</th>
-                    <th className="right">最新涨跌</th>
-                    <th className="right">入池以来</th>
+                    <th className="center">入池日</th>
+                    <th className="right">收盘</th>
+                    <th className="right">3日均VR</th>
+                    <th className="right">5日%</th>
+                    <th className="right">20日%</th>
+                    <th className="right">成交(亿)</th>
+                    <th className="right">换手%</th>
                     <th className="center">买入信号</th>
                     <th className="center">卖出信号</th>
+                    <th className="center">操作</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((item: WatchlistItem) => (
+                  {rows.map((item: WatchlistItem, index) => (
                       <tr
                         key={`${item.ts_code}-${item.strategy}`}
                         onClick={() => handleRowClick(item)}
                       >
+                        <td className="c-sec">{index + 1}</td>
                         <td className="c-sec">{item.ts_code}</td>
-                        <td style={{ fontWeight: 500 }}>
-                          {item.name}
-                          <CrossTags tsCode={item.ts_code} currentStrategy="VOL_SURGE" />
-                        </td>
-                        <td>
-                          <span className="tag-pill">{getStrategyLabel(item.strategy)}</span>
-                        </td>
+                        <td style={{ fontWeight: 500 }}>{item.name}</td>
                         <td className="center c-sec">{item.entry_date}</td>
-                        <td className="right" style={{ color: pnlColor(item.latest_pct_chg), fontWeight: 600 }}>
-                          {pctFmt(item.latest_pct_chg, 2)}
+                        <td className="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                          {item.latest_close != null ? Number(item.latest_close).toFixed(2) : '--'}
+                        </td>
+                        <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                          {(item as any).avg_vr3 != null ? Number((item as any).avg_vr3).toFixed(2) : '--'}
+                        </td>
+                        <td className="right" style={{ color: Number((item as any).ret5 || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
+                          {(item as any).ret5 != null ? `${(Number((item as any).ret5) * 100).toFixed(2)}%` : '--'}
+                        </td>
+                        <td className="right" style={{ color: Number((item as any).ret20 || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
+                          {(item as any).ret20 != null ? `${(Number((item as any).ret20) * 100).toFixed(2)}%` : '--'}
+                        </td>
+                        <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                          {(item as any).amount_yi != null ? Number((item as any).amount_yi).toFixed(2) : '--'}
                         </td>
                         <td className="right c-muted">
-                          {item.gain_since_entry != null
-                            ? pctFmt(item.gain_since_entry * 100, 2)
-                            : '--'}
+                          {(item as any).turnover_rate != null ? `${Number((item as any).turnover_rate).toFixed(2)}%` : '--'}
                         </td>
+                        <td className="center">{item.buy_signal || '--'}</td>
+                        <td className="center">{item.sell_signal || '--'}</td>
                         <td className="center">
-                          {item.buy_signal && item.buy_signal !== '' ? item.buy_signal : '--'}
-                        </td>
-                        <td className="center">
-                          {item.sell_signal && item.sell_signal !== '' ? item.sell_signal : '--'}
+                          <button type="button" title="承接" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }} onClick={(e) => { e.stopPropagation(); }}>
+                            <ArrowRight size={16} />
+                          </button>
                         </td>
                       </tr>
                   ))}
