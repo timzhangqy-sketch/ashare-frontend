@@ -156,8 +156,10 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                     <th className="center">入池日</th>
                     <th className="right">在池天</th>
                     <th className="right">10日bar</th>
+                    <th className="right">当日bar</th>
                     <th className="right">ret10%</th>
                     <th className="right" style={{ cursor: 'pointer' }} onClick={() => handleSort('turnover_rate')}>换手%{sortIndicator('turnover_rate')}</th>
+                    <th className="right">收盘</th>
                     <th className="right" style={{ cursor: 'pointer' }} onClick={() => handleSort('amount_yi')}>成交(亿){sortIndicator('amount_yi')}</th>
                     <th className="center">买入信号</th>
                     <th className="center">卖出信号</th>
@@ -225,8 +227,10 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <td className="right numeric">{s.pool_day}</td>
                           <NumCell v={s.retoc_cnt} decimals={0} />
+                          <td className="right numeric">{(s as any).bars_today != null ? Math.round(Number((s as any).bars_today)) : '--'}</td>
                           <PctCell v={s.ret10} isDecimal={s.ret10 != null && Math.abs(s.ret10) <= 1} />
                           <NumCell v={s.turnover_rate} suffix="%" />
+                          <NumCell v={s.latest_close} />
                           <NumCell v={s.amount_yi} />
                           <td className="center"><SignalBadge label={s.buy_signal} /></td>
                           <td className="center"><SignalBadge label={s.sell_signal} /></td>
