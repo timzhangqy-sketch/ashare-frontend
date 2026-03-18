@@ -180,6 +180,21 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                     <th className="center">卖出信号</th>
                     <th className="center">操作</th>
                   </tr>
+                ) : strategyStr === 'WEAK_BUY' ? (
+                  <tr>
+                    <th>代码</th>
+                    <th>名称</th>
+                    <th className="center">入池日</th>
+                    <th className="right">池天数</th>
+                    <th className="right">收盘</th>
+                    <th className="right">VR量比</th>
+                    <th className="right" style={{ cursor: 'pointer' }} onClick={() => handleSort('turnover_rate')}>换手%{sortIndicator('turnover_rate')}</th>
+                    <th className="right" style={{ cursor: 'pointer' }} onClick={() => handleSort('amount_yi')}>成交(亿){sortIndicator('amount_yi')}</th>
+                    <th className="right">入池以来</th>
+                    <th className="center">买入信号</th>
+                    <th className="center">卖出信号</th>
+                    <th className="center">操作</th>
+                  </tr>
                 ) : (
                   <tr>
                     <th>代码</th>
@@ -251,6 +266,25 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <PctCell v={s.gain_since_entry} isDecimal />
                           <td className="right numeric">{s.pool_day != null ? Math.max(0, 20 - s.pool_day) : '--'}</td>
                           <NumCell v={s.amount_yi} />
+                          <td className="center"><SignalBadge label={s.buy_signal} /></td>
+                          <td className="center"><SignalBadge label={s.sell_signal} /></td>
+                          <td className="center" onClick={(e) => e.stopPropagation()}>
+                            <button type="button" title="承接" style={{ background: 'rgba(59,130,246,0.10)', color: '#3B82F6', border: 'none', borderRadius: '4px', padding: '4px 6px', cursor: 'pointer' }} onClick={() => (onBuy ?? onOpen)(detail)}>
+                              <ArrowRight size={15} />
+                            </button>
+                          </td>
+                        </>
+                      ) : strategyStr === 'WEAK_BUY' ? (
+                        <>
+                          <td className="c-sec numeric-muted">{s.ts_code}</td>
+                          <td style={{ fontWeight: 500 }}>{s.name}<CrossTags tsCode={s.ts_code} currentStrategy={s.strategy} /></td>
+                          <td className="center numeric-muted">{s.entry_date}</td>
+                          <td className="right numeric">{s.pool_day}</td>
+                          <NumCell v={s.latest_close} />
+                          <NumCell v={s.vr_today} />
+                          <NumCell v={s.turnover_rate} suffix="%" />
+                          <NumCell v={s.amount_yi} />
+                          <PctCell v={s.gain_since_entry} isDecimal />
                           <td className="center"><SignalBadge label={s.buy_signal} /></td>
                           <td className="center"><SignalBadge label={s.sell_signal} /></td>
                           <td className="center" onClick={(e) => e.stopPropagation()}>
