@@ -7,6 +7,7 @@ import { useApiData } from '../hooks/useApiData';
 import { fetchRetoc2, type Retoc2Item } from '../api';
 import type { StockDetail } from '../types/stock';
 import { CrossTags } from '../components/CrossTags';
+import { displaySignalLabel } from '../utils/labelMaps';
 
 type MainTab = 'today' | 'watchlist';
 
@@ -171,8 +172,8 @@ export default function Retoc2Alert() {
                       <td className="right" style={{ fontVariantNumeric: 'tabular-nums' }}>{fmt(item.close)}</td>
                       <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>{fmt(item.ma20)}</td>
                       <td className="right c-muted">{fmt(item.amount_yi)}</td>
-                      <td className="center">{item.buy_signal ? <span className="status-badge source-badge source-badge-info">{item.buy_signal}</span> : <span className="c-muted">--</span>}</td>
-                      <td className="center">{item.sell_signal ? <span className="status-badge source-badge source-badge-warning">{item.sell_signal}</span> : <span className="c-muted">--</span>}</td>
+                      <td className="center">{item.buy_signal ? <span className="status-badge source-badge source-badge-info">{displaySignalLabel(item.buy_signal)}</span> : <span className="c-muted">--</span>}</td>
+                      <td className="center">{item.sell_signal ? <span className="status-badge source-badge source-badge-warning">{displaySignalLabel(item.sell_signal)}</span> : <span className="c-muted">--</span>}</td>
                     </tr>
                   ))}
                 </tbody>
