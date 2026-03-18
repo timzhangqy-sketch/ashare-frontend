@@ -8781,3 +8781,15 @@ textarea {
 .risk-level-medium { color: var(--warn) !important; }
 .risk-level-high { color: var(--critical) !important; }
 .risk-level-critical { color: var(--critical) !important; }
+
+/* Research page — table full width */
+.research-page .card,
+.research-page .table-shell {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.research-page .strategy-list-container,
+.research-page .data-table-shell {
+  min-height: calc(100vh - 360px) !important;
+}

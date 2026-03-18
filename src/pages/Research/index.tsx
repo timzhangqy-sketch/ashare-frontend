@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { buildResearchQuery, loadResearchWorkspace } from '../../adapters/research'
 import { buildResearchDetailHref } from '../../adapters/researchDetail'
 import SourceBadge from '../../components/data-source/SourceBadge'
-import SourceNotice from '../../components/data-source/SourceNotice'
+
 import SourceStrip from '../../components/SourceStrip'
 import { getSourcePanelText, getSourcePanelTitle } from '../../components/data-source/sourceLabels'
 import { useContextPanel } from '../../context/useContextPanel'
@@ -227,7 +227,7 @@ export default function ResearchPage() {
         <section className="card research-main">
           <div className="card-header research-section-header">
             <div className="source-section-head">
-              {!loading && !error ? <SourceNotice meta={activeDataSource} showWhenReal /> : null}
+
             </div>
             <SourceBadge meta={activeDataSource} showWhenReal />
           </div>
