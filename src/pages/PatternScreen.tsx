@@ -43,34 +43,26 @@ function T2Table({ selectedDate, onOpen, listRef }: { selectedDate: string; onOp
     <>
       <div className="stat-grid">
         <div className="stat-card">
-          <div className="stat-label">形态样本</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>形态样本</div>
           <div className="stat-value c-red">{loading ? '--' : rows.length}</div>
-          <div className="stat-sub">T-2 大阳触发样本</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">交易标的池命中</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>交易标的池命中</div>
           <div className="stat-value c-blue">{loading ? '--' : rows.filter(row => row.in_pool).length}</div>
-          <div className="stat-sub">当前仍在交易标的池</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">延续跟踪</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>延续跟踪</div>
           <div className="stat-value c-cyan">{loading ? '--' : rows.filter(row => row.in_continuation).length}</div>
-          <div className="stat-sub">进入延续跟踪</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">T+2 平均收益</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>T+2 平均收益</div>
           <div className="stat-value c-gold">
             {loading ? '--' : formatPercent(rows.length ? rows.reduce((sum, row) => sum + (row.ret_2d ?? 0), 0) / rows.length : 0)}
           </div>
-          <div className="stat-sub">形态样本后续表现</div>
         </div>
       </div>
 
       <section className="card">
-        <div className="card-header">
-          <span className="card-title">T-2 强势形态</span>
-        </div>
-
         {loading ? <div className="page-loading"><div className="spinner" />加载中...</div> : null}
         {!loading && error ? (
           <div className="page-error">
@@ -82,7 +74,7 @@ function T2Table({ selectedDate, onOpen, listRef }: { selectedDate: string; onOp
 
         {!loading && !error ? (
           <div ref={listRef} className="strategy-list-container">
-          <div className="data-table-shell">
+            <div className="table-shell data-table-shell">
             <table className="data-table">
               <thead>
                 <tr>
@@ -123,7 +115,7 @@ function T2Table({ selectedDate, onOpen, listRef }: { selectedDate: string; onOp
                 ))}
               </tbody>
             </table>
-          </div>
+            </div>
           </div>
         ) : null}
       </section>
@@ -142,36 +134,28 @@ function WeakBuyTable({ selectedDate, onOpen, listRef }: { selectedDate: string;
     <>
       <div className="stat-grid">
         <div className="stat-card">
-          <div className="stat-label">形态样本</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>形态样本</div>
           <div className="stat-value c-red">{loading ? '--' : rows.length}</div>
-          <div className="stat-sub">弱市吸筹样本</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">最深超跌</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>最深超跌</div>
           <div className="stat-value c-blue">
             {loading ? '--' : (minRet60 != null ? formatWeakBuyPct(minRet60).text : '--')}
           </div>
-          <div className="stat-sub">60日最大跌幅%</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">平均放量天数</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>平均放量天数</div>
           <div className="stat-value c-cyan">
             {loading ? '--' : (avgVolupDays != null ? avgVolupDays.toFixed(1) : '0.0')}
           </div>
-          <div className="stat-sub">弱市放量正收益天数</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">交易标的池命中</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>交易标的池命中</div>
           <div className="stat-value c-gold">{loading ? '--' : rows.filter(row => row.in_pool).length}</div>
-          <div className="stat-sub">当前仍在交易标的池</div>
         </div>
       </div>
 
       <section className="card">
-        <div className="card-header">
-          <span className="card-title">弱市吸筹</span>
-        </div>
-
         {loading ? <div className="page-loading"><div className="spinner" />加载中...</div> : null}
         {!loading && error ? (
           <div className="page-error">
@@ -183,7 +167,7 @@ function WeakBuyTable({ selectedDate, onOpen, listRef }: { selectedDate: string;
 
         {!loading && !error ? (
           <div ref={listRef} className="strategy-list-container">
-          <div className="data-table-shell">
+            <div className="table-shell data-table-shell">
             <table className="data-table">
               <thead>
                 <tr>

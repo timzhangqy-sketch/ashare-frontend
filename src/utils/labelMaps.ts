@@ -1,6 +1,7 @@
 export const SIGNAL_LABEL_MAP: Record<string, string> = {
   BREAKOUT: '突破信号',
   PULLBACK: '回踩确认',
+  HOLD: '持有',
   VOL_CONFIRM: '放量确认',
   REHEAT: '冷却回暖',
   WARN_VR_FADE: '量能衰退',

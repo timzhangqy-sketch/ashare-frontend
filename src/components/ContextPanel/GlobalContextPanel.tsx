@@ -105,12 +105,10 @@ export default function GlobalContextPanel({ panel }: { panel: ContextPanelState
         />
         <StockContextRisk
           status={viewModel?.risk.status ?? (loading ? 'loading' : 'empty')}
-          note={viewModel?.risk.note ?? '风险摘要当前未返回完整结果。'}
           data={viewModel?.risk.data ?? null}
         />
         <StockContextLifecycle
           status={viewModel?.lifecycle.status ?? (loading ? 'loading' : 'empty')}
-          note={viewModel?.lifecycle.note ?? '生命周期当前未返回完整结果。'}
           data={viewModel?.lifecycle.data ?? null}
         />
         <StockContextActions actions={viewModel?.actions ?? payload.actions ?? []} />

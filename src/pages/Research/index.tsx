@@ -4,6 +4,7 @@ import { buildResearchQuery, loadResearchWorkspace } from '../../adapters/resear
 import { buildResearchDetailHref } from '../../adapters/researchDetail'
 import SourceBadge from '../../components/data-source/SourceBadge'
 import SourceNotice from '../../components/data-source/SourceNotice'
+import SourceStrip from '../../components/SourceStrip'
 import { getSourcePanelText, getSourcePanelTitle } from '../../components/data-source/sourceLabels'
 import { useContextPanel } from '../../context/useContextPanel'
 import { useApiData } from '../../hooks/useApiData'
@@ -196,18 +197,15 @@ export default function ResearchPage() {
   return (
     <div className="domain-page research-page" data-testid="research-page">
       <div className="research-overview-strip">
-        {(data?.metrics ?? []).map((metric) => (
-          <article key={metric.label} className="research-summary-card compact stat-card">
-            <div className="stat-label">{metric.label}</div>
-            <div
-              className="stat-value numeric"
-              style={metric.label.includes('聚焦') || metric.label.includes('数据来源') ? { fontSize: 16 } : undefined}
-            >
-              {metric.value}
-            </div>
-            <div className="stat-sub">{metric.helper}</div>
-          </article>
-        ))}
+        {(data?.metrics ?? []).map((metric) => {
+          const isTextKpi = metric.label === '聚焦策略' || metric.label === '数据来源'
+          return (
+            <article key={metric.label} className="research-summary-card compact stat-card">
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>{metric.label}</div>
+              <div className="stat-value numeric" style={isTextKpi ? { fontSize: '16px', fontWeight: 700 } : undefined}>{metric.value}</div>
+            </article>
+          )
+        })}
       </div>
 
       <div className="page-tabs research-tabs">
@@ -223,11 +221,12 @@ export default function ResearchPage() {
         ))}
       </div>
 
+      <SourceStrip meta={activeDataSource} showWhenReal />
+
       <div className="research-layout">
         <section className="card research-main">
           <div className="card-header research-section-header">
             <div className="source-section-head">
-              <span className="card-title">{activeTab?.title ?? TAB_LABELS[query.tab]}</span>
               {!loading && !error ? <SourceNotice meta={activeDataSource} showWhenReal /> : null}
             </div>
             <SourceBadge meta={activeDataSource} showWhenReal />

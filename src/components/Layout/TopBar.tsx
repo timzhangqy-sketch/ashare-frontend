@@ -99,29 +99,17 @@ function StepIcon() {
   );
 }
 
-function getDisplayMeta(pathname: string, title: string, description: string) {
+function getDisplayMeta(pathname: string, title: string) {
   if (pathname.startsWith('/research') || pathname.startsWith('/backtest')) {
-    return {
-      title: '研究中心',
-      description: '聚合回测摘要、因子 IC、归因与共振观察。',
-    };
+    return { title: '研究中心' };
   }
-
   if (pathname.startsWith('/holdings')) {
-    return {
-      title: '持仓中心',
-      description: '兼容入口会自动承接到持仓中心，不改变正式入口语义。',
-    };
+    return { title: '持仓中心' };
   }
-
   if (pathname.startsWith('/system')) {
-    return {
-      title: '系统中心',
-      description: '查看 Pipeline、数据覆盖、接口状态与运行日志。',
-    };
+    return { title: '系统中心' };
   }
-
-  return { title, description };
+  return { title };
 }
 
 export default function TopBar() {
@@ -129,7 +117,7 @@ export default function TopBar() {
   const { selectedDate, setSelectedDate, prevTradingDay, nextTradingDay, isToday } = useDate();
   const { snapshot } = useDashboardRuntime();
   const routeMeta = getRouteMeta(pathname);
-  const displayMeta = getDisplayMeta(pathname, routeMeta.title, routeMeta.description);
+  const displayMeta = getDisplayMeta(pathname, routeMeta.title);
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('ashare-theme') as 'dark' | 'light') ?? 'dark';

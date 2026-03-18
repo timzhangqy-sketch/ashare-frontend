@@ -106,10 +106,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page" data-testid="dashboard-page">
-      <section className="dashboard-hero">
-        <div className="dashboard-hero-actions" />
-      </section>
-
       <SourceSummaryBar meta={viewModel?.dataSource} className="dashboard-source-summary" />
 
       {status === 'error' ? (
@@ -261,7 +257,6 @@ export default function Dashboard() {
         <PortfolioSection data={viewModel?.portfolio} onRetry={handleRetry} status={status} />
         <SystemHealthSection data={viewModel?.systemHealth} onRetry={handleRetry} status={status} />
       </section>
-
     </div>
   );
 }

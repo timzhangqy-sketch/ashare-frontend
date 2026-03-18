@@ -9,11 +9,10 @@ const RISK_LEVEL_MAP: Record<string, string> = {
 
 interface StockContextRiskProps {
   status: ContextPanelLoadStatus;
-  note: string;
   data: StockContextRiskData | null;
 }
 
-export default function StockContextRisk({ status, note: _note, data }: StockContextRiskProps) {
+export default function StockContextRisk({ status, data }: StockContextRiskProps) {
   if (status === 'empty' && !data) return null;
 
   return (

@@ -91,36 +91,28 @@ export default function Retoc2Alert() {
         <>
           <div className="stat-grid">
             <div className="stat-card">
-              <div className="stat-label">今日异动</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>今日异动</div>
               <div className={`stat-value c-gold${loading ? ' loading' : ''}`}>{loading ? '--' : alerts.length}</div>
-              <div className="stat-sub">触发信号</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">A 级信号</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>A 级信号</div>
               <div className={`stat-value c-green${loading ? ' loading' : ''}`}>{loading ? '--' : aCount}</div>
-              <div className="stat-sub">高质量触发</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">平均 ret10%</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>平均 ret10%</div>
               <div className="stat-value" style={{ color: loading ? 'var(--text-muted)' : pnlColor(avgRet10) }}>
                 {loading ? '--' : `${avgRet10 >= 0 ? '+' : ''}${avgRet10.toFixed(2)}%`}
               </div>
-              <div className="stat-sub">10 日均收益</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">10 日最多触发</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>10 日最多触发</div>
               <div className="stat-value" style={{ fontSize: maxBars ? 16 : 24, color: 'var(--accent)' }}>
                 {loading ? '--' : maxBars ? maxBars.name : '--'}
               </div>
-              <div className="stat-sub">{loading || !maxBars ? '' : `${maxBars.total_bars_10} 次`}</div>
             </div>
           </div>
 
           <div className="card">
-            <div className="card-header">
-              <span className="card-title">异动策略列表</span>
-            </div>
-
             {loading && <div className="page-loading"><div className="spinner" />加载中...</div>}
             {!loading && error && (
               <div className="page-error">
@@ -137,6 +129,7 @@ export default function Retoc2Alert() {
             )}
             {!loading && !error && alerts.length > 0 && (
               <div ref={listRef} className="strategy-list-container">
+                <div className="table-shell">
               <table className="data-table">
                 <thead>
                   <tr>
@@ -180,6 +173,7 @@ export default function Retoc2Alert() {
                   ))}
                 </tbody>
               </table>
+                </div>
               </div>
             )}
           </div>

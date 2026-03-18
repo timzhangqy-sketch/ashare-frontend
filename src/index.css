@@ -344,6 +344,9 @@ a { text-decoration: none; color: inherit; }
   flex: 1;
   padding: 10px 0;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .nav-section-label {
@@ -359,8 +362,10 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 12px;
-  margin: 1px 8px;
+  height: 40px;
+  min-height: 40px;
+  padding: 8px 16px;
+  margin: 0 8px;
   border-radius: 5px;
   color: var(--text-secondary);
   text-decoration: none;
@@ -394,14 +399,15 @@ a { text-decoration: none; color: inherit; }
 
 .nav-label-wrap {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .nav-label {
   font-size: 15px;
   font-weight: 500;
-  line-height: 1.2;
+  line-height: 1.4;
   color: #ffffff;
 }
 
@@ -532,6 +538,29 @@ a { text-decoration: none; color: inherit; }
 }
 
 .action-icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ===== Context panel icon buttons ===== */
+.context-kline-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 120ms ease-out;
+}
+
+.context-kline-icon-btn:hover {
+  color: var(--text-primary);
+}
+
+.context-kline-icon-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
   pointer-events: none;
@@ -937,6 +966,49 @@ a { text-decoration: none; color: inherit; }
   font-size: 11px;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+.global-context-risk-summary-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.global-context-risk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 11px;
+  border-radius: 10px;
+  border: 1px solid var(--bg-item-border);
+  background: var(--bg-surface);
+  gap: 8px;
+}
+
+.global-context-risk-row span {
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.global-context-risk-row strong {
+  font-size: 13px;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.risk-level-low {
+  color: var(--up) !important;
+}
+
+.risk-level-medium {
+  color: #e67e22 !important;
+}
+
+.risk-level-high,
+.risk-level-critical {
+  color: #e74c3c !important;
 }
 
 /* ===== Page structure ===== */
@@ -2749,8 +2821,7 @@ a { text-decoration: none; color: inherit; }
 .signals-page {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  min-height: calc(100vh - 48px);
+  height: 100%;
   overflow: hidden;
 }
 
@@ -2860,19 +2931,31 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 0;
 }
 
-.signals-layout {
+.signals-tabs-with-count {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.signals-tabs-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.signals-layout {
   flex: 1;
+  display: flex;
   min-height: 0;
+  overflow: hidden;
 }
 
 .signals-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .signals-summary-grid {
@@ -3008,9 +3091,21 @@ a { text-decoration: none; color: inherit; }
   border-bottom: 1px solid var(--border-default);
 }
 
+.signals-main .card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .strategy-list-container {
-  overflow-y: auto;
   height: calc(100vh - 360px);
+  overflow-y: auto;
+}
+
+.strategy-list-container .table-shell {
+  overflow: visible;
 }
 
 .signals-table-empty-row td {
@@ -3144,6 +3239,13 @@ a { text-decoration: none; color: inherit; }
   letter-spacing: 0.02em;
 }
 
+.signals-table-shell .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-surface);
+}
+
 .signals-table-shell tbody td,
 .signals-list-container tbody td {
   font-size: 13px;
@@ -3187,8 +3289,10 @@ a { text-decoration: none; color: inherit; }
 
 .signals-row-actions-line {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 6px;
+  align-items: center;
 }
 
 .signals-action-btn {
@@ -3573,8 +3677,7 @@ a { text-decoration: none; color: inherit; }
 
 .watchlist-list-container {
   overflow-y: auto;
-  flex: 1;
-  min-height: 0;
+  max-height: calc(100vh - 260px);
 }
 
 .watchlist-loading-state {
@@ -4553,6 +4656,13 @@ a { text-decoration: none; color: inherit; }
   padding: 0 16px 16px;
 }
 
+.portfolio-table-shell .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-surface);
+}
+
 .portfolio-table-row {
   cursor: pointer;
 }
@@ -4766,6 +4876,23 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content.content--risk {
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+.main-area--risk { position: relative; }
+.main-area--risk .page-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  flex-shrink: 0;
 }
 
 .risk-hero {
@@ -4849,32 +4976,43 @@ a { text-decoration: none; color: inherit; }
   margin-bottom: 0;
 }
 
-.risk-page {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-}
-
 .risk-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   flex: 1;
   min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-rows: 1fr;
+  gap: 16px;
+  align-items: stretch;
+  overflow: hidden;
 }
 
 .risk-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  flex: 1;
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.risk-main-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.risk-tab-toolbar {
+  flex-shrink: 0;
+  padding: 8px 16px 0;
 }
 
 .risk-list-container {
-  overflow-y: auto;
   flex: 1;
+  overflow-y: auto;
   min-height: 0;
 }
 
@@ -4887,6 +5025,14 @@ a { text-decoration: none; color: inherit; }
 
 .risk-table-shell {
   padding: 0 16px 16px;
+}
+
+.risk-table-shell .data-table th,
+.risk-list-container .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-surface);
 }
 
 .risk-table-row {
@@ -5195,7 +5341,8 @@ a { text-decoration: none; color: inherit; }
 .research-page {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  height: 100%;
+  overflow: hidden;
 }
 
 .research-hero {
@@ -5294,13 +5441,22 @@ a { text-decoration: none; color: inherit; }
 }
 
 .research-layout {
+  flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 280px;
+  grid-template-rows: 1fr;
   gap: 12px;
-  align-items: start;
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
 }
 
 .research-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
   min-width: 0;
 }
 
@@ -5308,13 +5464,30 @@ a { text-decoration: none; color: inherit; }
   min-width: 0;
 }
 
+.research-main .card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .research-list-container {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  height: calc(100vh - 360px);
 }
 
 .research-table-shell {
   padding: 0 16px 16px;
+}
+
+.research-table-shell .data-table th,
+.research-list-container .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-surface);
 }
 
 .research-stack {
@@ -7397,6 +7570,32 @@ textarea:focus-visible {
   box-shadow: var(--shadow-sm);
 }
 
+.signals-table-shell,
+.watchlist-table-shell,
+.portfolio-table-shell {
+  overflow: visible;
+}
+
+/* 策略专页表格 sticky 表头（及使用 .table-shell 的页面） */
+.table-shell:not(.signals-table-shell):not(.watchlist-table-shell):not(.portfolio-table-shell) {
+  overflow: clip;
+  overflow-clip-margin: content-box;
+}
+
+.table-shell .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-surface);
+}
+
+.strategy-list-container .data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-surface);
+}
+
 .table-empty,
 .signals-table-empty-row td,
 .watchlist-table-empty-row td,
@@ -7771,8 +7970,10 @@ textarea {
 }
 
 .nav-item {
-  margin: 2px 10px;
-  padding: 10px 12px;
+  margin: 0 10px;
+  height: 40px;
+  min-height: 40px;
+  padding: 8px 16px;
   border-radius: var(--radius-md);
 }
 
@@ -8452,7 +8653,7 @@ textarea {
 }
 
 .nav-section-label-spaced {
-  margin-top: var(--space-3);
+  margin-top: 12px;
 }
 
 .theme-btn::before {
@@ -8547,25 +8748,36 @@ textarea {
   align-self: flex-start !important;
 }
 
-/* ── UI 优化 v2：KPI 标签色统一为灰色 ── */
-.stat-label {
-  color: var(--text-muted) !important;
-  font-weight: 400 !important;
+.global-context-risk-summary-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  width: 100% !important;
 }
 
-/* ── UI 优化 v2：stat-card 描述文字隐藏 ── */
-.stat-sub {
-  display: none !important;
+.global-context-risk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 5px;
+  font-size: 12px;
 }
 
-/* ── UI 优化 v2：策略专页 sticky 表头 ── */
-.strategy-list-container {
-  max-height: calc(100vh - 300px);
-  overflow-y: auto;
+.risk-row-label {
+  color: var(--text-secondary);
+  font-weight: 400;
 }
-.strategy-list-container .data-table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--bg-surface);
+
+.risk-row-value {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 13px;
 }
+
+.risk-level-low { color: var(--source-real) !important; }
+.risk-level-medium { color: var(--warn) !important; }
+.risk-level-high { color: var(--critical) !important; }
+.risk-level-critical { color: var(--critical) !important; }

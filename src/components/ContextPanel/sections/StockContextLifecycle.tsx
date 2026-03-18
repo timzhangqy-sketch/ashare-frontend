@@ -12,11 +12,10 @@ const POSITION_STATUS_MAP: Record<string, string> = {
 
 interface StockContextLifecycleProps {
   status: ContextPanelLoadStatus;
-  note: string;
   data: StockContextLifecycleData | null;
 }
 
-export default function StockContextLifecycle({ status, note: _note, data }: StockContextLifecycleProps) {
+export default function StockContextLifecycle({ status, data }: StockContextLifecycleProps) {
   if (status === 'empty' && !data) return null;
 
   return (

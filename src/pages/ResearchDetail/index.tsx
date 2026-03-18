@@ -34,12 +34,6 @@ const DETAIL_KIND_LABELS: Record<ResearchDetailRouteTab, string> = {
   resonance: '共振详情',
 }
 
-function chartStatusLabel(status: 'real' | 'fallback' | 'placeholder') {
-  if (status === 'real') return '真实数据'
-  if (status === 'fallback') return '兼容结果'
-  return '占位内容'
-}
-
 function formatChartNumber(value: number | null | undefined) {
   return typeof value === 'number' && Number.isFinite(value) ? value.toFixed(2) : '--'
 }
@@ -144,7 +138,6 @@ function ChartCard({
     <section className="card">
       <div className="card-header">
         <span className="card-title">{title}</span>
-        <span className={`research-chart-badge is-${status}`}>{chartStatusLabel(status)}</span>
       </div>
       <div className={`research-detail-chart-shell is-${status}`}>
         <div className="research-detail-chart-copy">{description}</div>

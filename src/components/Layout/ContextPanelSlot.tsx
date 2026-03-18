@@ -27,16 +27,10 @@ export default function ContextPanelSlot() {
     return <GlobalContextPanel panel={panel} />;
   }
 
-  // 这些工作域不展示右侧占位面板，仅保留全局 ContextPanel（选中行时由 openPanel 打开）
-  if (
-    pathname.startsWith('/execution')
-    || pathname.startsWith('/system')
-    || pathname.startsWith('/dashboard')
-    || pathname.startsWith('/research')
-    || pathname.startsWith('/ignition')
-    || pathname.startsWith('/retoc2')
-    || pathname.startsWith('/pattern')
-  ) {
+  // Dashboard、模拟执行页、研究中心、系统监控页、策略页（能量蓄势/异动/形态）不展示右侧占位面板
+  if (pathname === '/dashboard' || pathname.startsWith('/dashboard')
+      || pathname.startsWith('/execution') || pathname.startsWith('/research') || pathname.startsWith('/system')
+      || pathname.startsWith('/ignition') || pathname.startsWith('/retoc2') || pathname.startsWith('/pattern')) {
     return null;
   }
 

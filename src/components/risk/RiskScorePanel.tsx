@@ -1,5 +1,19 @@
-import type { RiskScoreRow } from '../../types/risk';
 import { PieChart } from 'lucide-react';
+import type { CSSProperties } from 'react';
+import type { RiskScoreRow } from '../../types/risk';
+
+const iconBtnStyle: CSSProperties = {
+  background: 'rgba(59,130,246,0.10)',
+  color: '#3B82F6',
+  border: 'none',
+  borderRadius: 4,
+  padding: '4px 6px',
+  cursor: 'pointer',
+  marginRight: 4,
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
 
 interface RiskScorePanelProps {
   rows: RiskScoreRow[];
@@ -67,15 +81,8 @@ export default function RiskScorePanel({
                 </td>
                 <td>
                   <div>{row.riskLevelLabel}</div>
-                  <div className="risk-inline-actions">
-                    <button
-                      type="button"
-                      title="查看拆解"
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}
-                      onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }}
-                    >
-                      <PieChart size={16} />
-                    </button>
+                  <div className="risk-inline-actions" style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }} title="查看拆解"><PieChart size={15} /></button>
                     <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenWatchlist(row.watchlistHref); }}>交易标的池</button>
                     <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenPortfolio(row.portfolioHref); }}>持仓</button>
                   </div>

@@ -8,8 +8,8 @@ import {
   loadRiskWorkspace,
 } from '../../adapters/risk';
 import SourceBadge from '../../components/data-source/SourceBadge';
-import SourceNotice from '../../components/data-source/SourceNotice';
 import RiskBreakdownPanel from '../../components/risk/RiskBreakdownPanel';
+import RiskContextPanel from '../../components/risk/RiskContextPanel';
 import RiskEventFlowPanel from '../../components/risk/RiskEventFlowPanel';
 import GateBlockPanel from '../../components/risk/GateBlockPanel';
 import RiskOverviewStrip from '../../components/risk/RiskOverviewStrip';
@@ -21,6 +21,14 @@ import { useApiData } from '../../hooks/useApiData';
 import type { StockContextPanelPayload } from '../../types/contextPanel';
 import type { RiskDomainModel, RiskTab } from '../../types/risk';
 import { buildResearchHref } from '../../utils/researchHandoff';
+
+interface RiskActionVm {
+  key: string;
+  label: string;
+  enabled: boolean;
+  note: string;
+  href: string | null;
+}
 
 function buildSourceBackHref(source: string, focus: string | null, scope: string, strategy: string | null): string | null {
   if (source === 'dashboard') return '/dashboard';
@@ -239,6 +247,74 @@ export default function RiskPage() {
     navigate(href);
   };
 
+  const contextActions: RiskActionVm[] = useMemo(() => {
+    const focus = activeDomain?.tsCode ?? queryState.focus;
+    const strategy = activeDomain?.sourceStrategy ?? null;
+    return [
+      {
+        key: 'back',
+        label: '返回来源',
+        enabled: queryState.source !== 'direct',
+        note: '回到当前对象的来源页面。',
+        href: buildSourceBackHref(queryState.source, focus, queryState.scope, strategy),
+      },
+      {
+        key: 'watchlist',
+        label: '进入交易标的池',
+        enabled: Boolean(activeDomain?.inWatchlist),
+        note: '查看该对象在交易标的池中的状态。',
+        href: activeDomain?.inWatchlist ? `/watchlist?source=risk&focus=${encodeURIComponent(activeDomain.tsCode)}&view=table` : null,
+      },
+      {
+        key: 'portfolio',
+        label: '进入持仓中心',
+        enabled: Boolean(activeDomain?.inPortfolio),
+        note: '查看该对象在持仓中的状态。',
+        href: activeDomain?.inPortfolio ? `/portfolio?source=risk&focus=${encodeURIComponent(activeDomain.tsCode)}` : null,
+      },
+      {
+        key: 'signals',
+        label: '进入策略页',
+        enabled: Boolean(activeDomain?.sourceStrategy),
+        note: '回到该对象的策略来源页。',
+        href: activeDomain?.sourceStrategy ? `/signals?source=risk&focus=${encodeURIComponent(activeDomain.tsCode)}` : null,
+      },
+      {
+        key: 'research',
+        label: '进入研究中心',
+        enabled: true,
+        note: '查看该对象的研究承接。',
+        href: activeDomain
+          ? buildResearchHref({
+              source: 'risk',
+              focus: activeDomain.tsCode,
+              strategy: activeDomain.sourceStrategy,
+              riskLevel: activeDomain.riskLevel,
+              tradeDate: activeDomain.tradeDate ?? selectedDate,
+              detailRoute: activeDomain.sourceStrategy ? 'backtest' : null,
+              detailKey: activeDomain.sourceStrategy,
+            })
+          : null,
+      },
+      {
+        key: 'execution',
+        label: '进入执行中心',
+        enabled: Boolean(activeDomain),
+        note: '查看该对象的执行约束承接。',
+        href: activeDomain
+          ? `/execution?tab=constraints&source=risk&focus=${encodeURIComponent(activeDomain.tsCode)}${activeDomain.sourceStrategy ? `&strategy=${encodeURIComponent(activeDomain.sourceStrategy)}` : ''}`
+          : null,
+      },
+      {
+        key: 'system',
+        label: '进入系统中心',
+        enabled: true,
+        note: '查看系统运行与日志状态。',
+        href: '/system?source=risk&tab=runlog',
+      },
+    ];
+  }, [activeDomain, queryState.focus, queryState.scope, queryState.source, selectedDate]);
+
   return (
     <div className="risk-page" data-testid="risk-page">
       <RiskOverviewStrip metrics={data?.metrics ?? []} />
@@ -247,17 +323,10 @@ export default function RiskPage() {
 
       <div className="risk-layout">
         <div className="risk-main">
-          <section className="card">
-            <div className="card-header">
-              <div className="source-card-head">
-                <span className="card-title">{data?.tabs[queryState.tab].title ?? '风险视图'}</span>
-              </div>
-              <SourceBadge meta={activeDataSource} showWhenReal />
-            </div>
-
+          <section className="card risk-main-card">
             {!loading && !error ? (
-              <div className="card-body" style={{ paddingTop: 12, paddingBottom: 0 }}>
-                <SourceNotice meta={activeDataSource} showWhenReal />
+              <div className="risk-tab-toolbar">
+                <SourceBadge meta={activeDataSource} showWhenReal />
               </div>
             ) : null}
 
@@ -325,6 +394,15 @@ export default function RiskPage() {
           </section>
         </div>
 
+        <aside className="risk-context">
+          <RiskContextPanel
+            context={context}
+            actions={contextActions}
+            onAction={(action) => openHref(action.href, action.note)}
+            noFocusTitle="等待选择对象"
+            noFocusText="从左侧主表中选择一个对象后，这里会展示来源、Gate 结论、分项得分和下一步动作。"
+          />
+        </aside>
       </div>
     </div>
   );

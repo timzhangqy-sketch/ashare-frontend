@@ -103,6 +103,16 @@ export interface StockContextMainData {
   sourceStrategy: string | null;
   buySignal: string | null;
   sellSignal: string | null;
+  open?: number | null;
+  high?: number | null;
+  low?: number | null;
+  ma5?: number | null;
+  ma10?: number | null;
+  ma20?: number | null;
+  vr?: number | null;
+  peTtm?: number | null;
+  pb?: number | null;
+  totalMvYi?: number | null;
 }
 
 export interface StockContextKlineData {

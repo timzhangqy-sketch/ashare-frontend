@@ -39,13 +39,6 @@ const BEAR_POOL = [
   '交易层面仍需结合风控约束执行。',
 ]
 
-const RISK_LEVEL_MAP: Record<string, string> = {
-  low: '低风险',
-  medium: '中风险',
-  high: '高风险',
-  critical: '极高风险',
-}
-
 function seed(code: string, offset = 0): number {
   let hash = offset * 7919
   for (const char of code) hash = ((hash << 5) - hash + char.charCodeAt(0)) & 0x7fffffff
@@ -357,7 +350,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
   const closeValue = main?.close ?? detail?.close ?? stock?.close ?? 0
   const changePct = main?.pctChg ?? detail?.pct_chg ?? stock?.changePct ?? 0
   const pctClass = changePct > 0 ? 'c-up' : changePct < 0 ? 'c-down' : 'c-muted'
-  const realVr = detail?.vr ?? null
+  const realVr = detail?.vr ?? main?.vr ?? null
   const buyAmount = (parseFloat(buyPrice) || 0) * (parseInt(buyShares) || 0)
   const poolDay = lifecycle?.poolDay ?? detail?.watchlist_pool_day ?? null
   const watchlistGain = lifecycle?.gainSinceEntry ?? detail?.watchlist_gain_since_entry ?? null
@@ -551,32 +544,32 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
                       <span>正在加载风险信息...</span>
                     </div>
                   ) : risk ? (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', width: '100%' }}>
-                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>交易限制</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{risk.tradeAllowed == null ? '--' : risk.tradeAllowed ? '允许交易' : '限制交易'}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                      <div style={{ padding: '10px 12px', background: 'var(--bg-surface)', borderRadius: '6px', border: '1px solid var(--border-default)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>交易限制</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600 }}>{risk.tradeAllowed == null ? '--' : risk.tradeAllowed ? '允许执行' : '限制交易'}</div>
                       </div>
-                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>风险等级</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700 }} className={risk.riskLevel ? `risk-level-${risk.riskLevel}` : ''}>
-                          {RISK_LEVEL_MAP[risk.riskLevel ?? ''] ?? risk.riskLevel ?? '--'}
+                      <div style={{ padding: '10px 12px', background: 'var(--bg-surface)', borderRadius: '6px', border: '1px solid var(--border-default)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>风险等级</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600, color: risk.riskLevel === 'low' ? 'var(--up)' : risk.riskLevel === 'medium' ? 'var(--warning)' : risk.riskLevel === 'high' || risk.riskLevel === 'critical' ? 'var(--down)' : 'inherit' }}>
+                          {risk.riskLevel === 'low' ? '低风险' : risk.riskLevel === 'medium' ? '中风险' : risk.riskLevel === 'high' ? '高风险' : risk.riskLevel === 'critical' ? '极高风险' : risk.riskLevel ?? '--'}
                         </div>
                       </div>
-                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>风险总分</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{risk.riskScoreTotal != null ? risk.riskScoreTotal.toFixed(1) : '--'}</div>
+                      <div style={{ padding: '10px 12px', background: 'var(--bg-surface)', borderRadius: '6px', border: '1px solid var(--border-default)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>风险总分</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600 }} className="numeric">{risk.riskScoreTotal != null ? risk.riskScoreTotal.toFixed(1) : '--'}</div>
                       </div>
-                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>仓位上限系数</div>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{risk.capMultiplier != null ? `${risk.capMultiplier.toFixed(2)}x` : '--'}</div>
+                      <div style={{ padding: '10px 12px', background: 'var(--bg-surface)', borderRadius: '6px', border: '1px solid var(--border-default)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>仓位上限系数</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600 }} className="numeric">{risk.capMultiplier != null ? `${risk.capMultiplier.toFixed(2)}x` : '--'}</div>
                       </div>
-                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>阻断原因</div>
-                        <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>{risk.blockReason ?? '--'}</div>
+                      <div style={{ padding: '10px 12px', background: 'var(--bg-surface)', borderRadius: '6px', border: '1px solid var(--border-default)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>阻断原因</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600 }}>{risk.blockReason ?? '--'}</div>
                       </div>
-                      <div style={{ padding: '8px 10px', background: 'var(--bg-surface)', borderRadius: '5px', border: '1px solid var(--border-subtle)' }}>
-                        <div style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: '4px' }}>阻断来源</div>
-                        <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)' }}>{risk.blockSource ?? '--'}</div>
+                      <div style={{ padding: '10px 12px', background: 'var(--bg-surface)', borderRadius: '6px', border: '1px solid var(--border-default)' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px' }}>阻断来源</div>
+                        <div style={{ fontSize: '13px', fontWeight: 600 }}>{risk.blockSource ?? '--'}</div>
                       </div>
                     </div>
                   ) : (
@@ -685,25 +678,25 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
                   ) : (
                     <>
                       <div className="drawer-info-grid drawer-info-grid-4">
-                        <InfoItem label="MA5" value={formatNumber(detail?.ma5)} numeric />
-                        <InfoItem label="MA10" value={formatNumber(detail?.ma10)} numeric />
-                        <InfoItem label="MA20" value={formatNumber(detail?.ma20)} numeric />
+                        <InfoItem label="MA5" value={formatNumber(detail?.ma5 ?? main?.ma5)} numeric />
+                        <InfoItem label="MA10" value={formatNumber(detail?.ma10 ?? main?.ma10)} numeric />
+                        <InfoItem label="MA20" value={formatNumber(detail?.ma20 ?? main?.ma20)} numeric />
                         <InfoItem label="VR" value={realVr != null ? `${formatNumber(realVr)}x` : '--'} numeric />
-                        <InfoItem label="换手率" value={detail?.turnover_rate != null ? `${formatNumber(detail.turnover_rate)}%` : '--'} numeric />
-                        <InfoItem label="成交额(亿)" value={formatYi(detail?.amount_yi ?? null)} numeric />
+                        <InfoItem label="换手率" value={(detail?.turnover_rate ?? main?.turnoverRate) != null ? `${formatNumber(detail?.turnover_rate ?? main?.turnoverRate)}%` : '--'} numeric />
+                        <InfoItem label="成交额(亿)" value={formatYi(detail?.amount_yi ?? main?.amountYi ?? null)} numeric />
                         <InfoItem label="涨跌幅" value={formatPercent(changePct)} numeric />
                         <InfoItem label="最新价" value={formatNumber(closeValue)} numeric />
                       </div>
-                      {detail ? (
+                      {(detail || main) ? (
                         <div className="drawer-info-grid drawer-info-grid-4 drawer-subgrid">
-                          <InfoItem label="开盘价" value={formatNumber(detail.open)} numeric />
-                          <InfoItem label="最高价" value={formatNumber(detail.high)} numeric />
-                          <InfoItem label="最低价" value={formatNumber(detail.low)} numeric />
-                          <InfoItem label="总市值(亿)" value={formatYi(detail.market_cap_yi, 1)} numeric />
-                          <InfoItem label="PE(TTM)" value={detail.pe_ttm != null ? formatNumber(detail.pe_ttm, 1) : '--'} numeric={detail.pe_ttm != null} />
-                          <InfoItem label="PB" value={formatNumber(detail.pb)} numeric />
-                          <InfoItem label="行业" value={detail.industry ?? '--'} />
-                          <InfoItem label="上市日期" value={detail.list_date ?? '--'} numeric />
+                          <InfoItem label="开盘价" value={formatNumber(detail?.open ?? main?.open)} numeric />
+                          <InfoItem label="最高价" value={formatNumber(detail?.high ?? main?.high)} numeric />
+                          <InfoItem label="最低价" value={formatNumber(detail?.low ?? main?.low)} numeric />
+                          <InfoItem label="总市值(亿)" value={formatYi(detail?.market_cap_yi ?? main?.totalMvYi ?? null, 1)} numeric />
+                          <InfoItem label="PE(TTM)" value={(detail?.pe_ttm ?? main?.peTtm) != null ? formatNumber(detail?.pe_ttm ?? main?.peTtm, 1) : '--'} numeric={(detail?.pe_ttm ?? main?.peTtm) != null} />
+                          <InfoItem label="PB" value={formatNumber(detail?.pb ?? main?.pb)} numeric />
+                          <InfoItem label="行业" value={detail?.industry ?? main?.industry ?? '--'} />
+                          <InfoItem label="上市日期" value={detail?.list_date ?? '--'} numeric />
                         </div>
                       ) : (
                         <div className="drawer-inline-note">当前没有可展示的技术扩展字段。</div>

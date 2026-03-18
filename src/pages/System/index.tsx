@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom'
 import {
   buildSystemFocusQueryPatch,
   getSystemRows,
-  getSystemTabTitle,
   loadSystemWorkspace,
 } from '../../adapters/system'
 import SourceBadge from '../../components/data-source/SourceBadge'
@@ -133,31 +132,14 @@ export default function SystemPage() {
   const unsupportedText = getSourcePanelText(activeDataSource) ?? viewModel.unsupportedState.description
 
   return (
-    <div
-      className="domain-page system-page"
-      data-testid="system-page"
-      style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
-    >
-
+    <div className="domain-page system-page" data-testid="system-page">
       <section className="system-metrics">
-        {(() => {
-          const KPI_LABEL_SET = new Set(['流程步骤', '数据覆盖', '接口健康', '版本快照'])
-          return viewModel.metrics.map((metric) => (
-            <article key={metric.key} className="system-metric-card stat-card">
-              <span
-                style={
-                  KPI_LABEL_SET.has(metric.label)
-                    ? { fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }
-                    : undefined
-                }
-              >
-                {metric.label}
-              </span>
-              <strong className="numeric">{metric.value}</strong>
-              {KPI_LABEL_SET.has(metric.label) ? null : <p>{metric.note}</p>}
-            </article>
-          ))
-        })()}
+        {viewModel.metrics.map((metric) => (
+          <article key={metric.key} className="system-metric-card stat-card">
+            <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>{metric.label}</span>
+            <strong className="numeric">{metric.value}</strong>
+          </article>
+        ))}
       </section>
 
       <section className="page-tabs system-tabs">
@@ -173,17 +155,16 @@ export default function SystemPage() {
         ))}
       </section>
 
-      <section className="system-workspace" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-        <div className="system-main card" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+      <section className="system-workspace">
+        <div className="system-main card">
           <div className="card-header section-header system-section-header">
             <div className="source-section-head">
-              <h2>{getSystemTabTitle(viewModel.query.tab)}</h2>
               <SourceNotice meta={activeDataSource} showWhenReal />
             </div>
             <SourceBadge meta={activeDataSource} showWhenReal />
           </div>
 
-          <div className="card-body" style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+          <div className="card-body">
             {error ? <div className="page-banner warning">{error}</div> : null}
 
             {viewModel.dataState === 'unsupported' ? (
@@ -197,7 +178,7 @@ export default function SystemPage() {
                 <p>{emptyStateText}</p>
               </div>
             ) : (
-              <div ref={listRef} className="system-list-container" style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+              <div ref={listRef} className="system-list-container">
               <div className="system-list">
                 {rows.map((row) => {
                   const metaItems = getRowMeta(row)
@@ -262,7 +243,6 @@ export default function SystemPage() {
             )}
           </div>
         </div>
-
       </section>
     </div>
   )

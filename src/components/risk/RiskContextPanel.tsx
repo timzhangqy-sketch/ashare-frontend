@@ -25,12 +25,6 @@ export default function RiskContextPanel({
 }: RiskContextPanelProps) {
   return (
     <section className="card risk-context-card">
-      <div className="card-header">
-        <span className="card-title">右侧上下文</span>
-        <span className="card-subtitle">
-          {context ? '查看当前风险对象的来源、Gate 结论、分项得分与推荐动作。' : '选择一个对象后查看风险上下文。'}
-        </span>
-      </div>
       <div className="risk-context-body">
         {context ? (
           <>

@@ -96,30 +96,19 @@ const ICONS: Record<NavIconKey, () => React.JSX.Element> = {
   legacy: IconLegacy,
 };
 
-function getItemCopy(item: AppRouteDefinition) {
-  return {
-    label: item.label,
-    description: item.description,
-  };
-}
-
 function NavItemLink({ item }: { item: AppRouteDefinition }) {
   const Icon = ICONS[item.icon ?? 'legacy'];
-  const copy = getItemCopy(item);
   const isLegacyHidden = item.key === 'holdings' || item.key === 'backtest';
 
   return (
     <NavLink
       to={item.path}
       className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
-      style={() => ({
-        ...(isLegacyHidden ? { display: 'none' } : null),
-        padding: '8px 16px',
-      })}
+      style={isLegacyHidden ? { display: 'none' } : undefined}
     >
       <span className="nav-icon"><Icon /></span>
       <span className="nav-label-wrap">
-        <span className="nav-label">{copy.label}</span>
+        <span className="nav-label">{item.label}</span>
       </span>
     </NavLink>
   );

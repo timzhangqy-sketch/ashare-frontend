@@ -35,6 +35,8 @@ interface ContextStockResp {
     quote?: {
       close?: number; open?: number; high?: number; low?: number;
       pct_chg?: number; turnover_rate?: number; amount_yi?: number;
+      ma5?: number; ma10?: number; ma20?: number; vr?: number;
+      pe_ttm?: number; pb?: number; total_mv_yi?: number;
       vol?: number; amount?: number;
     };
     watchlist_context?: {
@@ -58,9 +60,9 @@ function mapContextToDetail(raw: ContextStockResp, tsCode: string): StockDetailR
     industry: b.industry ?? null,
     is_st: b.is_st ?? false,
     list_date: b.list_date ?? null,
-    market_cap_yi: null,
-    pe_ttm: null,
-    pb: null,
+    market_cap_yi: q.total_mv_yi ?? null,
+    pe_ttm: q.pe_ttm ?? null,
+    pb: q.pb ?? null,
     turnover_rate: q.turnover_rate ?? null,
     close: q.close ?? null,
     open: q.open ?? null,
@@ -68,10 +70,10 @@ function mapContextToDetail(raw: ContextStockResp, tsCode: string): StockDetailR
     low: q.low ?? null,
     pct_chg: q.pct_chg != null ? q.pct_chg * 100 : null,
     amount_yi: q.amount_yi ?? null,
-    ma5: null,
-    ma10: null,
-    ma20: null,
-    vr: null,
+    ma5: q.ma5 ?? null,
+    ma10: q.ma10 ?? null,
+    ma20: q.ma20 ?? null,
+    vr: q.vr ?? null,
     above_ma20_days: 0,
     in_watchlist: w.in_watchlist ?? false,
     watchlist_strategy: d.strategies?.source_strategy_primary,

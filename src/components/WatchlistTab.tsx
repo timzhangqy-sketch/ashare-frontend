@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { getMockDetail } from '../utils/score';
 import { useApiData } from '../hooks/useApiData';
 import { fetchWatchlist, type WatchlistItem } from '../api';
 import type { StockDetail } from '../types/stock';
 import { CrossTags } from './CrossTags';
 import { getStrategyDisplayName } from '../utils/displayNames';
-import { ArrowRight } from 'lucide-react';
 
 const SIGNAL_CFG: Record<string, string> = {
   PULLBACK: 'status-badge source-badge source-badge-info',
@@ -146,31 +146,24 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
     <div>
       <div className="stat-grid">
         <div className="stat-card">
-          <div className="stat-label">{isRetoc2 ? '交易标的池信号' : '候选数量'}</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>{isRetoc2 ? '交易标的池信号' : '候选数量'}</div>
           <div className={`stat-value numeric c-cyan${loading ? ' loading' : ''}`}>{loading ? '--' : items.length}</div>
-          <div className="stat-sub">当前策略下的交易标的池候选</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">买入信号</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>买入信号</div>
           <div className={`stat-value numeric c-red${loading ? ' loading' : ''}`}>{loading ? '--' : buyCount}</div>
-          <div className="stat-sub">可继续承接的候选</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">卖出信号</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>卖出信号</div>
           <div className={`stat-value numeric c-green${loading ? ' loading' : ''}`}>{loading ? '--' : sellCount}</div>
-          <div className="stat-sub">需重点关注的退出提示</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label">数据来源</div>
-          <div className="stat-value" style={{ fontSize: 14, color: 'var(--text-muted)', paddingTop: 4 }}>真实数据</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>数据来源</div>
+          <div className="stat-value" style={{ fontSize: '16px', fontWeight: 700 }}>真实数据</div>
         </div>
       </div>
 
       <div className="card">
-        <div className="card-header">
-          <span className="card-title">交易标的池列表</span>
-        </div>
-
         {loading ? <div className="page-loading"><div className="spinner" />正在加载...</div> : null}
         {!loading && error ? (
           <div className="page-error">
@@ -252,19 +245,8 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                       <td className="center"><SignalBadge label={s.buy_signal} /></td>
                       <td className="center"><SignalBadge label={s.sell_signal} /></td>
                       <td className="center" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          type="button"
-                          title="承接"
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: 'var(--text-muted)',
-                            padding: '4px',
-                          }}
-                          onClick={() => (onBuy ?? onOpen)(detail)}
-                        >
-                          <ArrowRight size={16} />
+                        <button type="button" title="承接" style={{ background: 'rgba(59,130,246,0.10)', color: '#3B82F6', border: 'none', borderRadius: '4px', padding: '4px 6px', cursor: 'pointer' }} onClick={() => (onBuy ?? onOpen)(detail)}>
+                          <ArrowRight size={15} />
                         </button>
                       </td>
                     </tr>

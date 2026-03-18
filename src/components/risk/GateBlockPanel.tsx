@@ -1,5 +1,19 @@
-import type { GateBlockRow } from '../../types/risk';
 import { ArrowLeft, PieChart } from 'lucide-react';
+import type { CSSProperties } from 'react';
+import type { GateBlockRow } from '../../types/risk';
+
+const iconBtnStyle: CSSProperties = {
+  background: 'rgba(59,130,246,0.10)',
+  color: '#3B82F6',
+  border: 'none',
+  borderRadius: 4,
+  padding: '4px 6px',
+  cursor: 'pointer',
+  marginRight: 4,
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
 
 interface GateBlockPanelProps {
   rows: GateBlockRow[];
@@ -62,23 +76,9 @@ export default function GateBlockPanel({
                 <td>{row.blockSource}</td>
                 <td>
                   <div>{row.suggestion}</div>
-                  <div className="risk-inline-actions">
-                    <button
-                      type="button"
-                      title="查看拆解"
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}
-                      onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }}
-                    >
-                      <PieChart size={16} />
-                    </button>
-                    <button
-                      type="button"
-                      title="返回来源"
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}
-                      onClick={(event) => { event.stopPropagation(); onOpenSource(row.sourceHref); }}
-                    >
-                      <ArrowLeft size={16} />
-                    </button>
+                  <div className="risk-inline-actions" style={{ display: 'flex', gap: 4 }}>
+                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }} title="查看拆解"><PieChart size={15} /></button>
+                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenSource(row.sourceHref); }} title="返回来源"><ArrowLeft size={15} /></button>
                   </div>
                 </td>
               </tr>

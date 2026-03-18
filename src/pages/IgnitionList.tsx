@@ -77,33 +77,20 @@ export default function IgnitionList() {
         <>
           <div className="stat-grid">
             <div className="stat-card">
-              <div className="stat-label">今日入选</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>今日入选</div>
               <div className={`stat-value c-red${loading ? ' loading' : ''}`}>{loading ? '--' : rows.length}</div>
-              <div className="stat-sub">连续放量蓄势今日新入选</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">买入信号</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>买入信号</div>
               <div className={`stat-value c-gold${loading ? ' loading' : ''}`}>{loading ? '--' : buySignalCount}</div>
-              <div className="stat-sub">可继续承接的候选</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">卖出信号</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>卖出信号</div>
               <div className={`stat-value c-green${loading ? ' loading' : ''}`}>{loading ? '--' : sellSignalCount}</div>
-              <div className="stat-sub">需重点关注的退出提示</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">数据来源</div>
-              <div className="stat-value" style={{ fontSize: 14, color: 'var(--text-muted)', paddingTop: 4 }}>
-                真实数据
-              </div>
             </div>
           </div>
 
           <div className="card">
-            <div className="card-header">
-              <span className="card-title">能量蓄势候选列表</span>
-            </div>
-
             {loading && <div className="page-loading"><div className="spinner" />加载中...</div>}
             {!loading && error && (
               <div className="page-error">
@@ -120,6 +107,7 @@ export default function IgnitionList() {
             )}
             {!loading && !error && rows.length > 0 && (
               <div ref={listRef} className="strategy-list-container">
+                <div className="table-shell">
               <table className="data-table">
                 <thead>
                   <tr>
@@ -166,6 +154,7 @@ export default function IgnitionList() {
                   ))}
                 </tbody>
               </table>
+                </div>
               </div>
             )}
           </div>

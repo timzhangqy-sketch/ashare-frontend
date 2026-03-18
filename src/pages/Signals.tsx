@@ -521,10 +521,7 @@ function RowActionGroup({ actions, detailOpenTestId }: { actions: SignalsActionV
 
   return (
     <div className="signals-row-actions">
-      <div
-        className="signals-row-actions-line"
-        style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', gap: 6, alignItems: 'center' }}
-      >
+      <div className="signals-row-actions-line">
         {primaryActions.map(({ action, variant }, index) => (
           <ActionButton
             key={`${action.label}-${action.kind}-${variant}`}
@@ -901,26 +898,27 @@ export default function Signals() {
         </section>
       ) : null}
 
-      <div className="page-tabs signals-tabs">
-        {signalsTabOrder.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            className={`page-tab-btn${activeTab === tab ? ' active' : ''}`}
-            onClick={() => handleTabChange(tab)}
-          >
-            {workspace?.tabs[tab].label ?? tab}
-          </button>
-        ))}
+      <div className="page-tabs signals-tabs signals-tabs-with-count">
+        <div className="signals-tabs-buttons">
+          {signalsTabOrder.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              className={`page-tab-btn${activeTab === tab ? ' active' : ''}`}
+              onClick={() => handleTabChange(tab)}
+            >
+              {workspace?.tabs[tab].label ?? tab}
+            </button>
+          ))}
+        </div>
         {!loading && !error && activeVm ? (
-          <div style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontSize: 12 }}>
-            共 {activeRows.length} 条
-          </div>
+          <div className="signals-tabs-count">共 {activeRows.length} 条</div>
         ) : null}
       </div>
 
       <div className="signals-layout">
         <div className="signals-main">
+
           {loading ? (
             <section className="card">
               <div className="signals-loading-state">

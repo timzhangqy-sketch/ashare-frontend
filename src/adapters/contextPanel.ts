@@ -60,7 +60,12 @@ function toSignedPercent(value: number | null | undefined) {
   return `${value > 0 ? '+' : ''}${value.toFixed(2)}%`
 }
 
-function normalizeMain(detail: StockDetailResp | null, payload: StockContextPanelPayload, tsCode: string): StockContextMainData | null {
+function normalizeMain(
+  detail: StockDetailResp | null,
+  payload: StockContextPanelPayload,
+  tsCode: string,
+  quote: any = null,
+): StockContextMainData | null {
   if (!detail && !payload.tsCode) return null
   return {
     tsCode,
@@ -74,6 +79,16 @@ function normalizeMain(detail: StockDetailResp | null, payload: StockContextPane
     sourceStrategy: payload.sourceStrategy ?? detail?.watchlist_strategy ?? null,
     buySignal: detail?.watchlist_buy_signal ?? null,
     sellSignal: detail?.watchlist_sell_signal ?? null,
+    open: quote?.open ?? null,
+    high: quote?.high ?? null,
+    low: quote?.low ?? null,
+    ma5: quote?.ma5 ?? null,
+    ma10: quote?.ma10 ?? null,
+    ma20: quote?.ma20 ?? null,
+    vr: quote?.vr ?? null,
+    peTtm: quote?.pe_ttm ?? null,
+    pb: quote?.pb ?? null,
+    totalMvYi: quote?.total_mv_yi ?? null,
   }
 }
 
@@ -202,7 +217,7 @@ export async function loadStockContextViewModel(
   const kline = klineResult.status === 'fulfilled' ? normalizeKline(klineResult.value) : null
   const risk = riskResult.status === 'fulfilled' ? normalizeRisk(riskResult.value) : null
   const lifecycle = lifecycleResult.status === 'fulfilled' ? normalizeLifecycle(lifecycleResult.value, detail) : null
-  const main = normalizeMain(detail, payload, tsCode)
+  const main = normalizeMain(detail, payload, tsCode, detail as any)
 
   const hasAnyData = Boolean(main || kline || risk || lifecycle)
   const hasAllData = Boolean(main && kline && risk && lifecycle)
