@@ -8884,3 +8884,9 @@ textarea {
 .pipeline-popup {
   z-index: 9999 !important;
 }
+
+/* ═══ Topbar stacking context: ensure popup floats above all ═══ */
+.topbar {
+  position: relative !important;
+  z-index: 1000 !important;
+}
