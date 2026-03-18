@@ -397,6 +397,14 @@ export interface WatchlistItem {
   above_ma20_days?: number;   // 站上 MA20 天数
   ret10?:           number;   // 10日涨幅，小数或百分比视后端
   entry_pct_chg?:   number;   // 入池当日涨跌(%)
+  entry_rank?:      number;   // 入池排名
+  avg_vr3?:         number;   // 3日均量比
+  ret5_pct?:        number;   // 5日涨幅(小数)
+  ret20_pct?:       number;   // 20日涨幅(小数)
+  amount_yi?:       number;   // 成交额(亿)
+  retoc_cnt?:       number;   // 10日异动bar数
+  ret_t2?:          number;   // T-2日涨幅(%)
+  ret_2d_cum?:      number;   // 两日累计涨幅(%)
 }
 
 export async function fetchWatchlist(params?: { include_exited?: boolean }): Promise<WatchlistItem[]> {
