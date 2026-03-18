@@ -166,6 +166,9 @@ export interface PatternWeakBuyItem {
   status?:         string | null;
   in_pool:         boolean;
   in_continuation: boolean;
+  triggered_date?: string | null;
+  expire_date?:    string | null;
+  in_watchlist?:   boolean;
 }
 
 export async function fetchPatternT2up9(date: string): Promise<PatternT2up9Item[]> {

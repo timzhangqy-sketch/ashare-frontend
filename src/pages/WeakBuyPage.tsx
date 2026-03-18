@@ -58,33 +58,36 @@ function WeakBuyTodayTable({ selectedDate, onOpen }: { selectedDate: string; onO
               <table className="data-table">
                 <thead>
                   <tr>
-                    <th>股票</th>
+                    <th>代码</th>
+                    <th>名称</th>
+                    <th className="right">收盘</th>
                     <th className="right">60日涨幅</th>
                     <th className="right">放量天数</th>
                     <th className="right">平均涨幅</th>
                     <th className="right">弱市天数</th>
                     <th className="right">成交(亿)</th>
-                    <th className="center">交易标的池</th>
+                    <th className="center">触发状态</th>
+                    <th className="center">过期日期</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.length === 0 ? (
-                    <tr><td colSpan={7}><div className="empty-state"><div className="empty-text">当前交易日没有弱市吸筹样本</div></div></td></tr>
+                    <tr><td colSpan={10}><div className="empty-state"><div className="empty-text">当前交易日没有弱市吸筹样本</div></div></td></tr>
                   ) : rows.map((row: PatternWeakBuyItem) => {
                     const ret60 = formatWeakBuyPct(row.ret60_pct);
                     const avgRet = formatWeakBuyPct(row.avg_ret_pct);
                     return (
                       <tr key={row.ts_code} onClick={() => onOpen(getMockDetail(row.ts_code, row.name, ['弱市吸筹'], 0, row.ret60_pct != null ? row.ret60_pct * 100 : 0))}>
-                        <td>
-                          <div className="watchlist-cell-title">{row.name}<CrossTags tsCode={row.ts_code} currentStrategy="WEAK_BUY" /></div>
-                          <div className="watchlist-inline-meta">{row.ts_code}</div>
-                        </td>
-                        <td className={`right ${ret60.isNegative ? 'c-red' : ''}`}>{ret60.text}</td>
-                        <td className="right">{row.volup15_days}</td>
-                        <td className="right">{avgRet.text}</td>
-                        <td className="right">{row.weak_days}</td>
-                        <td className="right">{row.amount_yi != null ? Number(row.amount_yi).toFixed(2) : '--'}</td>
-                        <td className="center">{row.in_pool ? '是' : '否'}</td>
+                        <td className="c-sec numeric-muted">{row.ts_code}</td>
+                        <td style={{ fontWeight: 500 }}>{row.name}<CrossTags tsCode={row.ts_code} currentStrategy="WEAK_BUY" /></td>
+                        <td className="right numeric">{row.close != null ? Number(row.close).toFixed(2) : '--'}</td>
+                        <td className="right numeric" style={{ color: ret60.isNegative ? 'var(--down)' : 'var(--up)', fontWeight: 600 }}>{ret60.text}</td>
+                        <td className="right numeric">{row.volup15_days}</td>
+                        <td className="right numeric">{avgRet.text}</td>
+                        <td className="right numeric">{row.weak_days}</td>
+                        <td className="right numeric">{row.amount_yi != null ? Number(row.amount_yi).toFixed(2) : '--'}</td>
+                        <td className="center">{row.triggered_date ? <span className="status-badge source-badge source-badge-info">已触发</span> : row.in_watchlist ? <span className="status-badge source-badge source-badge-warning">已入池</span> : <span className="c-muted">观察中</span>}</td>
+                        <td className="center numeric-muted">{row.expire_date ?? '--'}</td>
                       </tr>
                     );
                   })}
