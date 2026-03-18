@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import StockDrawer from '../components/Drawer/StockDrawer';
 import WatchlistTab from '../components/WatchlistTab';
 import { CrossTags } from '../components/CrossTags';
@@ -78,41 +79,79 @@ function T2Table({ selectedDate, onOpen, listRef }: { selectedDate: string; onOp
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>股票</th>
-                  <th className="right">T-2</th>
-                  <th className="right">T-1</th>
-                  <th className="right">T</th>
-                  <th className="right">T+2</th>
-                  <th className="center">交易标的池</th>
-                  <th className="center">延续</th>
+                  <th>代码</th>
+                  <th>名称</th>
+                  <th className="center">入池日</th>
+                  <th className="right">T-2涨幅%</th>
+                  <th className="right">两日累计%</th>
+                  <th className="right">今日收盘</th>
+                  <th className="right">入池涨幅%</th>
+                  <th className="right">剩余天数</th>
+                  <th className="right">成交(亿)</th>
+                  <th className="center">买入信号</th>
+                  <th className="center">卖出信号</th>
+                  <th className="center">操作</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <tr>
-                    <td colSpan={7}>
+                    <td colSpan={12}>
                       <div className="empty-state">
                         <div className="empty-text">当前交易日没有形态策略样本。</div>
                       </div>
                     </td>
                   </tr>
-                ) : rows.map((row: PatternT2up9Item) => (
-                  <tr key={row.ts_code} onClick={() => onOpen(openPatternStock(row.ts_code, row.name, '形态策略', (row.ret_t0 ?? 0) * 100))}>
-                    <td>
-                      <div className="watchlist-cell-title">
-                        {row.name}
-                        <CrossTags tsCode={row.ts_code} currentStrategy="PATTERN_T2UP9" />
-                      </div>
-                      <div className="watchlist-inline-meta">{row.ts_code}</div>
-                    </td>
-                    <td className="right">{formatPercent(row.ret_t2)}</td>
-                    <td className="right">{formatPercent(row.ret_t1)}</td>
-                    <td className="right">{formatPercent(row.ret_t0)}</td>
-                    <td className="right">{formatPercent(row.ret_2d)}</td>
-                    <td className="center">{row.in_pool ? '是' : '否'}</td>
-                    <td className="center">{row.in_continuation ? '是' : '否'}</td>
-                  </tr>
-                ))}
+                ) : rows.map((row: PatternT2up9Item) => {
+                  const pctMaybe = (v: number | null | undefined) => {
+                    if (v == null) return null;
+                    return Math.abs(v) <= 1 ? v * 100 : v;
+                  };
+
+                  const t2Pct = pctMaybe(row.ret_t2);
+                  const ret2dPct = pctMaybe(row.ret_2d);
+                  const close = (row as any).close as number | null | undefined;
+                  const amountYi = (row as any).amount_yi as number | null | undefined;
+                  const amount = (row as any).amount as number | null | undefined;
+                  const amountYiComputed = amountYi ?? (amount != null ? amount / 1e8 : null);
+
+                  const pctStyle = (n: number | null) => ({
+                    color: n == null ? 'var(--text-muted)' : n > 0 ? 'var(--up)' : n < 0 ? 'var(--down)' : 'var(--text-muted)',
+                    fontWeight: 600,
+                  });
+
+                  const detail = openPatternStock(row.ts_code, row.name, '形态策略', (row.ret_t0 ?? 0) * 100);
+
+                  return (
+                    <tr key={row.ts_code} onClick={() => onOpen(detail)}>
+                      <td className="c-sec numeric-muted">{row.ts_code}</td>
+                      <td style={{ fontWeight: 500 }}>{row.name}<CrossTags tsCode={row.ts_code} currentStrategy="PATTERN_T2UP9" /></td>
+                      <td className="center numeric-muted">{selectedDate}</td>
+                      <td className="right numeric" style={pctStyle(t2Pct)}>
+                        {t2Pct == null ? '--' : `${t2Pct > 0 ? '+' : ''}${t2Pct.toFixed(2)}%`}
+                      </td>
+                      <td className="right numeric" style={pctStyle(ret2dPct)}>
+                        {ret2dPct == null ? '--' : `${ret2dPct > 0 ? '+' : ''}${ret2dPct.toFixed(2)}%`}
+                      </td>
+                      <td className="right numeric">{close != null ? close.toFixed(2) : '--'}</td>
+                      <td className="right numeric c-muted">--</td>
+                      <td className="right numeric">20</td>
+                      <td className="right numeric">{amountYiComputed != null ? amountYiComputed.toFixed(2) : '--'}</td>
+                      <td className="center c-muted">--</td>
+                      <td className="center c-muted">--</td>
+                      <td className="center" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          title="承接"
+                          style={{ background: 'rgba(59,130,246,0.10)', color: '#3B82F6', border: 'none', borderRadius: '4px', padding: '4px 6px', cursor: 'pointer' }}
+                          onClick={() => onOpen(detail)}
+                        >
+                          <ArrowRight size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             </div>
