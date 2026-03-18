@@ -8844,3 +8844,38 @@ textarea {
 .research-list-container {
   flex: 1 !important;
 }
+
+/* ═══ System page: fill viewport height ═══ */
+.system-page {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.system-workspace {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+}
+
+.system-main.card {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.system-main .card-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+.system-list-container {
+  flex: 1 !important;
+}
