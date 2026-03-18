@@ -133,11 +133,11 @@ export default function IgnitionList() {
                         <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>
                           {(item as any).avg_vr3 != null ? Number((item as any).avg_vr3).toFixed(2) : '--'}
                         </td>
-                        <td className="right" style={{ color: Number((item as any).ret5 || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
-                          {(item as any).ret5 != null ? `${(Number((item as any).ret5) * 100).toFixed(2)}%` : '--'}
+                        <td className="right" style={{ color: Number((item as any).ret5_pct || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
+                          {(item as any).ret5_pct != null ? `${(Number((item as any).ret5_pct) * 100).toFixed(2)}%` : '--'}
                         </td>
-                        <td className="right" style={{ color: Number((item as any).ret20 || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
-                          {(item as any).ret20 != null ? `${(Number((item as any).ret20) * 100).toFixed(2)}%` : '--'}
+                        <td className="right" style={{ color: Number((item as any).ret20_pct || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
+                          {(item as any).ret20_pct != null ? `${(Number((item as any).ret20_pct) * 100).toFixed(2)}%` : '--'}
                         </td>
                         <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>
                           {(item as any).amount_yi != null ? Number((item as any).amount_yi).toFixed(2) : '--'}
