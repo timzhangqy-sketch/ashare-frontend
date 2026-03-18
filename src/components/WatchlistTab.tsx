@@ -245,8 +245,8 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td className="c-sec numeric-muted">{s.ts_code}</td>
                           <td style={{ fontWeight: 500 }}>{s.name}<CrossTags tsCode={s.ts_code} currentStrategy={s.strategy} /></td>
                           <td className="center numeric-muted">{s.entry_date}</td>
-                          <PctCell v={s.ret_t2} />
-                          <PctCell v={s.ret_2d_cum} />
+                          <PctCell v={(s as any).ret_t2} isDecimal />
+                          <PctCell v={(s as any).ret_2d_cum} isDecimal />
                           <NumCell v={s.latest_close} />
                           <PctCell v={s.gain_since_entry} isDecimal />
                           <td className="right numeric">{s.pool_day != null ? Math.max(0, 20 - s.pool_day) : '--'}</td>
