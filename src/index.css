@@ -8793,3 +8793,19 @@ textarea {
 .research-page .data-table-shell {
   min-height: calc(100vh - 360px) !important;
 }
+
+/* ═══ Research page: full-width table ═══ */
+.research-page .card {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.research-page .data-table {
+  width: 100% !important;
+}
+
+.research-page .card:has(.data-table) {
+  min-height: calc(100vh - 320px) !important;
+}
