@@ -8,7 +8,7 @@ import TopBar from './TopBar';
 
 export default function Layout() {
   const { pathname } = useLocation();
-  const hideContextPanel = pathname === '/portfolio';
+  const hideContextPanel = pathname === '/portfolio' || pathname === '/weak-buy' || pathname === '/ignition' || pathname === '/retoc2' || pathname === '/pattern';
   const [drawerStock, setDrawerStock] = useState<StockDetail | null>(null);
 
   useEffect(() => {
