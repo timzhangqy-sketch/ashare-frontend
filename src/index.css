@@ -8809,3 +8809,38 @@ textarea {
 .research-page .card:has(.data-table) {
   min-height: calc(100vh - 320px) !important;
 }
+
+/* ═══ Research page: fill viewport height ═══ */
+.research-page {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.research-layout {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+}
+
+.research-main.card {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.research-main .card-body {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+.research-list-container {
+  flex: 1 !important;
+}
