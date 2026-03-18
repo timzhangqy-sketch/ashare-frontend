@@ -4,7 +4,6 @@ import { buildResearchQuery, loadResearchWorkspace } from '../../adapters/resear
 import { buildResearchDetailHref } from '../../adapters/researchDetail'
 import SourceBadge from '../../components/data-source/SourceBadge'
 
-import SourceStrip from '../../components/SourceStrip'
 import { getSourcePanelText, getSourcePanelTitle } from '../../components/data-source/sourceLabels'
 import { useContextPanel } from '../../context/useContextPanel'
 import { useApiData } from '../../hooks/useApiData'
@@ -220,8 +219,6 @@ export default function ResearchPage() {
           </button>
         ))}
       </div>
-
-      <SourceStrip meta={activeDataSource} showWhenReal />
 
       <div className="research-layout">
         <section className="card research-main">
