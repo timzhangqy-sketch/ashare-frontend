@@ -8879,3 +8879,9 @@ textarea {
 .system-list-container {
   flex: 1 !important;
 }
+
+/* ═══ Pipeline popup z-index fix ═══ */
+.pipeline-popup {
+  z-index: 9999 !important;
+  position: relative !important;
+}
