@@ -1,4 +1,5 @@
 import type { StockDetailResp } from '../../../api';
+import { displaySignalLabel } from '../../../utils/labelMaps';
 
 interface StockContextBaseInfoProps {
   detail: StockDetailResp | null;
@@ -42,7 +43,7 @@ function buildDetailItems(detail: StockDetailResp | null): Array<{ label: string
       label: '买卖信号',
       value:
         detail.watchlist_buy_signal || detail.watchlist_sell_signal
-          ? [detail.watchlist_buy_signal, detail.watchlist_sell_signal].filter(Boolean).join(' / ')
+          ? [detail.watchlist_buy_signal, detail.watchlist_sell_signal].filter(Boolean).map(displaySignalLabel).join(' / ')
           : '暂无信号',
     },
   ];

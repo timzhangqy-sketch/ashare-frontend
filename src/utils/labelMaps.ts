@@ -5,12 +5,21 @@ export const SIGNAL_LABEL_MAP: Record<string, string> = {
   VOL_CONFIRM: '放量确认',
   REHEAT: '冷却回暖',
   WARN_VR_FADE: '量能衰退',
-  WARN_MA_BREAK: '跌破均线',
+  WARN_MA_BREAK: '破位预警',
   WARN_DRAWDOWN: '回撤预警',
   WARN_VOLUME_DIE: '量能衰竭',
   EXIT_HARD_STOP: '硬止损',
   EXIT_TREND_BREAK: '趋势破位',
   EXIT_TIME_STOP: '到期退出',
+  HARD_STOP: '硬止损',
+  TRAILING_STOP: '跟踪止损',
+  TREND_BREAK: '趋势破位',
+  TIME_DECAY: '时间衰减',
+  SELL_PROFIT_TARGET: '止盈',
+  SELL_HARD_STOP: '硬止损',
+  SELL_TRAILING_STOP: '跟踪止损',
+  SELL_TREND_BREAK: '趋势破位',
+  SELL_TIME_DECAY: '时间衰减',
 };
 
 export const STRATEGY_LABEL_MAP: Record<string, string> = {

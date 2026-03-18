@@ -2,6 +2,7 @@ import WatchlistStatusBadge from './WatchlistStatusBadge'
 import type { StockContextViewModel } from '../types/contextPanel'
 import type { WatchlistActionVm, WatchlistRowVm } from '../types/watchlist'
 import { getStrategyDisplayName } from '../utils/displayNames'
+import { displaySignalLabel } from '../utils/labelMaps'
 
 function formatSignedPercent(value: number | null | undefined, decimal = false): string {
   if (value == null) return '--'
@@ -75,7 +76,7 @@ export default function WatchlistDetailPanel({
           <div className="watchlist-context-summary-item">
             <span>买卖信号</span>
             <strong>
-              {selectedRow.buySignal ?? '--'} / {selectedRow.sellSignal ?? '--'}
+              {displaySignalLabel(selectedRow.buySignal)} / {displaySignalLabel(selectedRow.sellSignal)}
             </strong>
           </div>
           <div className="watchlist-context-summary-item">

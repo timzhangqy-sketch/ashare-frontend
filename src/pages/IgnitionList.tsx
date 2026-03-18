@@ -7,6 +7,7 @@ import { getMockDetail } from '../utils/score';
 import { useApiData } from '../hooks/useApiData';
 import { fetchWatchlist, type WatchlistItem } from '../api';
 import type { StockDetail } from '../types/stock';
+import { displaySignalLabel } from '../utils/labelMaps';
 
 type MainTab = 'today' | 'watchlist';
 
@@ -145,8 +146,8 @@ export default function IgnitionList() {
                         <td className="right c-muted">
                           {(item as any).turnover_rate != null ? `${Number((item as any).turnover_rate).toFixed(2)}%` : '--'}
                         </td>
-                        <td className="center">{item.buy_signal || '--'}</td>
-                        <td className="center">{item.sell_signal || '--'}</td>
+                        <td className="center">{displaySignalLabel(item.buy_signal)}</td>
+                        <td className="center">{displaySignalLabel(item.sell_signal)}</td>
                         <td className="center">
                           <button type="button" title="承接" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }} onClick={(e) => { e.stopPropagation(); }}>
                             <ArrowRight size={16} />

@@ -5,6 +5,7 @@ import { useApiData } from '../hooks/useApiData';
 import { fetchWatchlist, type WatchlistItem } from '../api';
 import type { StockDetail } from '../types/stock';
 import { CrossTags } from './CrossTags';
+import { displaySignalLabel } from '../utils/labelMaps';
 
 const SIGNAL_CFG: Record<string, string> = {
   PULLBACK: 'status-badge source-badge source-badge-info',
@@ -19,23 +20,9 @@ const SIGNAL_CFG: Record<string, string> = {
   VOL_CONFIRM: 'status-badge source-badge source-badge-info',
 };
 
-const SIGNAL_LABEL: Record<string, string> = {
-  WARN_DRAWDOWN: '回撤预警',
-  WARN_MA_BREAK: '破位预警',
-  WARN_VR_FADE: '量能衰竭',
-  TAKE_PROFIT_50: '止盈50%',
-  BREAKOUT: '突破买入',
-  VOL_CONFIRM: '放量确认',
-  PULLBACK: '回踩买入',
-  REHEAT: '再次启动',
-  VOL_BREAK: '量能突破',
-  SELL: '卖出',
-  ADD: '加入观察',
-};
-
 function SignalBadge({ label }: { label: string | null }) {
   if (!label) return <span className="c-muted">--</span>;
-  const text = SIGNAL_LABEL[label] ?? label;
+  const text = displaySignalLabel(label);
   return <span className={SIGNAL_CFG[label] ?? 'status-badge tag-pill'}>{text}</span>;
 }
 

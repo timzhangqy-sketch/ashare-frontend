@@ -13,6 +13,7 @@ import type { StockContextPanelPayload } from '../../types/contextPanel'
 import type { DataSourceMeta } from '../../types/dataSource'
 import type { StockDetail } from '../../types/stock'
 import { buildDataSourceMeta } from '../../utils/dataSource'
+import { displaySignalLabel } from '../../utils/labelMaps'
 import { MultiStrategyBadge } from '../CrossTags'
 import SourceNotice from '../data-source/SourceNotice'
 import KlineChart from './KlineChart'
@@ -122,7 +123,8 @@ function ToneBadge({ label, tone }: { label: string; tone: 'info' | 'warning' | 
 
 function SignalBadge({ label }: { label: string | null | undefined }) {
   if (!label) return <span className="numeric-muted">--</span>
-  return <span className={`status-badge tag-pill drawer-pill drawer-pill-${getSignalTone(label)}`}>{label}</span>
+  const text = displaySignalLabel(label)
+  return <span className={`status-badge tag-pill drawer-pill drawer-pill-${getSignalTone(label)}`}>{text}</span>
 }
 
 function buildDetailMeta(detail: StockDetailResp | null, loading: boolean, stock: StockDetail | null): DataSourceMeta | null {
