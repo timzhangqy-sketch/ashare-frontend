@@ -15,67 +15,6 @@ def get_db(timeout=30):
     )
     return conn
 
-# ════════════════════════════════════════════════════════════════
-# Common Utilities
-# ════════════════════════════════════════════════════════════════
-import decimal as _decimal_mod
-import json as _json_mod
-from datetime import datetime, timezone, timedelta
-
-def _dec(v):
-    """Convert Decimal/numeric to float, None stays None."""
-    if v is None:
-        return None
-    if isinstance(v, _decimal_mod.Decimal):
-        return float(v)
-    return v
-
-def _serialize_row(row):
-    """Serialize a single RealDictRow: Decimal→float, date/datetime→str."""
-    if row is None:
-        return None
-    d = {}
-    for k, v in (row.items() if hasattr(row, 'items') else dict(row).items()):
-        if isinstance(v, _decimal_mod.Decimal):
-            d[k] = float(v)
-        elif hasattr(v, 'isoformat'):
-            d[k] = v.isoformat()
-        else:
-            d[k] = v
-    return d
-
-def _serialize_rows(rows):
-    """Serialize a list of RealDictRows."""
-    return [_serialize_row(r) for r in rows]
-
-def _resolve_trade_date(cur, trade_date_str=None):
-    """Resolve to nearest valid trade date (from ashare_trade_calendar)."""
-    if trade_date_str:
-        cur.execute("SELECT MAX(cal_date) AS td FROM ashare_trade_calendar WHERE cal_date <= %s AND is_open = true", (trade_date_str,))
-    else:
-        cur.execute("SELECT MAX(cal_date) AS td FROM ashare_trade_calendar WHERE cal_date <= CURRENT_DATE AND is_open = true")
-    row = cur.fetchone()
-    return row["td"] if row and row["td"] else None
-
-def _prev_trade_date(cur, td):
-    """Get previous trade date before td."""
-    cur.execute("SELECT MAX(trade_date) AS td FROM ashare_daily_price WHERE trade_date < %s", (td,))
-    row = cur.fetchone()
-    return row["td"] if row and row["td"] else None
-
-def _now_cn():
-    """Current time ISO8601 +08:00."""
-    tz8 = timezone(timedelta(hours=8))
-    return datetime.now(tz8).strftime('%Y-%m-%dT%H:%M:%S+08:00')
-
-# Strategy Chinese name mapping (single source of truth)
-STRATEGY_CN = {
-    "VOL_SURGE": "连续放量蓄势",
-    "RETOC2": "第4次异动",
-    "PATTERN_T2UP9": "T-2大涨蓄势",
-    "WEAK_BUY": "弱市吸筹",
-}
-
 @app.get("/api/health")
 def health():
     try:
@@ -85,6 +24,51 @@ def health():
     except Exception as e:
         return {"status": "error", "db": str(e)}
 
+@app.get("/api/ignite/{date}")
+def get_ignite(date: str):
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT d.ts_code, s.name,
+            (d.payload->>'candidate_rank')::int AS rank,
+            (d.payload->>'ignite_score')::float AS ignite_score,
+            (d.payload->>'s_candidate')::float AS s_candidate,
+            (d.payload->>'s_turn')::float AS s_turn,
+            (d.payload->>'s_ret20')::float AS s_ret20,
+            (d.payload->>'s_rs')::float AS s_rs,
+            (d.payload->>'s_ma5')::float AS s_ma5,
+            (d.payload->>'vr')::float AS vr,
+            (d.payload->>'turnover_rate')::float AS turnover_rate,
+            pr.close AS close,
+            ROUND((pr.close - (SELECT p2.close FROM public.ashare_daily_price p2 WHERE p2.ts_code=pr.ts_code AND p2.trade_date<pr.trade_date ORDER BY p2.trade_date DESC LIMIT 1)) / NULLIF((SELECT p2.close FROM public.ashare_daily_price p2 WHERE p2.ts_code=pr.ts_code AND p2.trade_date<pr.trade_date ORDER BY p2.trade_date DESC LIMIT 1), 0) * 100, 2) AS pct_chg,
+            (d.payload->>'amount_yi')::float AS amount_yi
+        FROM public.ashare_ignite_strict3_daily d
+        LEFT JOIN public.ashare_stock_basic s ON s.ts_code = d.ts_code
+        LEFT JOIN public.ashare_daily_price pr ON pr.ts_code = d.ts_code AND pr.trade_date = d.trade_date
+        WHERE d.trade_date = %s::date ORDER BY rank LIMIT 20
+    """, (date,))
+    rows = cur.fetchall()
+    conn.close()
+    return {"date": date, "data": [dict(r) for r in rows]}
+
+@app.get("/api/continuation/{date}")
+def get_continuation(date: str):
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT d.ts_code, s.name,
+            (d.payload->>'cont_score')::float AS cont_score,
+            (d.payload->>'pool_day')::int AS pool_day,
+            d.payload->>'buy_signal' AS buy_signal,
+            (d.payload->>'turnover_rate')::float AS turnover_rate,
+            (d.payload->>'vr')::float AS vr
+        FROM public.ashare_continuation_v1_daily d
+        LEFT JOIN public.ashare_stock_basic s ON s.ts_code = d.ts_code
+        WHERE d.trade_date = %s::date ORDER BY cont_score DESC NULLS LAST LIMIT 20
+    """, (date,))
+    rows = cur.fetchall()
+    conn.close()
+    return {"date": date, "data": [dict(r) for r in rows]}
 
 @app.get("/api/pool/{date}")
 def get_pool(date: str):
@@ -171,6 +155,22 @@ def get_pattern_t2up9(date: str):
     conn.close()
     return {"date": date, "data": [dict(r) for r in rows]}
 
+@app.get("/api/pattern/green10/{date}")
+def get_pattern_green10(date: str):
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT p.ts_code, s.name, p.anchor_date::text,
+            p.green_days_10d, p.red_days_10d, p.flat_days_10d,
+            p.in_pool, p.in_continuation
+        FROM public.ashare_pattern_top10_green_10d_candidates p
+        LEFT JOIN public.ashare_stock_basic s ON s.ts_code = p.ts_code
+        WHERE p.anchor_date = %s::date
+        ORDER BY p.green_days_10d DESC
+    """, (date,))
+    rows = cur.fetchall()
+    conn.close()
+    return {"date": date, "data": [dict(r) for r in rows]}
 
 @app.get("/api/pattern/weak_buy/{date}")
 def get_pattern_weak_buy(date: str):
@@ -224,8 +224,87 @@ def get_pattern_weak_buy(date: str):
         cur.close()
         conn.close()
 
+@app.get("/api/ignite/v2/{date}")
+def get_ignite_v2(date: str):
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    # 先查落地表
+    cur.execute("""
+        SELECT d.ts_code, s.name,
+            (d.payload->>'candidate_rank')::int AS rank,
+            (d.payload->>'ignite_score')::float AS ignite_score,
+            (d.payload->>'s_candidate')::float AS s_candidate,
+            (d.payload->>'s_turn')::float AS s_turn,
+            (d.payload->>'s_ret20')::float AS s_ret20,
+            (d.payload->>'s_rs')::float AS s_rs,
+            (d.payload->>'s_ma5')::float AS s_ma5,
+            (d.payload->>'vr')::float AS vr,
+            (d.payload->>'turnover_rate')::float AS turnover_rate,
+            pr.close AS close,
+            ROUND((pr.close - (SELECT p2.close FROM public.ashare_daily_price p2 WHERE p2.ts_code=pr.ts_code AND p2.trade_date<pr.trade_date ORDER BY p2.trade_date DESC LIMIT 1)) / NULLIF((SELECT p2.close FROM public.ashare_daily_price p2 WHERE p2.ts_code=pr.ts_code AND p2.trade_date<pr.trade_date ORDER BY p2.trade_date DESC LIMIT 1), 0) * 100, 2) AS pct_chg,
+            ROUND(pr.amount / 100000, 2) AS amount_yi
+        FROM public.ashare_ignite_strict3_daily d
+        LEFT JOIN public.ashare_stock_basic s ON s.ts_code = d.ts_code
+        LEFT JOIN public.ashare_daily_price pr ON pr.ts_code = d.ts_code AND pr.trade_date = d.trade_date
+        WHERE d.trade_date = %s::date ORDER BY rank LIMIT 20
+    """, (date,))
+    rows = cur.fetchall()
+    if not rows:
+        # fallback 调用函数
+        cur.execute("""
+            SELECT r.candidate_rank AS rank, r.ts_code, s.name,
+                r.ignite_score, r.s_candidate, r.s_turn, r.s_ret20, r.s_rs, r.s_ma5,
+                r.vr, r.turnover_rate,
+                pr.close,
+                ROUND((pr.close - (SELECT p2.close FROM public.ashare_daily_price p2 WHERE p2.ts_code=pr.ts_code AND p2.trade_date<pr.trade_date ORDER BY p2.trade_date DESC LIMIT 1)) / NULLIF((SELECT p2.close FROM public.ashare_daily_price p2 WHERE p2.ts_code=pr.ts_code AND p2.trade_date<pr.trade_date ORDER BY p2.trade_date DESC LIMIT 1), 0) * 100, 2) AS pct_chg,
+                ROUND(pr.amount / 100000, 2) AS amount_yi
+            FROM public.ashare_ignite_rank_v3_strict3(%s::date) r
+            LEFT JOIN public.ashare_stock_basic s ON s.ts_code = r.ts_code
+            LEFT JOIN public.ashare_daily_price pr ON pr.ts_code = r.ts_code AND pr.trade_date = %s::date
+            ORDER BY rank LIMIT 20
+        """, (date, date))
+        rows = cur.fetchall()
+    conn.close()
+    return {"date": date, "data": [dict(r) for r in rows]}
 
-# ═══ Watchlist APIs ═══
+@app.get("/api/continuation/v2/{date}")
+def get_continuation_v2(date: str):
+    from datetime import datetime, timedelta
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT d.ts_code, s.name,
+            (d.payload->>'cont_score')::float AS cont_score,
+            (d.payload->>'pool_day')::int AS pool_day,
+            d.payload->>'buy_signal' AS buy_signal,
+            (d.payload->>'turnover_rate')::float AS turnover_rate,
+            (d.payload->>'vr')::float AS vr
+        FROM public.ashare_continuation_v1_daily d
+        LEFT JOIN public.ashare_stock_basic s ON s.ts_code = d.ts_code
+        WHERE d.trade_date = %s::date ORDER BY cont_score DESC NULLS LAST LIMIT 20
+    """, (date,))
+    rows = cur.fetchall()
+    if not rows:
+        # 只对最近3天fallback调用函数，更早的历史直接返回空
+        d = datetime.strptime(date, "%Y-%m-%d")
+        if (datetime.now() - d).days <= 30:
+            cur.execute("""
+                SELECT r.ts_code, s.name,
+                    r.cont_score, r.pool_day, r.buy_signal,
+                    r.turnover_rate, r.vr_now AS vr
+                FROM public.ashare_continuation_rank_v1(%s::date) r
+                LEFT JOIN public.ashare_stock_basic s ON s.ts_code = r.ts_code
+                WHERE r.exit_flag = false
+                ORDER BY r.cont_score DESC NULLS LAST LIMIT 20
+            """, (date,))
+            rows = cur.fetchall()
+    conn.close()
+    return {"date": date, "data": [dict(r) for r in rows]}
+
+
+# ============================================================
+# Watchlist & Portfolio APIs — 2026-03-03
+# ============================================================
 
 @app.get("/api/watchlist/active")
 def get_watchlist_active(strategy: str = None):
@@ -596,6 +675,62 @@ def add_position_to_holding(portfolio_id: int, item: dict):
         "total_shares": total_shares,
         "total_cost":   round(total_cost, 2),
     }
+
+# ── 持仓管理 API ──────────────────────────────────────────
+
+@app.get("/api/portfolio")
+def get_portfolio():
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT p.id, p.ts_code, p.name, p.position_type, p.open_date::text, p.open_price,
+               p.shares, p.cost_amount, p.source_strategy, p.status,
+               p.latest_close, p.market_value, p.unrealized_pnl, p.unrealized_pnl_pct,
+               p.max_price_since_open, p.drawdown_from_peak, p.hold_days,
+               p.action_signal, p.signal_reason, p.notes, p.created_at::text,
+               p.watchlist_id,
+               r.position_cap_multiplier_final
+        FROM ashare_portfolio p
+        LEFT JOIN (
+            SELECT DISTINCT ON (ts_code) ts_code, position_cap_multiplier_final
+            FROM ashare_risk_score
+            ORDER BY ts_code, trade_date DESC
+        ) r ON r.ts_code = p.ts_code
+        WHERE p.status = 'open'
+        ORDER BY p.created_at DESC
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    return {"data": [dict(r) for r in rows]}
+
+@app.post("/api/portfolio/add")
+def add_portfolio(body: dict):
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    ts_code = body.get("ts_code", "").strip()
+    shares = int(body.get("shares", 0))
+    open_price = float(body.get("open_price", 0))
+    cost_amount = round(open_price * shares, 2)
+    cur.execute("""
+        INSERT INTO ashare_portfolio
+            (ts_code, name, position_type, open_date, open_price, shares,
+             cost_amount, source_strategy, status, hold_days)
+        VALUES (%s, %s, 'PAPER', %s::date, %s, %s, %s, %s, 'open', 0)
+        RETURNING id
+    """, (
+        ts_code,
+        body.get("name", ""),
+        body.get("open_date"),
+        open_price,
+        shares,
+        cost_amount,
+        body.get("source_strategy", ""),
+    ))
+    new_id = cur.fetchone()["id"]
+    conn.commit()
+    conn.close()
+    return {"success": True, "id": new_id}
+
 @app.delete("/api/portfolio/{portfolio_id}")
 def close_portfolio(portfolio_id: int, body: dict = {}):
     conn = get_db()
@@ -667,6 +802,7 @@ def get_watchlist(include_exited: bool = False):
     rows = cur.fetchall()
     conn.close()
     return {"data": [dict(r) for r in rows]}
+
 
 
 @app.get("/api/watchlist/cross_strategies")
@@ -1105,7 +1241,12 @@ def get_backtest_detail(strategy: str = None, limit: int = 200):
     return {"data": [dict(r) for r in rows]}
 
 
-# ═══ Signal APIs ═══
+
+
+# ════════════════════════════════════════════════════════════════
+# Signal & Portfolio Summary APIs
+# ════════════════════════════════════════════════════════════════
+import decimal as _dec_signals
 
 @app.get("/api/signals/buy")
 def get_signals_buy():
@@ -1142,7 +1283,12 @@ def get_signals_buy():
     finally:
         conn.close()
 
-    data = _serialize_rows(rows)
+    data = []
+    for r in rows:
+        d = {}
+        for k, v in dict(r).items():
+            d[k] = float(v) if isinstance(v, _dec_signals.Decimal) else v
+        data.append(d)
 
     return {"trade_date": trade_date, "count": len(data), "data": data}
 
@@ -1183,7 +1329,12 @@ def get_signals_sell():
     finally:
         conn.close()
 
-    data = _serialize_rows(rows)
+    data = []
+    for r in rows:
+        d = {}
+        for k, v in dict(r).items():
+            d[k] = float(v) if isinstance(v, _dec_signals.Decimal) else v
+        data.append(d)
 
     return {"trade_date": trade_date, "count": len(data), "data": data}
 
@@ -1286,7 +1437,7 @@ def get_portfolio_summary():
     def to_f(v):
         if v is None:
             return None
-        if isinstance(v, _decimal_mod.Decimal):
+        if isinstance(v, _dec_signals.Decimal):
             return float(v)
         return v
 
@@ -1347,7 +1498,10 @@ def get_portfolio_summary():
     return result
 
 
-# ═══ Dashboard APIs ═══
+# ════════════════════════════════════════════════════════════════
+# Dashboard Summary API
+# ════════════════════════════════════════════════════════════════
+from datetime import datetime, timezone, timedelta
 
 @app.get("/api/dashboard/summary")
 def get_dashboard_summary(trade_date: str = None):
@@ -1686,8 +1840,45 @@ def get_dashboard_summary(trade_date: str = None):
         conn.close()
 
 
-# ═══ Context Panel APIs ═══
+# ═══════════════════════════════════════════════════════════════════════════════
+# Context Panel Endpoints
+# ═══════════════════════════════════════════════════════════════════════════════
 
+from datetime import datetime, timezone, timedelta as _td
+import json as _json_mod
+import decimal as _decimal_mod
+
+
+def _resolve_trade_date(cur, trade_date_str=None):
+    """Resolve to nearest valid trade date (from ashare_trade_calendar)."""
+    if trade_date_str:
+        cur.execute("SELECT MAX(cal_date) AS td FROM ashare_trade_calendar WHERE cal_date <= %s AND is_open = true", (trade_date_str,))
+    else:
+        cur.execute("SELECT MAX(cal_date) AS td FROM ashare_trade_calendar WHERE cal_date <= CURRENT_DATE AND is_open = true")
+    row = cur.fetchone()
+    return row["td"] if row and row["td"] else None
+
+
+def _prev_trade_date(cur, td):
+    """Get previous trade date before td."""
+    cur.execute("SELECT MAX(trade_date) AS td FROM ashare_daily_price WHERE trade_date < %s", (td,))
+    row = cur.fetchone()
+    return row["td"] if row and row["td"] else None
+
+
+def _dec(v):
+    """Convert Decimal/numeric to float, None stays None."""
+    if v is None:
+        return None
+    if isinstance(v, _decimal_mod.Decimal):
+        return float(v)
+    return v
+
+
+def _now_cn():
+    """Current time ISO8601 +08:00."""
+    tz8 = timezone(_td(hours=8))
+    return datetime.now(tz8).strftime('%Y-%m-%dT%H:%M:%S+08:00')
 
 def _fetch_risk_block(cur, ts_code, eff_date_str):
     """Fetch risk data with fallback to most recent available date. Returns dict or None."""
@@ -1890,6 +2081,7 @@ def _fetch_lifecycle_block(cur, ts_code):
         },
     }
     return lifecycle, degraded, degrade_reason
+
 
 
 @app.get("/api/context/stock/{ts_code}")
@@ -2281,7 +2473,11 @@ def get_context_stock(ts_code: str, trade_date: str = None, source: str = None):
         conn.close()
 
 
-# ═══ Context Panel: Risk Detail ═══
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Context Panel: Risk Detail Endpoint
+# ═══════════════════════════════════════════════════════════════════════════════
 
 def _risk_level(score):
     if score is None:
@@ -2403,7 +2599,9 @@ def get_context_risk(ts_code: str, trade_date: str = None, source: str = None):
         conn.close()
 
 
-# ═══ Context Panel: Lifecycle ═══
+# ═══════════════════════════════════════════════════════════════════════════════
+# Context Panel: Lifecycle Detail Endpoint
+# ═══════════════════════════════════════════════════════════════════════════════
 
 @app.get("/api/context/stock/{ts_code}/lifecycle")
 def get_context_lifecycle(ts_code: str, trade_date: str = None, source: str = None):
@@ -2454,7 +2652,9 @@ def get_context_lifecycle(ts_code: str, trade_date: str = None, source: str = No
     finally:
         conn.close()
 
-# ═══ Context Panel: K-line ═══
+# ═══════════════════════════════════════════════════════════════════════════════
+# Context Panel: K-line Endpoint
+# ═══════════════════════════════════════════════════════════════════════════════
 
 @app.get("/api/context/stock/{ts_code}/kline")
 def get_context_kline(ts_code: str, trade_date: str = None,
@@ -2614,7 +2814,9 @@ def get_context_kline(ts_code: str, trade_date: str = None,
         conn.close()
 
 
-# ═══ Risk APIs ═══
+# ============================================================
+# Batch 1: Risk endpoints (3)
+# ============================================================
 
 @app.get("/api/risk/gate_blocks")
 def get_risk_gate_blocks(trade_date: str = None, scope: str = "all"):
@@ -2653,6 +2855,11 @@ def get_risk_gate_blocks(trade_date: str = None, scope: str = "all"):
         return cur.fetchall()
     finally:
         conn.close()
+
+
+# ============================================================
+# Batch 1: Risk endpoints (3)
+# ============================================================
 
 
 @app.get("/api/risk/top_scores")
@@ -2722,13 +2929,22 @@ def get_risk_detail(ts_code: str, trade_date: str):
             row = cur.fetchone()
         if not row:
             return {"error": "not found"}
-        result = _serialize_row(row)
+        result = {}
+        for k, v in row.items():
+            if isinstance(v, _decimal_mod.Decimal):
+                result[k] = float(v)
+            elif hasattr(v, 'isoformat'):
+                result[k] = v.isoformat()
+            else:
+                result[k] = v
         return result
     finally:
         conn.close()
 
 
-# ═══ System APIs ═══
+# ============================================================
+# Batch 2: System endpoints (5)
+# ============================================================
 
 @app.get("/api/system/pipeline_runs")
 def get_pipeline_runs(trade_date: str = None):
@@ -2751,7 +2967,15 @@ def get_pipeline_runs(trade_date: str = None):
             ORDER BY started_at ASC
         """, (eff,))
         rows = cur.fetchall()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                if hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
+            out.append(d)
         return out
     finally:
         conn.close()
@@ -2908,7 +3132,9 @@ def get_api_health():
     return results
 
 
-# ═══ Research APIs ═══
+# ============================================================
+# Batch 3: Research endpoints (3)
+# ============================================================
 
 @app.get("/api/research/factor_ic")
 def get_factor_ic(strategy: str = None):
@@ -2931,7 +3157,12 @@ def get_factor_ic(strategy: str = None):
         sql += " ORDER BY factor_name, holding_period"
         cur.execute(sql, params)
         rows = cur.fetchall()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                d[k] = float(v) if isinstance(v, _decimal_mod.Decimal) else v
+            out.append(d)
         return out
     finally:
         conn.close()
@@ -2951,7 +3182,17 @@ def get_strategy_attribution(strategy: str = None):
         sql += " ORDER BY calc_date DESC, strategy"
         cur.execute(sql, params)
         rows = cur.fetchall()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                if isinstance(v, _decimal_mod.Decimal):
+                    d[k] = float(v)
+                elif hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
+            out.append(d)
         return out
     finally:
         conn.close()
@@ -2990,7 +3231,9 @@ def get_resonance_analysis():
         conn.close()
 
 
-# ═══ Execution / Sim APIs ═══
+# ============================================================
+# Batch 4: Execution / Sim endpoints (3)
+# ============================================================
 
 @app.get("/api/sim/orders")
 def get_sim_orders(trade_date: str = None, strategy: str = None):
@@ -3017,7 +3260,17 @@ def get_sim_orders(trade_date: str = None, strategy: str = None):
         """
         cur.execute(sql, params)
         rows = cur.fetchall()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                if isinstance(v, _decimal_mod.Decimal):
+                    d[k] = float(v)
+                elif hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
+            out.append(d)
         return out
     finally:
         conn.close()
@@ -3040,7 +3293,17 @@ def get_sim_positions(trade_date: str = None):
                 WHERE snap_date = (SELECT MAX(snap_date) FROM ashare_sim_portfolio_snapshot)
             """)
         rows = cur.fetchall()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                if isinstance(v, _decimal_mod.Decimal):
+                    d[k] = float(v)
+                elif hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
+            out.append(d)
         return out
     finally:
         conn.close()
@@ -3069,13 +3332,25 @@ def get_sim_fills(trade_date: str = None, strategy: str = None):
         """
         cur.execute(sql, params)
         rows = cur.fetchall()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                if isinstance(v, _decimal_mod.Decimal):
+                    d[k] = float(v)
+                elif hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
+            out.append(d)
         return out
     finally:
         conn.close()
 
 
-# ═══ System Audit API ═══
+# ════════════════════════════════════════════════════════════════
+# System Audit API
+# ════════════════════════════════════════════════════════════════
 
 @app.get("/api/system/audit")
 def get_audit_results(trade_date: str = None):
@@ -3106,7 +3381,9 @@ def get_audit_results(trade_date: str = None):
         conn.close()
 
 
-# ═══ Market Regime API ═══
+# ════════════════════════════════════════════════════════════════
+# Market Regime API
+# ════════════════════════════════════════════════════════════════
 
 @app.get("/api/market/regime")
 def get_market_regime():
@@ -3126,7 +3403,9 @@ def get_market_regime():
         conn.close()
 
 
-# ═══ Dashboard Action List API ═══
+# ════════════════════════════════════════════════════════════════
+# Dashboard Action List API
+# ════════════════════════════════════════════════════════════════
 
 @app.get("/api/dashboard/action_list")
 def get_dashboard_action_list():
@@ -3174,6 +3453,11 @@ def get_dashboard_action_list():
             })
 
         # ── buy ──
+        STRATEGY_CN = {
+            "VOL_SURGE": "连续放量蓄势", "RETOC2": "第4次异动",
+            "PATTERN_T2UP9": "T-2大涨蓄势", "PATTERN_GREEN10": "近10日阳线",
+            "IGNITE": "放量蓄势",
+        }
         buy_sql = """
             SELECT * FROM (
                 SELECT DISTINCT ON (w.ts_code) w.ts_code, s.name, w.strategy, w.buy_signal,
@@ -3254,10 +3538,17 @@ def get_dashboard_action_list():
         conn.close()
 
 
-# ═══ Watchlist Pre-Check API ═══
+# ════════════════════════════════════════════════════════════════
+# Watchlist Pre-Check API
+# ════════════════════════════════════════════════════════════════
 
 @app.get("/api/watchlist/pre_check/{ts_code}")
 def get_watchlist_pre_check(ts_code: str):
+    STRATEGY_CN = {
+        "VOL_SURGE": "连续放量蓄势", "RETOC2": "第4次异动",
+        "PATTERN_T2UP9": "T-2大涨蓄势", "PATTERN_GREEN10": "近10日阳线",
+        "IGNITE": "放量蓄势",
+    }
     conn = get_db()
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -3356,10 +3647,17 @@ def get_watchlist_pre_check(ts_code: str):
         conn.close()
 
 
-# ═══ Portfolio Concentration API ═══
+# ════════════════════════════════════════════════════════════════
+# Portfolio Concentration API
+# ════════════════════════════════════════════════════════════════
 
 @app.get("/api/portfolio/concentration")
 def get_portfolio_concentration():
+    STRATEGY_CN = {
+        "VOL_SURGE": "连续放量蓄势", "RETOC2": "第4次异动",
+        "PATTERN_T2UP9": "T-2大涨蓄势", "PATTERN_GREEN10": "近10日阳线",
+        "IGNITE": "放量蓄势",
+    }
     conn = get_db()
     try:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -3452,7 +3750,9 @@ def get_all_transactions(limit: int = 100):
         conn.close()
 
 
-# ═══ Sim Execution Checks API ═══
+# ════════════════════════════════════════════════════════════════
+# Sim Execution Checks API
+# ════════════════════════════════════════════════════════════════
 
 @app.get("/api/sim/checks")
 def get_sim_checks(trade_date: str = None):
@@ -3502,7 +3802,14 @@ def get_sim_checks(trade_date: str = None):
 
         out = []
         for r in risk_rows:
-            d = _serialize_row(r)
+            d = {}
+            for k, v in r.items():
+                if isinstance(v, _decimal_mod.Decimal):
+                    d[k] = float(v)
+                elif hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
 
             # parse detail_json for granular checks
             detail = r.get("detail_json") or {}
@@ -3518,7 +3825,10 @@ def get_sim_checks(trade_date: str = None):
         conn.close()
 
 
-# ═══ Concept Board APIs ═══
+
+# ════════════════════════════════════════════════════════════════
+# Concept Board API (人工概念板块)
+# ════════════════════════════════════════════════════════════════
 
 from pydantic import BaseModel
 from typing import List, Optional
@@ -3576,7 +3886,17 @@ def get_concept_list():
             ORDER BY c.concept_id
         """)
         rows = cur.fetchall()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                if isinstance(v, _decimal_mod.Decimal):
+                    d[k] = float(v)
+                elif hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
+            out.append(d)
         return {"data": out}
     finally:
         conn.close()
@@ -3614,7 +3934,17 @@ def get_concept_members(concept_id: int):
         rows = cur.fetchall()
         cur.execute("SELECT concept_name FROM ashare_concept WHERE concept_id = %s", (concept_id,))
         cname = cur.fetchone()
-        out = _serialize_rows(rows)
+        out = []
+        for r in rows:
+            d = {}
+            for k, v in r.items():
+                if isinstance(v, _decimal_mod.Decimal):
+                    d[k] = float(v)
+                elif hasattr(v, 'isoformat'):
+                    d[k] = v.isoformat()
+                else:
+                    d[k] = v
+            out.append(d)
         return {"concept_name": cname["concept_name"] if cname else None, "data": out}
     finally:
         conn.close()
