@@ -608,6 +608,17 @@ export async function fetchResearchResonance(
   return toArray<ResearchResonanceItem>(raw);
 }
 
+// ── Latest Data Date ─────────────────────────────────────────────────────
+
+export async function fetchLatestDataDate(): Promise<string | null> {
+  try {
+    const res = await api.get('/api/latest-data-date');
+    return res.data?.trade_date ?? null;
+  } catch {
+    return null;
+  }
+}
+
 // ── K-line ─────────────────────────────────────────────────────────────────
 
 export interface KlineItem {

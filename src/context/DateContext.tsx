@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { fetchTradeDates } from '../api';
+import { fetchLatestDataDate, fetchTradeDates } from '../api';
 import { DateContext } from './useDate';
 
 function toLocalISODate(d: Date): string {
@@ -65,6 +65,17 @@ export function DateProvider({ children }: { children: ReactNode }) {
         // API unavailable — keep weekend-snap fallback, still mark ready
         setReady(true);
       });
+  }, []);
+
+  // Fetch latest date with actual price data (more accurate than calendar)
+  useEffect(() => {
+    let cancelled = false;
+    fetchLatestDataDate().then((latestDate) => {
+      if (!cancelled && latestDate) {
+        _setRaw(latestDate);
+      }
+    });
+    return () => { cancelled = true; };
   }, []);
 
   // Auto-refresh every 5 minutes, only between 18:00–20:00
