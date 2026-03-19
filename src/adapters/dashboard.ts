@@ -246,6 +246,8 @@ export function mapRawDashboardResponseToDto(raw: RawDashboardSummaryResponse): 
         }
       : null,
     marketSummary: payload.market_summary ?? '',
+    hotConcepts: (payload as any).hot_concepts ?? [],
+    hotStocks: (payload as any).hot_stocks ?? [],
   };
 }
 
@@ -614,5 +616,7 @@ export function mapDashboardSummaryToViewModel(dto: DashboardSummaryDto): Dashbo
     sourceState: fieldState(dto.generatedAt),
     dataSource: dashboardMeta,
     marketSummary: dto.marketSummary ?? '',
+    hotConcepts: (dto as any).hotConcepts ?? [],
+    hotStocks: (dto as any).hotStocks ?? [],
   };
 }

@@ -132,6 +132,8 @@ export interface DashboardSummaryDto {
   marketBreadth?: MarketBreadthDto | null;
   marketIndex?: MarketIndexDto | null;
   marketSummary?: string | null;
+  hotConcepts?: any[];
+  hotStocks?: any[];
 }
 
 export interface TodayChangesDto {
@@ -304,4 +306,6 @@ export interface DashboardViewModel {
   sourceState?: DashboardFieldState;
   dataSource?: DataSourceMeta;
   marketSummary: string;
+  hotConcepts: any[];
+  hotStocks: any[];
 }

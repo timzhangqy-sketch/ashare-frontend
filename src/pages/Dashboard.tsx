@@ -122,20 +122,22 @@ export default function Dashboard() {
       ) : null}
 
       {/* ═══ 第1行：市场综述 + 行动清单 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '3fr 2fr' }}>
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body">
             <h3 className="card-title">市场综述</h3>
-            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, margin: 0 }}>
-              {viewModel?.marketSummary || '暂无综述数据'}
-            </p>
+            <div className="stat-card" style={{ marginTop: '8px' }}>
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, margin: 0, textAlign: 'left' }}>
+                {viewModel?.marketSummary || '暂无综述数据'}
+              </p>
+            </div>
           </div>
         </div>
         <div className="card">
           <div className="card-body dashboard-module-body">
             <h3 className="card-title">今日行动清单</h3>
             {hasAnyAction ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="stat-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px', padding: '12px', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '12px', color: '#4ade80', fontWeight: 600, minWidth: '48px' }}>● 待卖出</span>
                   {hasSell ? actionList!.sell!.slice(0, 5).map((item, i) => (
@@ -165,6 +167,84 @@ export default function Dashboard() {
             ) : (
               <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>今日无需操作</span>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 第2行：概念热度 + 热门个股 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+        <div className="card">
+          <div className="card-body dashboard-module-body">
+            <h3 className="card-title">概念热度 Top10</h3>
+            <div className="stat-card" style={{ marginTop: '8px', padding: '0' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '30px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500 }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px' }}>涨跌幅</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px' }}>热度</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {((viewModel as any)?.hotConcepts || []).slice(0, 10).map((c: any, i: number) => (
+                    <tr key={`hc-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                      <td style={{ padding: '5px 8px', color: 'var(--text-muted)' }}>{c.rank ?? i + 1}</td>
+                      <td style={{ padding: '5px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.name}</td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', color: (c.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500 }}>
+                        {c.pct_change != null ? `${c.pct_change >= 0 ? '+' : ''}${c.pct_change.toFixed(2)}%` : '—'}
+                      </td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', color: 'var(--text-secondary)' }}>
+                        {c.hot != null ? Math.round(c.hot).toLocaleString() : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                  {((viewModel as any)?.hotConcepts || []).length === 0 && (
+                    <tr><td colSpan={4} style={{ padding: '12px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body dashboard-module-body">
+            <h3 className="card-title">热门个股 Top10</h3>
+            <div className="stat-card" style={{ marginTop: '8px', padding: '0' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '30px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500 }}>股票</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '100px' }}>主概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px' }}>涨跌幅</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {((viewModel as any)?.hotStocks || []).slice(0, 10).map((s: any, i: number) => (
+                    <tr key={`hs-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                      <td style={{ padding: '5px 8px', color: 'var(--text-muted)' }}>{s.rank ?? i + 1}</td>
+                      <td style={{ padding: '5px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
+                        {s.name}{s.is_leader && <span title="概念龙头" style={{ marginLeft: '4px', fontSize: '11px' }}>👑</span>}
+                      </td>
+                      <td style={{ padding: '5px 8px' }}>
+                        {s.primary_concept ? (
+                          <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '1px 6px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                            {s.primary_concept}
+                          </span>
+                        ) : '—'}
+                      </td>
+                      <td style={{ padding: '5px 8px', textAlign: 'right', color: (s.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500 }}>
+                        {s.pct_change != null ? `${s.pct_change >= 0 ? '+' : ''}${s.pct_change.toFixed(2)}%` : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                  {((viewModel as any)?.hotStocks || []).length === 0 && (
+                    <tr><td colSpan={4} style={{ padding: '12px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
