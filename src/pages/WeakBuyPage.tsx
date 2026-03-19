@@ -60,6 +60,7 @@ function WeakBuyTodayTable({ selectedDate, onOpen }: { selectedDate: string; onO
                   <tr>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="right">收盘</th>
                     <th className="right">60日涨幅</th>
                     <th className="right">放量天数</th>
@@ -72,7 +73,7 @@ function WeakBuyTodayTable({ selectedDate, onOpen }: { selectedDate: string; onO
                 </thead>
                 <tbody>
                   {rows.length === 0 ? (
-                    <tr><td colSpan={10}><div className="empty-state"><div className="empty-text">当前交易日没有弱市吸筹样本</div></div></td></tr>
+                    <tr><td colSpan={11}><div className="empty-state"><div className="empty-text">当前交易日没有弱市吸筹样本</div></div></td></tr>
                   ) : rows.map((row: PatternWeakBuyItem) => {
                     const ret60 = formatWeakBuyPct(row.ret60_pct);
                     const avgRet = formatWeakBuyPct(row.avg_ret_pct);
@@ -80,6 +81,16 @@ function WeakBuyTodayTable({ selectedDate, onOpen }: { selectedDate: string; onO
                       <tr key={row.ts_code} onClick={() => onOpen(getMockDetail(row.ts_code, row.name, ['弱市吸筹'], 0, row.ret60_pct != null ? row.ret60_pct * 100 : 0))}>
                         <td className="c-sec numeric-muted">{row.ts_code}</td>
                         <td style={{ fontWeight: 500 }}>{row.name}<CrossTags tsCode={row.ts_code} currentStrategy="WEAK_BUY" /></td>
+                        <td style={{ textAlign: 'left' }}>
+                          {(row as any).primary_concept ? (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                {(row as any).primary_concept}
+                              </span>
+                              {(row as any).is_leader && <span title={(row as any).leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                            </span>
+                          ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                        </td>
                         <td className="right numeric">{row.close != null ? Number(row.close).toFixed(2) : '--'}</td>
                         <td className="right numeric" style={{ color: ret60.isNegative ? 'var(--down)' : 'var(--up)', fontWeight: 600 }}>{ret60.text}</td>
                         <td className="right numeric">{row.volup15_days}</td>

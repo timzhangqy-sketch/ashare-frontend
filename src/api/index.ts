@@ -213,6 +213,9 @@ export interface PortfolioItem {
   today_pnl_pct:                 number | null;
   drawdown_from_peak?:           number | null;
   position_cap_multiplier_final?: number | null;
+  primary_concept?:              string | null;
+  is_leader?:                    boolean;
+  leader_reason?:                string | null;
 }
 
 export interface PortfolioResponse {
@@ -414,6 +417,9 @@ export interface WatchlistItem {
   retoc_cnt?:       number;   // 10日异动bar数
   ret_t2?:          number;   // T-2日涨幅(%)
   ret_2d_cum?:      number;   // 两日累计涨幅(%)
+  primary_concept?: string | null;
+  is_leader?:       boolean;
+  leader_reason?:   string | null;
 }
 
 export async function fetchWatchlist(params?: { include_exited?: boolean }): Promise<WatchlistItem[]> {

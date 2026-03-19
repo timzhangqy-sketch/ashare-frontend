@@ -106,6 +106,7 @@ export default function IgnitionList() {
                     <th>#</th>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="center">入池日</th>
                     <th className="right">收盘</th>
                     <th className="right">3日均VR</th>
@@ -127,6 +128,16 @@ export default function IgnitionList() {
                         <td className="c-sec">{index + 1}</td>
                         <td className="c-sec">{item.ts_code}</td>
                         <td style={{ fontWeight: 500 }}>{item.name}</td>
+                        <td style={{ textAlign: 'left' }}>
+                          {(item as any).primary_concept ? (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                {(item as any).primary_concept}
+                              </span>
+                              {(item as any).is_leader && <span title={(item as any).leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                            </span>
+                          ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                        </td>
                         <td className="center c-sec">{item.entry_date}</td>
                         <td className="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
                           {item.latest_close != null ? Number(item.latest_close).toFixed(2) : '--'}

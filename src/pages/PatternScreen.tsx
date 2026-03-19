@@ -58,6 +58,7 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
                   <tr>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="center">入池日</th>
                     <th className="right">T-2涨幅%</th>
                     <th className="right">两日累计%</th>
@@ -71,7 +72,7 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
                 </thead>
                 <tbody>
                   {rows.length === 0 ? (
-                    <tr><td colSpan={11}><div className="empty-state"><div className="empty-text">当前交易日没有形态策略样本</div></div></td></tr>
+                    <tr><td colSpan={12}><div className="empty-state"><div className="empty-text">当前交易日没有形态策略样本</div></div></td></tr>
                   ) : rows.map((row: PatternT2up9Item) => {
                     const pctMaybe = (v: number | null | undefined) => v == null ? null : Math.abs(v) <= 1 ? v * 100 : v;
                     const t2Pct = pctMaybe(row.ret_t2);
@@ -82,6 +83,16 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
                       <tr key={row.ts_code} onClick={() => onOpen(detail)}>
                         <td className="c-sec numeric-muted">{row.ts_code}</td>
                         <td style={{ fontWeight: 500 }}>{row.name}<CrossTags tsCode={row.ts_code} currentStrategy="PATTERN_T2UP9" /></td>
+                        <td style={{ textAlign: 'left' }}>
+                          {(row as any).primary_concept ? (
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                {(row as any).primary_concept}
+                              </span>
+                              {(row as any).is_leader && <span title={(row as any).leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                            </span>
+                          ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                        </td>
                         <td className="center numeric-muted">{selectedDate}</td>
                         <td className="right numeric" style={pctStyle(t2Pct)}>{t2Pct == null ? '--' : `${t2Pct > 0 ? '+' : ''}${t2Pct.toFixed(2)}%`}</td>
                         <td className="right numeric" style={pctStyle(ret2dPct)}>{ret2dPct == null ? '--' : `${ret2dPct > 0 ? '+' : ''}${ret2dPct.toFixed(2)}%`}</td>

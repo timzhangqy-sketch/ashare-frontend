@@ -454,6 +454,7 @@ export default function Watchlist() {
               <thead>
                 <tr>
                   <th style={{ width: 130, textAlign: 'left' }}>标的</th>
+                  <th style={{ width: 100, textAlign: 'left' }}>主概念</th>
                   <th style={{ width: 100, textAlign: 'left' }}>策略</th>
                   <th style={{ width: 60, textAlign: 'center' }}>状态</th>
                   <th style={{ width: 60, textAlign: 'right' }}>观察天数</th>
@@ -487,6 +488,17 @@ export default function Watchlist() {
                       <td>
                         <div style={{ fontWeight: 500, fontSize: 13 }}>{row.name}</div>
                         <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{row.tsCode}</div>
+                      </td>
+                      {/* 主概念 */}
+                      <td style={{ textAlign: 'left' }}>
+                        {row.primaryConcept ? (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                              {row.primaryConcept}
+                            </span>
+                            {row.isLeader && <span title={row.leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                          </span>
+                        ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
                       </td>
                       {/* 策略 */}
                       <td>

@@ -295,6 +295,9 @@ function buildBaseRow(
     rawActionSignal: item.action_signal,
     drawdownFromPeak: item.drawdown_from_peak ?? null,
     positionCapMultiplierFinal: item.position_cap_multiplier_final ?? null,
+    primaryConcept: item.primary_concept ?? null,
+    isLeader: item.is_leader ?? false,
+    leaderReason: item.leader_reason ?? null,
     truthMeta,
     contextDataSource: buildRowSourceMeta(
       'Portfolio 右侧上下文',

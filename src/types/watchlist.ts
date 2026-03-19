@@ -106,6 +106,9 @@ export interface WatchlistRowVm {
   contextDataSource?: DataSourceMeta;
   detailDataSource?: DataSourceMeta;
   availableActions: WatchlistActionVm[];
+  primaryConcept?: string | null;
+  isLeader?: boolean;
+  leaderReason?: string | null;
 }
 
 export interface WatchlistGroupVm {

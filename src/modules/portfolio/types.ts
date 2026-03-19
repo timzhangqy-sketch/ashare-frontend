@@ -129,6 +129,9 @@ export interface PortfolioBaseRowVm {
   detailDataSource?: DataSourceMeta;
   drawdownFromPeak?: number | null;
   positionCapMultiplierFinal?: number | null;
+  primaryConcept?: string | null;
+  isLeader?: boolean;
+  leaderReason?: string | null;
 }
 
 export type PortfolioOpenRowVm = PortfolioBaseRowVm;
