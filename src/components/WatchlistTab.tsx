@@ -138,6 +138,7 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                     <th style={{ width: 36 }}>#</th>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="center">入池日</th>
                     <th className="right">收盘</th>
                     <th className="right">3日均VR</th>
@@ -153,6 +154,7 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                   <tr>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="center">入池日</th>
                     <th className="right">在池天</th>
                     <th className="right">10日bar</th>
@@ -169,6 +171,7 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                   <tr>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="center">入池日</th>
                     <th className="right">T-2涨幅%</th>
                     <th className="right">两日累计%</th>
@@ -184,6 +187,7 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                   <tr>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="center">入池日</th>
                     <th className="right">池天数</th>
                     <th className="right">收盘</th>
@@ -199,6 +203,7 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                   <tr>
                     <th>代码</th>
                     <th>名称</th>
+                    <th style={{ textAlign: 'left' }}>主概念</th>
                     <th className="center">入池日</th>
                     <th className="right">池天数</th>
                     <th className="right">收盘</th>
@@ -220,6 +225,16 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td className="center numeric-muted">{idx + 1}</td>
                           <td className="c-sec numeric-muted">{s.ts_code}</td>
                           <td style={{ fontWeight: 500 }}>{s.name}<CrossTags tsCode={s.ts_code} currentStrategy={s.strategy} /></td>
+                          <td style={{ textAlign: 'left' }}>
+                            {s.primary_concept ? (
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                  {s.primary_concept}
+                                </span>
+                                {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                              </span>
+                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <NumCell v={s.latest_close} />
                           <NumCell v={s.avg_vr3} />
@@ -239,6 +254,16 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                         <>
                           <td className="c-sec numeric-muted">{s.ts_code}</td>
                           <td style={{ fontWeight: 500 }}>{s.name}<CrossTags tsCode={s.ts_code} currentStrategy={s.strategy} /></td>
+                          <td style={{ textAlign: 'left' }}>
+                            {s.primary_concept ? (
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                  {s.primary_concept}
+                                </span>
+                                {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                              </span>
+                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <td className="right numeric">{s.pool_day}</td>
                           <NumCell v={s.retoc_cnt} decimals={0} />
@@ -259,6 +284,16 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                         <>
                           <td className="c-sec numeric-muted">{s.ts_code}</td>
                           <td style={{ fontWeight: 500 }}>{s.name}<CrossTags tsCode={s.ts_code} currentStrategy={s.strategy} /></td>
+                          <td style={{ textAlign: 'left' }}>
+                            {s.primary_concept ? (
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                  {s.primary_concept}
+                                </span>
+                                {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                              </span>
+                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <PctCell v={(s as any).ret_t2} isDecimal />
                           <PctCell v={(s as any).ret_2d_cum} isDecimal />
@@ -278,6 +313,16 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                         <>
                           <td className="c-sec numeric-muted">{s.ts_code}</td>
                           <td style={{ fontWeight: 500 }}>{s.name}<CrossTags tsCode={s.ts_code} currentStrategy={s.strategy} /></td>
+                          <td style={{ textAlign: 'left' }}>
+                            {s.primary_concept ? (
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                  {s.primary_concept}
+                                </span>
+                                {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                              </span>
+                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <td className="right numeric">{s.pool_day}</td>
                           <NumCell v={s.latest_close} />
@@ -297,6 +342,16 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                         <>
                           <td className="c-sec numeric-muted">{s.ts_code}</td>
                           <td style={{ fontWeight: 500 }}>{s.name}<CrossTags tsCode={s.ts_code} currentStrategy={s.strategy} /></td>
+                          <td style={{ textAlign: 'left' }}>
+                            {s.primary_concept ? (
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                  {s.primary_concept}
+                                </span>
+                                {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                              </span>
+                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <td className="right numeric">{s.pool_day}</td>
                           <NumCell v={s.latest_close} />
