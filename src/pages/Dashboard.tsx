@@ -15,7 +15,6 @@ import PortfolioSection from '../components/Dashboard/PortfolioSection';
 import RiskSection from '../components/Dashboard/RiskSection';
 import StatusState from '../components/Dashboard/StatusState';
 import SystemHealthSection from '../components/Dashboard/SystemHealthSection';
-import TodaySummarySection from '../components/Dashboard/TodaySummarySection';
 import SourceSummaryBar from '../components/data-source/SourceSummaryBar';
 import { useDashboardRuntime } from '../context/useDashboardRuntime';
 import { useDate } from '../context/useDate';
@@ -122,101 +121,51 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      <TodaySummarySection data={viewModel?.todaySummary} onRetry={handleRetry} status={status} />
-
-      <section className="action-list-section">
-        <div className="action-list-header">
-          <h3 className="action-list-title card-title">今日行动清单</h3>
+      {/* ═══ 第1行：市场综述 + 行动清单 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '3fr 2fr' }}>
+        <div className="card">
+          <div className="card-body dashboard-module-body">
+            <h3 className="card-title">市场综述</h3>
+            <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, margin: 0 }}>
+              {viewModel?.marketSummary || '暂无综述数据'}
+            </p>
+          </div>
         </div>
-        <div className="action-list-body">
-          {hasAnyAction ? (
-            <>
-              <div className="action-list-row">
-                <div className="action-list-label">
-                  <span className="action-list-dot action-list-dot--sell" />
-                  待卖出
+        <div className="card">
+          <div className="card-body dashboard-module-body">
+            <h3 className="card-title">今日行动清单</h3>
+            {hasAnyAction ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '12px', color: '#4ade80', fontWeight: 600, minWidth: '48px' }}>● 待卖出</span>
+                  {hasSell ? actionList!.sell!.slice(0, 5).map((item, i) => (
+                    <span key={`sell-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      {item.name} <span style={{ color: (item.gain_pct ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>{formatSignedPercentSafe(item.gain_pct, 2, 100, '—')}</span>
+                    </span>
+                  )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
                 </div>
-                <div className="action-list-content">
-                  {hasSell ? (
-                    <>
-                      {actionList!.sell!.slice(0, 5).map((item, i) => (
-                        <div key={`sell-${item.ts_code ?? i}`} className="action-chip">
-                          <span className="action-chip-name">{item.name ?? '—'}</span>
-                          <span
-                            className={`action-chip-badge ${
-                              (item.gain_pct ?? 0) >= 0 ? 'action-chip-badge--up' : 'action-chip-badge--down'
-                            }`}
-                          >
-                            {formatSignedPercentSafe(item.gain_pct, 2, 100, '—')}
-                          </span>
-                        </div>
-                      ))}
-                      {actionList!.sell!.length > 5 ? (
-                        <span className="action-list-more">(+{actionList!.sell!.length - 5}更多)</span>
-                      ) : null}
-                    </>
-                  ) : (
-                    <span className="action-list-empty">暂无</span>
-                  )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '12px', color: 'var(--up)', fontWeight: 600, minWidth: '48px' }}>● 待买入</span>
+                  {hasBuy ? actionList!.buy!.slice(0, 5).map((item, i) => (
+                    <span key={`buy-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      {item.name}
+                    </span>
+                  )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
+                  {hasBuy && actionList!.buy!.length > 5 ? <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>(+{actionList!.buy!.length - 5}更多)</span> : null}
                 </div>
-              </div>
-              <div className="action-list-row">
-                <div className="action-list-label">
-                  <span className="action-list-dot action-list-dot--buy" />
-                  待买入
-                </div>
-                <div className="action-list-content">
-                  {hasBuy ? (
-                    <>
-                      {actionList!.buy!.slice(0, 5).map((item, i) => (
-                        <div key={`buy-${item.ts_code ?? i}`} className="action-chip">
-                          <span className="action-chip-name">{item.name ?? '—'}</span>
-                          <span className="action-chip-badge action-chip-badge--neutral">—</span>
-                        </div>
-                      ))}
-                      {actionList!.buy!.length > 5 ? (
-                        <span className="action-list-more">(+{actionList!.buy!.length - 5}更多)</span>
-                      ) : null}
-                    </>
-                  ) : (
-                    <span className="action-list-empty">暂无</span>
-                  )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '12px', color: '#f59e0b', fontWeight: 600, minWidth: '48px' }}>● 关注</span>
+                  {hasWatch ? actionList!.watch!.slice(0, 3).map((item, i) => (
+                    <span key={`watch-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      {item.name}
+                    </span>
+                  )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
                 </div>
               </div>
-              <div className="action-list-row action-list-row--last">
-                <div className="action-list-label">
-                  <span className="action-list-dot action-list-dot--watch" />
-                  重要关注
-                </div>
-                <div className="action-list-content">
-                  {hasWatch ? (
-                    <>
-                      {actionList!.watch!.slice(0, 5).map((item, i) => (
-                        <div key={`watch-${item.ts_code ?? i}`} className="action-chip">
-                          <span className="action-chip-name">{item.name ?? '—'}</span>
-                          <span className="action-chip-badge action-chip-badge--neutral">—</span>
-                        </div>
-                      ))}
-                      {actionList!.watch!.length > 5 ? (
-                        <span className="action-list-more">(+{actionList!.watch!.length - 5}更多)</span>
-                      ) : null}
-                    </>
-                  ) : (
-                    <span className="action-list-empty">暂无</span>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="action-list-row action-list-row--single">
-              <div className="action-list-label">
-                今日行动清单
-              </div>
-              <div className="action-list-content">
-                <span className="action-list-empty">今日无需操作</span>
-              </div>
-            </div>
-          )}
+            ) : (
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>今日无需操作</span>
+            )}
+          </div>
         </div>
       </section>
 

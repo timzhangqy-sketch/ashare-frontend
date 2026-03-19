@@ -245,6 +245,7 @@ export function mapRawDashboardResponseToDto(raw: RawDashboardSummaryResponse): 
           },
         }
       : null,
+    marketSummary: payload.market_summary ?? '',
   };
 }
 
@@ -612,5 +613,6 @@ export function mapDashboardSummaryToViewModel(dto: DashboardSummaryDto): Dashbo
     systemHealth,
     sourceState: fieldState(dto.generatedAt),
     dataSource: dashboardMeta,
+    marketSummary: dto.marketSummary ?? '',
   };
 }
