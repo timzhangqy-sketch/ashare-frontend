@@ -75,7 +75,7 @@ export default function Retoc2Alert() {
     <div>
       <div className="page-tabs">
         <button className={`page-tab-btn${mainTab === 'today' ? ' active' : ''}`} onClick={() => setMainTab('today')}>
-          今日触发
+          今日入选
         </button>
         <button className={`page-tab-btn${mainTab === 'watchlist' ? ' active' : ''}`} onClick={() => setMainTab('watchlist')}>
           持续观察池

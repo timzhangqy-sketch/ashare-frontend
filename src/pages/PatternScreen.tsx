@@ -124,7 +124,7 @@ export default function PatternScreen() {
   return (
     <div className="pattern-page" data-testid="pattern-page">
       <div className="page-tabs">
-        <button type="button" className={`page-tab-btn${mainTab === 'today' ? ' active' : ''}`} onClick={() => setMainTab('today')}>今日样本</button>
+        <button type="button" className={`page-tab-btn${mainTab === 'today' ? ' active' : ''}`} onClick={() => setMainTab('today')}>今日入选</button>
         <button type="button" className={`page-tab-btn${mainTab === 'watchlist' ? ' active' : ''}`} onClick={() => setMainTab('watchlist')}>持续观察池</button>
       </div>
       {mainTab === 'watchlist' ? (
