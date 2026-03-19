@@ -8890,3 +8890,30 @@ textarea {
   position: relative !important;
   z-index: 1000 !important;
 }
+
+/* ── TopBar Index Strip ── */
+.topbar-index-strip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.topbar-index-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar-index-name {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.topbar-index-close {
+  font-weight: 600;
+  font-size: 12px;
+}
+.topbar-index-pct {
+  font-size: 11px;
+}

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { StatusTone } from '../types/dashboard'
+import type { MarketIndexDto, StatusTone } from '../types/dashboard'
 
 export interface DashboardRuntimeSnapshot {
   source: 'mock' | 'real'
@@ -9,6 +9,7 @@ export interface DashboardRuntimeSnapshot {
   systemTone: StatusTone
   versionText: string
   marketRegime?: string | null
+  marketIndex?: MarketIndexDto | null
 }
 
 export interface DashboardRuntimeContextValue {

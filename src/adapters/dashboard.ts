@@ -228,6 +228,23 @@ export function mapRawDashboardResponseToDto(raw: RawDashboardSummaryResponse): 
     marketBreadth: payload.market_breadth
       ? { marketRegime: payload.market_breadth.market_regime ?? null }
       : null,
+    marketIndex: payload.market_index
+      ? {
+          indexes: readArray(payload.market_index.indexes).map((item) => ({
+            tsCode: item.ts_code,
+            name: item.name,
+            close: item.close ?? null,
+            pctChange: item.pct_change ?? null,
+            prevClose: item.prev_close ?? null,
+          })),
+          turnover: {
+            shAmount: payload.market_index.turnover?.sh_amount ?? null,
+            szAmount: payload.market_index.turnover?.sz_amount ?? null,
+            totalAmount: payload.market_index.turnover?.total_amount ?? null,
+            totalCount: payload.market_index.turnover?.total_count ?? null,
+          },
+        }
+      : null,
   };
 }
 
@@ -561,6 +578,7 @@ export function buildDashboardRuntimeSnapshot(dto: DashboardSummaryDto): Dashboa
     systemTone: toneFromHealth(dto.systemHealth.pipelineStatus),
     versionText: readText(dto.systemHealth.versionLabel),
     marketRegime: dto.marketBreadth?.marketRegime ?? null,
+    marketIndex: dto.marketIndex ?? null,
   };
 }
 

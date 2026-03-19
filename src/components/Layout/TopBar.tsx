@@ -266,6 +266,33 @@ export default function TopBar() {
         ) : null}
       </div>
 
+      {snapshot?.marketIndex ? (
+        <div className="topbar-index-strip">
+          {snapshot.marketIndex.indexes.map((idx) => {
+            const up = (idx.pctChange ?? 0) >= 0;
+            return (
+              <span key={idx.tsCode} className="topbar-index-item">
+                <span className="topbar-index-name">{idx.name}</span>
+                <span className="topbar-index-close" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
+                  {idx.close?.toFixed(0)}
+                </span>
+                <span className="topbar-index-pct" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
+                  {up ? '+' : ''}{idx.pctChange?.toFixed(2)}%
+                </span>
+              </span>
+            );
+          })}
+          {snapshot.marketIndex.turnover.totalAmount ? (
+            <span className="topbar-index-item">
+              <span className="topbar-index-name">两市</span>
+              <span className="topbar-index-close">
+                {(snapshot.marketIndex.turnover.totalAmount / 10000).toFixed(2)}万亿
+              </span>
+            </span>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="topbar-sep" />
 
       <button

@@ -85,6 +85,10 @@ export interface RawDashboardSummaryPayload {
   portfolio: RawDashboardPortfolio | null;
   system_health: RawDashboardSystemHealth | null;
   market_breadth?: RawDashboardMarketBreadth | null;
+  market_index?: {
+    indexes?: { ts_code: string; name: string; close: number | null; pct_change: number | null; prev_close: number | null }[];
+    turnover?: { sh_amount: number | null; sz_amount: number | null; total_amount: number | null; total_count: number | null };
+  } | null;
 }
 
 export interface RawDashboardSummaryResponse extends RawDashboardSummaryPayload {
@@ -93,6 +97,26 @@ export interface RawDashboardSummaryResponse extends RawDashboardSummaryPayload 
 
 export interface MarketBreadthDto {
   marketRegime: string | null;
+}
+
+export interface MarketIndexItemDto {
+  tsCode: string;
+  name: string;
+  close: number | null;
+  pctChange: number | null;
+  prevClose: number | null;
+}
+
+export interface MarketTurnoverDto {
+  shAmount: number | null;
+  szAmount: number | null;
+  totalAmount: number | null;
+  totalCount: number | null;
+}
+
+export interface MarketIndexDto {
+  indexes: MarketIndexItemDto[];
+  turnover: MarketTurnoverDto;
 }
 
 export interface DashboardSummaryDto {
@@ -105,6 +129,7 @@ export interface DashboardSummaryDto {
   portfolio: PortfolioSummaryDto;
   systemHealth: SystemHealthSummaryDto;
   marketBreadth?: MarketBreadthDto | null;
+  marketIndex?: MarketIndexDto | null;
 }
 
 export interface TodayChangesDto {
