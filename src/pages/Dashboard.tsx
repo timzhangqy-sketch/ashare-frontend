@@ -127,9 +127,9 @@ export default function Dashboard() {
       {/* ═══ 第1行：市场综述 + 行动清单 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
-          <div className="card-body dashboard-module-body">
-            <h3 className="card-title">市场综述</h3>
-            <div className="stat-card" style={{ marginTop: '8px' }}>
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场综述</h3>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, margin: 0, textAlign: 'left' }}>
                 {viewModel?.marketSummary || '暂无综述数据'}
               </p>
@@ -137,10 +137,11 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card">
-          <div className="card-body dashboard-module-body">
-            <h3 className="card-title">今日行动清单</h3>
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单</h3>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
             {hasAnyAction ? (
-              <div className="stat-card" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '8px', padding: '12px', textAlign: 'left' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '12px', color: '#4ade80', fontWeight: 600, minWidth: '48px' }}>● 待卖出</span>
                   {hasSell ? actionList!.sell!.slice(0, 5).map((item, i) => (
@@ -170,6 +171,7 @@ export default function Dashboard() {
             ) : (
               <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>今日无需操作</span>
             )}
+            </div>
           </div>
         </div>
       </section>
