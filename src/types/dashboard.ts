@@ -118,6 +118,7 @@ export interface MarketTurnoverDto {
 export interface MarketIndexDto {
   indexes: MarketIndexItemDto[];
   turnover: MarketTurnoverDto;
+  turnoverHistory?: { date: string; amount: number }[];
 }
 
 export interface DashboardSummaryDto {
@@ -308,4 +309,5 @@ export interface DashboardViewModel {
   marketSummary: string;
   hotConcepts: any[];
   hotStocks: any[];
+  marketIndex: any;
 }

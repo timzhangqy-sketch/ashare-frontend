@@ -243,6 +243,7 @@ export function mapRawDashboardResponseToDto(raw: RawDashboardSummaryResponse): 
             totalAmount: payload.market_index.turnover?.total_amount ?? null,
             totalCount: payload.market_index.turnover?.total_count ?? null,
           },
+          turnoverHistory: (payload.market_index as any).turnover_history ?? [],
         }
       : null,
     marketSummary: payload.market_summary ?? '',
@@ -618,5 +619,6 @@ export function mapDashboardSummaryToViewModel(dto: DashboardSummaryDto): Dashbo
     marketSummary: dto.marketSummary ?? '',
     hotConcepts: (dto as any).hotConcepts ?? [],
     hotStocks: (dto as any).hotStocks ?? [],
+    marketIndex: (dto as any).marketIndex ?? null,
   };
 }

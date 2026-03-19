@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { getDashboardSummary } from '../api';
 import {
   buildDashboardRuntimeSnapshot,
@@ -171,8 +172,8 @@ export default function Dashboard() {
         </div>
       </section>
 
-      {/* ═══ 第2行：概念热度 + 热门个股 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+      {/* ═══ 第2行：概念热度 + 成交额 + 热门个股 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body">
             <h3 className="card-title">概念热度 Top10</h3>
@@ -204,6 +205,84 @@ export default function Dashboard() {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '12px' }}>
+            <h3 className="card-title">两市成交额（亿元）</h3>
+            <div style={{ marginTop: '4px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+              {(() => {
+                const turnoverHistory = (viewModel as any)?.marketIndex?.turnoverHistory
+                  ?? (viewModel as any)?.marketIndex?.turnover_history
+                  ?? [];
+                const latest = turnoverHistory.length > 0 ? turnoverHistory[turnoverHistory.length - 1] : null;
+                const avg5 = turnoverHistory.length >= 5
+                  ? Math.round(turnoverHistory.slice(-5).reduce((s: number, d: any) => s + d.amount, 0) / 5)
+                  : null;
+                return (
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px 4px', fontSize: '12px' }}>
+                      <span style={{ color: 'var(--text-secondary)' }}>
+                        今日 <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px' }}>
+                          {latest ? Math.round(latest.amount).toLocaleString() : '—'}
+                        </span> 亿
+                      </span>
+                      {avg5 && latest && (
+                        <span style={{ color: latest.amount > avg5 * 1.1 ? 'var(--up)' : latest.amount < avg5 * 0.9 ? 'var(--down)' : 'var(--text-muted)', fontSize: '11px' }}>
+                          5日均 {avg5.toLocaleString()} 亿
+                          ({latest.amount > avg5 ? '+' : ''}{((latest.amount / avg5 - 1) * 100).toFixed(0)}%)
+                        </span>
+                      )}
+                    </div>
+                    <ResponsiveContainer width="100%" height="100%" minHeight={220}>
+                      <AreaChart data={turnoverHistory} margin={{ top: 4, right: 8, left: 4, bottom: 2 }}>
+                        <defs>
+                          <linearGradient id="turnoverGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.35} />
+                            <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.03} />
+                          </linearGradient>
+                        </defs>
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fontSize: 10, fill: '#64748b', dy: 4 }}
+                          axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
+                          tickLine={false}
+                          interval={Math.floor(turnoverHistory.length / 5)}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 10, fill: '#64748b' }}
+                          axisLine={false}
+                          tickLine={false}
+                          width={50}
+                          tickFormatter={(v: number) => `${Math.round(v).toLocaleString()}`}
+                          domain={['auto', 'auto']}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            background: 'rgba(15,23,42,0.95)',
+                            border: '1px solid rgba(255,255,255,0.12)',
+                            borderRadius: '8px',
+                            fontSize: '12px',
+                            padding: '8px 12px',
+                          }}
+                          labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
+                          formatter={((value: number) => [`${Math.round(value).toLocaleString()} 亿`, '成交额']) as any}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="amount"
+                          stroke="#3b82f6"
+                          strokeWidth={1.5}
+                          fill="url(#turnoverGrad)"
+                          dot={false}
+                          activeDot={{ r: 3, fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5 }}
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
