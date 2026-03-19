@@ -536,14 +536,14 @@ function RowActionGroup({ actions, detailOpenTestId }: { actions: SignalsActionV
 
 function getTableColumns(activeTab: SignalsTabKey, opts?: { hasPrice?: boolean; hasTurnover?: boolean }): string[] {
   if (activeTab === 'buy') {
-    const cols = ['标的', '策略', '信号'];
+    const cols = ['标的', '主概念', '策略', '信号'];
     if (opts?.hasPrice !== false) cols.push('价格 / 涨跌');
     if (opts?.hasTurnover !== false) cols.push('换手 / 共振');
     cols.push('状态', '来源', '动作');
     return cols;
   }
-  if (activeTab === 'sell') return ['标的', '策略', '动作信号', '持有天数 / 最新价', '日内 / 浮盈亏', '原因', '来源', '动作'];
-  if (activeTab === 'resonance') return ['标的', '策略组合', '策略数', '最新信号', '价格 / 涨跌', '状态', '来源', '动作'];
+  if (activeTab === 'sell') return ['标的', '主概念', '策略', '动作信号', '持有天数 / 最新价', '日内 / 浮盈亏', '原因', '来源', '动作'];
+  if (activeTab === 'resonance') return ['标的', '主概念', '策略组合', '策略数', '最新信号', '价格 / 涨跌', '状态', '来源', '动作'];
   return ['时间', '事件', '策略', '标的', '信号', '跟进动作', '动作'];
 }
 
@@ -577,6 +577,16 @@ function renderTableRows(
             <td>
               <div className="signals-cell-title">{row.name}</div>
               <div className="signals-inline-meta numeric-muted">{row.tsCode}</div>
+            </td>
+            <td style={{ textAlign: 'left' }}>
+              {(row as SignalsBuyRowVm).primaryConcept ? (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    {(row as SignalsBuyRowVm).primaryConcept}
+                  </span>
+                  {(row as SignalsBuyRowVm).isLeader && <span title={(row as SignalsBuyRowVm).leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                </span>
+              ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
             </td>
             <td>{displayStrategyName((row as SignalsBuyRowVm).strategySource)}</td>
             <td>
@@ -618,6 +628,16 @@ function renderTableRows(
               <div className="signals-cell-title">{row.name}</div>
               <div className="signals-inline-meta numeric-muted">{row.tsCode}</div>
             </td>
+            <td style={{ textAlign: 'left' }}>
+              {(row as SignalsSellRowVm).primaryConcept ? (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    {(row as SignalsSellRowVm).primaryConcept}
+                  </span>
+                  {(row as SignalsSellRowVm).isLeader && <span title={(row as SignalsSellRowVm).leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                </span>
+              ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+            </td>
             <td>{displayStrategyName((row as SignalsSellRowVm).sourceStrategy)}</td>
             <td>{displayActionSignal((row as SignalsSellRowVm).actionSignal)}</td>
             <td className="right numeric">
@@ -642,6 +662,16 @@ function renderTableRows(
             <td>
               <div className="signals-cell-title">{row.name}</div>
               <div className="signals-inline-meta numeric-muted">{row.tsCode}</div>
+            </td>
+            <td style={{ textAlign: 'left' }}>
+              {(row as SignalsResonanceRowVm).primaryConcept ? (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    {(row as SignalsResonanceRowVm).primaryConcept}
+                  </span>
+                  {(row as SignalsResonanceRowVm).isLeader && <span title={(row as SignalsResonanceRowVm).leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
+                </span>
+              ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
             </td>
             <td className="signals-cell-wrap">
               {(row as SignalsResonanceRowVm).strategies.map((strategy) => displayStrategyName(strategy)).join(' / ')}

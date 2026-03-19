@@ -352,6 +352,9 @@ function buildBuyRows(sources: SignalsWorkspaceSources): SignalsBuyRowVm[] {
       inWatchlist: true,
       inPortfolio: portfolioMap.has(item.ts_code),
       crossStrategyCount: crossStrategies.length,
+      primaryConcept: item.primary_concept ?? null,
+      isLeader: item.is_leader ?? false,
+      leaderReason: item.leader_reason ?? null,
       origin: 'primary',
       sourceLabel: strategyName(item.strategy),
       truthMeta: {
@@ -380,6 +383,9 @@ function buildSellRows(sources: SignalsWorkspaceSources): SignalsSellRowVm[] {
       actionSignal: item.action_signal ?? 'HOLD',
       signalReason: item.signal_reason ?? '当前缺少正式卖点原因，先回退为持仓复核说明。',
       isFallbackReason: !item.signal_reason,
+      primaryConcept: item.primary_concept ?? null,
+      isLeader: item.is_leader ?? false,
+      leaderReason: item.leader_reason ?? null,
       origin: 'primary',
       sourceLabel: 'Portfolio 持仓',
       truthMeta: {
@@ -404,6 +410,9 @@ function buildSellRows(sources: SignalsWorkspaceSources): SignalsSellRowVm[] {
     actionSignal: item.action_signal ?? 'HOLD',
     signalReason: item.signal_reason ?? '当前没有正式卖点原因，前端退化为持仓复核说明文案。',
     isFallbackReason: true,
+    primaryConcept: item.primary_concept ?? null,
+    isLeader: item.is_leader ?? false,
+    leaderReason: item.leader_reason ?? null,
     origin: 'fallback',
     sourceLabel: '兼容：Portfolio 持仓复核',
     truthMeta: {
@@ -438,6 +447,9 @@ function buildResonanceRows(sources: SignalsWorkspaceSources): SignalsResonanceR
       pctChg: snapshot?.pctChg ?? null,
       inWatchlist: Boolean(watchlistRow),
       inPortfolio: Boolean(portfolioRow),
+      primaryConcept: watchlistRow?.primary_concept ?? portfolioRow?.primary_concept ?? null,
+      isLeader: watchlistRow?.is_leader ?? portfolioRow?.is_leader ?? false,
+      leaderReason: watchlistRow?.leader_reason ?? portfolioRow?.leader_reason ?? null,
       origin: 'aggregate',
       sourceLabel: '共振聚合',
       truthMeta: {

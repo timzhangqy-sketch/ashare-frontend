@@ -68,6 +68,9 @@ export interface SignalsBuyRowVm {
   origin: SignalsDataOrigin;
   sourceLabel: string;
   truthMeta: SignalsFieldTruthMap;
+  primaryConcept?: string | null;
+  isLeader?: boolean;
+  leaderReason?: string | null;
 }
 
 export interface SignalsSellRowVm {
@@ -86,6 +89,9 @@ export interface SignalsSellRowVm {
   origin: SignalsDataOrigin;
   sourceLabel: string;
   truthMeta: SignalsFieldTruthMap;
+  primaryConcept?: string | null;
+  isLeader?: boolean;
+  leaderReason?: string | null;
 }
 
 export interface SignalsResonanceRowVm {
@@ -102,6 +108,9 @@ export interface SignalsResonanceRowVm {
   origin: SignalsDataOrigin;
   sourceLabel: string;
   truthMeta: SignalsFieldTruthMap;
+  primaryConcept?: string | null;
+  isLeader?: boolean;
+  leaderReason?: string | null;
 }
 
 export interface SignalsFlowRowVm {
