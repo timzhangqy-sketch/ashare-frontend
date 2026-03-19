@@ -26,6 +26,8 @@ export default function Dashboard() {
   const { setSnapshot } = useDashboardRuntime();
 
   const [actionList, setActionList] = useState<ActionListResponse | null>(null);
+  const [hoveredConceptRow, setHoveredConceptRow] = useState<number | null>(null);
+  const [hoveredHotStockRow, setHoveredHotStockRow] = useState<number | null>(null);
   const [retrySeed, setRetrySeed] = useState(0);
   const [loadState, setLoadState] = useState<{
     key: string | null;
@@ -173,35 +175,57 @@ export default function Dashboard() {
       </section>
 
       {/* ═══ 第2行：概念热度 + 成交额 + 热门个股 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'stretch' }}>
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1.2fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
-          <div className="card-body dashboard-module-body">
-            <h3 className="card-title">概念热度 Top10</h3>
-            <div className="stat-card" style={{ marginTop: '8px', padding: '0' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10</h3>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '30px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500 }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px' }}>涨跌幅</th>
-                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px' }}>热度</th>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '28px', fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px', fontSize: '11px' }}>涨跌幅</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px', fontSize: '11px' }}>热度</th>
                   </tr>
                 </thead>
                 <tbody>
                   {((viewModel as any)?.hotConcepts || []).slice(0, 10).map((c: any, i: number) => (
-                    <tr key={`hc-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                      <td style={{ padding: '5px 8px', color: 'var(--text-muted)' }}>{c.rank ?? i + 1}</td>
-                      <td style={{ padding: '5px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.name}</td>
-                      <td style={{ padding: '5px 8px', textAlign: 'right', color: (c.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500 }}>
+                    <tr
+                      key={`hc-${i}`}
+                      onMouseEnter={() => setHoveredConceptRow(i)}
+                      onMouseLeave={() => setHoveredConceptRow(null)}
+                      style={{
+                        borderBottom: '1px solid rgba(255,255,255,0.04)',
+                        background: hoveredConceptRow === i ? 'rgba(255,255,255,0.03)' : 'transparent',
+                      }}
+                    >
+                      <td style={{ padding: '6px 8px', color: 'var(--text-muted)', width: '28px', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.rank ?? i + 1}
+                      </td>
+                      <td style={{ padding: '6px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
+                        {c.name}
+                      </td>
+                      <td
+                        style={{
+                          padding: '6px 8px',
+                          textAlign: 'right',
+                          color: (c.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)',
+                          fontWeight: 500,
+                          fontVariantNumeric: 'tabular-nums',
+                        }}
+                      >
                         {c.pct_change != null ? `${c.pct_change >= 0 ? '+' : ''}${c.pct_change.toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ padding: '5px 8px', textAlign: 'right', color: 'var(--text-secondary)' }}>
+                      <td style={{ padding: '6px 8px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {c.hot != null ? Math.round(c.hot).toLocaleString() : '—'}
                       </td>
                     </tr>
                   ))}
                   {((viewModel as any)?.hotConcepts || []).length === 0 && (
-                    <tr><td colSpan={4} style={{ padding: '12px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td></tr>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <td colSpan={4} style={{ padding: '6px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td>
+                    </tr>
                   )}
                 </tbody>
               </table>
@@ -209,9 +233,9 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ display: 'flex', flexDirection: 'column', height: '100%', padding: '12px' }}>
-            <h3 className="card-title">两市成交额（亿元）</h3>
-            <div style={{ marginTop: '4px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）</h3>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               {(() => {
                 const turnoverHistory = (viewModel as any)?.marketIndex?.turnoverHistory
                   ?? (viewModel as any)?.marketIndex?.turnover_history
@@ -221,41 +245,48 @@ export default function Dashboard() {
                   ? Math.round(turnoverHistory.slice(-5).reduce((s: number, d: any) => s + d.amount, 0) / 5)
                   : null;
                 return (
-                  <div>
+                  <>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px 4px', fontSize: '12px' }}>
                       <span style={{ color: 'var(--text-secondary)' }}>
-                        今日 <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '14px' }}>
+                        今日 <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '16px' }}>
                           {latest ? Math.round(latest.amount).toLocaleString() : '—'}
                         </span> 亿
                       </span>
                       {avg5 && latest && (
-                        <span style={{ color: latest.amount > avg5 * 1.1 ? 'var(--up)' : latest.amount < avg5 * 0.9 ? 'var(--down)' : 'var(--text-muted)', fontSize: '11px' }}>
+                        <span style={{ color: latest.amount > avg5 * 1.1 ? 'var(--up)' : latest.amount < avg5 * 0.9 ? 'var(--down)' : 'var(--text-muted)', fontSize: '12px' }}>
                           5日均 {avg5.toLocaleString()} 亿
                           ({latest.amount > avg5 ? '+' : ''}{((latest.amount / avg5 - 1) * 100).toFixed(0)}%)
                         </span>
                       )}
                     </div>
-                    <ResponsiveContainer width="100%" height="100%" minHeight={220}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+                    <ResponsiveContainer width="100%" height="100%" minHeight={180}>
                       <AreaChart data={turnoverHistory} margin={{ top: 4, right: 8, left: 4, bottom: 2 }}>
                         <defs>
                           <linearGradient id="turnoverGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.35} />
-                            <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.03} />
+                            <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.5} />
+                            <stop offset="100%" stopColor="#3b82f6" stopOpacity={0.05} />
                           </linearGradient>
                         </defs>
                         <XAxis
                           dataKey="date"
-                          tick={{ fontSize: 10, fill: '#64748b', dy: 4 }}
+                          tick={{ fontSize: 11, fill: '#64748b', dy: 4 }}
                           axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
                           tickLine={false}
                           interval={Math.floor(turnoverHistory.length / 5)}
                         />
                         <YAxis
-                          tick={{ fontSize: 10, fill: '#64748b' }}
+                          tick={{ fontSize: 11, fill: '#64748b' }}
                           axisLine={false}
                           tickLine={false}
                           width={50}
-                          tickFormatter={(v: number) => `${Math.round(v).toLocaleString()}`}
+                          tickFormatter={(v: number) => {
+                            const n = Number(v);
+                            if (!Number.isFinite(n)) return '';
+                            const abs = Math.abs(n);
+                            if (abs >= 10000) return `${(n / 10000).toFixed(1)}万`;
+                            return `${Math.round(n).toLocaleString()}`;
+                          }}
                           domain={['auto', 'auto']}
                         />
                         <Tooltip
@@ -273,53 +304,60 @@ export default function Dashboard() {
                           type="monotone"
                           dataKey="amount"
                           stroke="#3b82f6"
-                          strokeWidth={1.5}
+                          strokeWidth={2}
                           fill="url(#turnoverGrad)"
                           dot={false}
                           activeDot={{ r: 3, fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5 }}
                         />
                       </AreaChart>
                     </ResponsiveContainer>
-                  </div>
+                    </div>
+                  </>
                 );
               })()}
             </div>
           </div>
         </div>
         <div className="card">
-          <div className="card-body dashboard-module-body">
-            <h3 className="card-title">热门个股 Top10</h3>
-            <div className="stat-card" style={{ marginTop: '8px', padding: '0' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>热门个股 Top10</h3>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '30px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500 }}>股票</th>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '100px' }}>主概念</th>
-                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px' }}>涨跌幅</th>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '28px', fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>股票</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '100px', fontSize: '11px' }}>主概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px', fontSize: '11px' }}>涨跌幅</th>
                   </tr>
                 </thead>
                 <tbody>
                   {((viewModel as any)?.hotStocks || []).slice(0, 10).map((s: any, i: number) => (
-                    <tr key={`hs-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                      <td style={{ padding: '5px 8px', color: 'var(--text-muted)' }}>{s.rank ?? i + 1}</td>
-                      <td style={{ padding: '5px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
+                    <tr
+                      key={`hs-${i}`}
+                      onMouseEnter={() => setHoveredHotStockRow(i)}
+                      onMouseLeave={() => setHoveredHotStockRow(null)}
+                      style={{
+                        borderBottom: '1px solid rgba(255,255,255,0.04)',
+                        background: hoveredHotStockRow === i ? 'rgba(255,255,255,0.03)' : 'transparent',
+                      }}
+                    >
+                      <td style={{ padding: '6px 8px', color: 'var(--text-muted)', width: '28px', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{s.rank ?? i + 1}</td>
+                      <td style={{ padding: '6px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
                         {s.name}{s.is_leader && <span title="概念龙头" style={{ marginLeft: '4px', fontSize: '11px' }}>👑</span>}
                       </td>
-                      <td style={{ padding: '5px 8px' }}>
+                      <td style={{ padding: '6px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
                         {s.primary_concept ? (
-                          <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '1px 6px', fontSize: '11px', color: 'var(--text-secondary)' }}>
-                            {s.primary_concept}
-                          </span>
+                          s.primary_concept
                         ) : '—'}
                       </td>
-                      <td style={{ padding: '5px 8px', textAlign: 'right', color: (s.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500 }}>
+                      <td style={{ padding: '6px 8px', textAlign: 'right', color: (s.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {s.pct_change != null ? `${s.pct_change >= 0 ? '+' : ''}${s.pct_change.toFixed(2)}%` : '—'}
                       </td>
                     </tr>
                   ))}
                   {((viewModel as any)?.hotStocks || []).length === 0 && (
-                    <tr><td colSpan={4} style={{ padding: '12px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td></tr>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}><td colSpan={4} style={{ padding: '6px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td></tr>
                   )}
                 </tbody>
               </table>
