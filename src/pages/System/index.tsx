@@ -14,12 +14,13 @@ import type { ApiHealthRow, CoverageItemRow, PipelineStepRow, RunlogVersionRow, 
 const TABLE_CN: Record<string, string> = {
   ashare_daily_price: '日线行情', ashare_daily_basic: '基础指标', ashare_adj_factor: '复权因子',
   ashare_daily_price_adj: '复权日线', ashare_index_daily_price: '指数日线', ashare_intraday_5m: '5分钟行情',
-  ashare_fin_income: '财务数据', ashare_stock_basic: '股票基础', ashare_trade_calendar: '交易日历',
+  ashare_fin_income: '利润表', ashare_fin_balance: '资产负债表', ashare_fin_cashflow: '现金流量表',
+  ashare_audit_opinion: '审计意见', ashare_stock_basic: '股票基础', ashare_trade_calendar: '交易日历',
   ashare_pledge_stat: '质押统计', ashare_risk_score: '风险评分', ashare_market_breadth: '市场宽度',
-  ashare_ths_concept: '概念定义', ashare_ths_concept_member: '概念成分', ashare_ths_hot_stock: '热股榜',
-  ashare_ths_hot_concept: '概念热度', ashare_concept_daily_stats: '板块统计', ashare_market_distribution: '涨跌分布',
-  ashare_market_turnover: '成交额汇总', ashare_market_summary: 'AI综述', ashare_watchlist: '观察池',
-  ashare_portfolio: '持仓', ashare_sim_orders: '模拟订单',
+  ashare_ths_concept: '概念定义', ashare_ths_concept_member: '概念成分股', ashare_ths_hot_stock: '热股榜',
+  ashare_ths_hot_concept: '概念热度', ashare_concept_daily_stats: '板块日度统计', ashare_market_distribution: '涨跌分布',
+  ashare_market_turnover: '成交额汇总', ashare_market_summary: 'AI综述', ashare_watchlist: '交易标的池',
+  ashare_vol_surge_pool: '放量蓄势池', ashare_portfolio: '持仓', ashare_sim_orders: '模拟订单',
 }
 
 const STEP_LABEL: Record<string, string> = {
