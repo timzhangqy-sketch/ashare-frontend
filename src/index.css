@@ -9073,6 +9073,9 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .badge-green { background:rgba(34,197,94,0.15); color:#22c55e; }
 .badge-red { background:rgba(239,68,68,0.15); color:#ef4444; }
 .pipeline-log { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-muted); font-size:11px; }
-.pipeline-row.coverage-row { grid-template-columns: 180px 110px 90px 60px 1fr !important; }
-.pipeline-row.health-row { grid-template-columns: 180px 50px 180px 60px 1fr !important; }
-.pipeline-row.runlog-row { grid-template-columns: 120px 200px 120px 70px 1fr !important; }
+/* System tabs grid override - percentage based */
+.system-page .pipeline-row { display:grid !important; gap:16px !important; padding:8px 20px !important; align-items:center !important; }
+.system-page .pipeline-row:not(.coverage-row):not(.health-row):not(.runlog-row) { grid-template-columns: 18% 8% 8% 6% 1fr !important; }
+.system-page .pipeline-row.coverage-row { grid-template-columns: 20% 15% 12% 8% 1fr !important; }
+.system-page .pipeline-row.health-row { grid-template-columns: 20% 8% 22% 8% 1fr !important; }
+.system-page .pipeline-row.runlog-row { grid-template-columns: 15% 22% 15% 10% 1fr !important; }

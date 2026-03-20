@@ -183,7 +183,7 @@ export default function SystemPage() {
                     const ok = cr.updateStatusLabel === '✓ 已更新'
                     return (
                       <div key={row.id} className={`pipeline-row coverage-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
-                        <span className="pipeline-name">{TABLE_CN[cr.datasetKey] || row.title}</span>
+                        <span className="pipeline-name">{TABLE_CN[cr.datasetKey] || TABLE_CN[row.title] || row.title}</span>
                         <span className="pipeline-duration numeric">{cr.latestTradeDate}</span>
                         <span className="pipeline-rows numeric">{cr.totalRows}</span>
                         <span className={`pipeline-badge ${ok ? 'badge-green' : 'badge-yellow'}`}>{ok ? '正常' : '待更新'}</span>
