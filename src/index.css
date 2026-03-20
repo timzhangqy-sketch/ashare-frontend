@@ -4352,19 +4352,19 @@ a { text-decoration: none; color: inherit; }
 .portfolio-page .stat-label,
 .portfolio-page .kpi-label,
 .portfolio-page .metric-label {
-  color: var(--text-secondary) !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
+  color: var(--text-muted) !important;
+  font-size: 10px !important;
+  font-weight: 500 !important;
   letter-spacing: 0.04em;
 }
 
 .portfolio-page .stat-value,
 .portfolio-page .kpi-value,
 .portfolio-page .metric-value {
-  font-size: 20px !important;
-  font-weight: 700 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
   font-variant-numeric: tabular-nums;
-  line-height: 1.15;
+  line-height: 1.3;
 }
 
 .portfolio-hero {
