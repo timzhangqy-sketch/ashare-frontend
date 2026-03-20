@@ -780,7 +780,7 @@ export default function Dashboard() {
               const benchLabel = portfolioRaw.benchmark_label ?? '';
               const fmtMoney = (v: number) => v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString();
               const fmtPct = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`;
-              const pctColor = (v: number) => v > 0 ? '#52c41a' : v < 0 ? '#ff4d4f' : 'var(--text-primary)';
+              const pctColor = (v: number) => v > 0 ? 'var(--up)' : v < 0 ? 'var(--down)' : 'var(--text-primary)';
 
               const cells: { label: string; value: string; color?: string; sub?: string }[] = [
                 { label: '总资产(NAV)', value: fmtMoney(nav) },
@@ -793,17 +793,17 @@ export default function Dashboard() {
                 { label: '开始日期', value: startDate || '—' },
                 { label: '当前持仓', value: `${posCnt}只` },
                 { label: '现金比例', value: `${cashRatio.toFixed(1)}%` },
-                { label: '最大回撤', value: `-${mdd.toFixed(2)}%`, color: '#ff4d4f' },
+                { label: '最大回撤', value: `-${mdd.toFixed(2)}%`, color: 'var(--down)' },
                 { label: benchLabel || '基准', value: fmtPct(bench), color: pctColor(bench), sub: startDate ? `自${startDate.slice(5)}至今` : '' },
               ];
 
               return (
-                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '10px 12px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
+                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '8px 12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
                     {cells.map((c) => (
                       <div key={c.label}>
                         <div style={{ fontSize: 11, color: '#666', marginBottom: 2 }}>{c.label}</div>
-                        <div style={{ fontSize: 16, fontWeight: 700, color: c.color ?? 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>{c.value}</div>
+                        <div style={{ fontSize: 13, fontWeight: 400, color: c.color ?? 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{c.value}</div>
                         {c.sub && <div style={{ fontSize: 10, color: '#666', marginTop: 1 }}>{c.sub}</div>}
                       </div>
                     ))}
