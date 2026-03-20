@@ -261,15 +261,12 @@ export default function Dashboard() {
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）</h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               {(() => {
-                const turnoverHistory: any[] = (viewModel as any)?.marketIndex?.turnoverHistory
-                  ?? (viewModel as any)?.marketIndex?.turnover_history
-                  ?? [];
-                const breadthHistory: any[] = (viewModel as any)?.marketIndex?.breadthHistory
-                  ?? (viewModel as any)?.marketIndex?.breadth_history
-                  ?? [];
-                const breadthScore = (viewModel as any)?.marketIndex?.breadth_score ?? (viewModel as any)?.marketIndex?.breadthScore ?? null;
-                const breadthDelta = (viewModel as any)?.marketIndex?.breadth_delta ?? (viewModel as any)?.marketIndex?.breadthDelta ?? null;
-                const breadthState: string = (viewModel as any)?.marketIndex?.breadth_state ?? (viewModel as any)?.marketIndex?.breadthState ?? '';
+                const mi = (viewModel as any)?.marketIndex;
+                const turnoverHistory: any[] = mi?.turnoverHistory ?? [];
+                const breadthHistory: any[] = mi?.breadthHistory ?? [];
+                const breadthScore = mi?.breadthScore ?? null;
+                const breadthDelta = mi?.breadthDelta ?? null;
+                const breadthState: string = mi?.breadthState ?? '';
 
                 // Merge breadth_score into chart data
                 const breadthMap: Record<string, number> = {};

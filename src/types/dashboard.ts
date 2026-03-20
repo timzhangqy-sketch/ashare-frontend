@@ -119,6 +119,10 @@ export interface MarketIndexDto {
   indexes: MarketIndexItemDto[];
   turnover: MarketTurnoverDto;
   turnoverHistory?: { date: string; amount: number }[];
+  breadthHistory?: { date: string; score: number; state: string }[];
+  breadthScore?: number | null;
+  breadthDelta?: number | null;
+  breadthState?: string;
 }
 
 export interface DashboardSummaryDto {

@@ -244,6 +244,10 @@ export function mapRawDashboardResponseToDto(raw: RawDashboardSummaryResponse): 
             totalCount: payload.market_index.turnover?.total_count ?? null,
           },
           turnoverHistory: (payload.market_index as any).turnover_history ?? [],
+          breadthHistory: (payload.market_index as any).breadth_history ?? [],
+          breadthScore: (payload.market_index as any).breadth_score ?? null,
+          breadthDelta: (payload.market_index as any).breadth_delta ?? null,
+          breadthState: (payload.market_index as any).breadth_state ?? '',
         }
       : null,
     marketSummary: payload.market_summary ?? '',
