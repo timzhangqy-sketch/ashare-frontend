@@ -64,23 +64,17 @@ export default function GateBlockPanel({
                 className={selectedFocus === row.tsCode ? 'risk-table-row selected' : 'risk-table-row'}
                 onClick={() => onSelect(row.tsCode)}
               >
-                <td>
-                  <div className="risk-cell-title">{row.name}</div>
-                  <div className="risk-inline-meta numeric-muted">{row.tsCode}</div>
-                </td>
+                <td><span style={{fontWeight:600}}>{row.name}</span> <span className="numeric-muted" style={{fontSize:'11px'}}>{row.tsCode}</span></td>
                 <td>{row.sourceDomainLabel}</td>
                 <td>
                   <span className={`risk-status-pill ${row.tradeAllowed ? 'allow' : 'block'}`}>{row.tradeAllowedLabel}</span>
                 </td>
                 <td>{row.blockReason}</td>
                 <td>{row.blockSource}</td>
-                <td>
-                  <div>{row.suggestion}</div>
-                  <div className="risk-inline-actions" style={{ display: 'flex', gap: 4 }}>
-                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }} title="查看拆解"><PieChart size={15} /></button>
-                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenSource(row.sourceHref); }} title="返回来源"><ArrowLeft size={15} /></button>
-                  </div>
-                </td>
+                <td><div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'nowrap'}}><span>{row.suggestion}</span>
+                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }} title="查看拆解"><PieChart size={14} /></button>
+                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenSource(row.sourceHref); }} title="返回来源"><ArrowLeft size={14} /></button>
+                </div></td>
               </tr>
             ))
           )}

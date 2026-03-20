@@ -66,27 +66,19 @@ export default function RiskScorePanel({
                 className={selectedFocus === row.tsCode ? 'risk-table-row selected' : 'risk-table-row'}
                 onClick={() => onSelect(row.tsCode)}
               >
-                <td>
-                  <div className="risk-cell-title">{row.name}</div>
-                  <div className="risk-inline-meta numeric-muted">{row.tsCode}</div>
-                </td>
+                <td><span style={{fontWeight:600}}>{row.name}</span> <span className="numeric-muted" style={{fontSize:'11px'}}>{row.tsCode}</span></td>
                 <td className="numeric">{row.riskScoreTotal}</td>
                 <td className="risk-cell-wrap numeric">
                   财务 {row.riskScoreFinancial} / 市场 {row.riskScoreMarket} / 事件 {row.riskScoreEvent} / 合规 {row.riskScoreCompliance}
                 </td>
                 <td className="numeric">{row.dimCap.toFixed(2)}</td>
-                <td className="numeric">
-                  <div>{row.positionCapMultiplierFinal.toFixed(2)}</div>
-                  <div className="risk-inline-meta">{row.recommendedPositionText}</div>
-                </td>
-                <td>
-                  <div>{row.riskLevelLabel}</div>
-                  <div className="risk-inline-actions" style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }} title="查看拆解"><PieChart size={15} /></button>
-                    <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenWatchlist(row.watchlistHref); }}>交易标的池</button>
-                    <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenPortfolio(row.portfolioHref); }}>持仓</button>
-                  </div>
-                </td>
+                <td className="numeric">{row.positionCapMultiplierFinal.toFixed(2)}</td>
+                <td><div style={{display:'flex',alignItems:'center',gap:4,flexWrap:'nowrap'}}>
+                  <span>{row.riskLevelLabel}</span>
+                  <button type="button" style={iconBtnStyle} onClick={(event) => { event.stopPropagation(); onOpenBreakdown(row.tsCode); }} title="查看拆解"><PieChart size={14} /></button>
+                  <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenWatchlist(row.watchlistHref); }}>标的池</button>
+                  <button type="button" className="risk-inline-link" onClick={(event) => { event.stopPropagation(); onOpenPortfolio(row.portfolioHref); }}>持仓</button>
+                </div></td>
               </tr>
             ))
           )}

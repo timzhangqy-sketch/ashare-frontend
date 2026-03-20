@@ -9041,3 +9041,9 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .portfolio-stats-card .data-table td:first-child { width: 1%; white-space: nowrap; }
 .data-table .c-up { color: var(--color-up) !important; }
 .data-table .c-down { color: var(--color-down) !important; }
+
+/* Risk page compact rows + KPI normalize */
+.risk-page .data-table td { padding: 8px 10px; vertical-align: middle; white-space: nowrap; }
+.risk-page .data-table td:last-child { white-space: normal; max-width: 400px; }
+.risk-page .stat-value { font-size: 15px !important; font-weight: 600 !important; }
+.risk-page .stat-label { font-size: 10px !important; font-weight: 500 !important; color: var(--text-muted) !important; }
