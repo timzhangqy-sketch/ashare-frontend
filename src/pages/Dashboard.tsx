@@ -416,16 +416,16 @@ export default function Dashboard() {
                     <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                       <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '5px 6px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '5px 6px', textAlign: 'right', color: c.momentum_3d >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.momentum_3d >= 0 ? '+' : ''}{c.momentum_3d.toFixed(2)}%
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '5px 6px', textAlign: 'right', color: c.avg_pct_chg >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.avg_pct_chg >= 0 ? '+' : ''}{c.avg_pct_chg.toFixed(2)}%
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_up_count}</td>
-                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{Math.round(c.up_ratio * 100)}%</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_up_count ?? 0}</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{Math.round((c.up_ratio ?? 0) * 100)}%</td>
                       <td style={{ padding: '5px 6px', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${c.leader_avg_pct_chg.toFixed(2)}%` : '—'}
+                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                       <td style={{ padding: '5px 6px', textAlign: 'center', fontSize: '11px' }}>
                         {c.strategy_hit_count > 0 ? <span style={{ color: 'var(--info)' }}>🎯{c.strategy_hit_count}</span> : null}
@@ -464,18 +464,18 @@ export default function Dashboard() {
                     <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                       <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '5px 6px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: c.concept_vr3 >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
-                        {c.concept_vr3.toFixed(1)}倍
+                      <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
+                        {(c.concept_vr3 ?? 0).toFixed(1)}倍
                       </td>
                       <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
-                        {c.amount_3d_avg.toFixed(1)}亿
+                        {(c.amount_3d_avg ?? 0).toFixed(1)}亿
                       </td>
-                      <td style={{ padding: '5px 6px', textAlign: 'right', color: c.avg_pct_chg >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.avg_pct_chg >= 0 ? '+' : ''}{c.avg_pct_chg.toFixed(2)}%
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
                       <td style={{ padding: '5px 6px', color: 'var(--text-secondary)', fontSize: '11px' }}>
                         {c.leader_top_stock ? (
-                          <span>{c.leader_top_stock} <span style={{ color: (c.leader_top_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500 }}>{c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${c.leader_top_pct_chg.toFixed(1)}%` : ''}</span></span>
+                          <span>{c.leader_top_stock} <span style={{ color: (c.leader_top_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500 }}>{c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${(c.leader_top_pct_chg ?? 0).toFixed(1)}%` : ''}</span></span>
                         ) : '—'}
                       </td>
                     </tr>
@@ -510,14 +510,14 @@ export default function Dashboard() {
                       <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '5px 6px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
                       <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.today_pct_chg.toFixed(2)}%
+                        {(c.today_pct_chg ?? 0).toFixed(2)}%
                       </td>
                       <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--up)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        +{c.momentum_3d.toFixed(2)}%
+                        +{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_down_count}</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_down_count ?? 0}</td>
                       <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg.toFixed(2)}%` : '—'}
+                        {c.leader_avg_pct_chg != null ? `${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                     </tr>
                   )) : (
@@ -538,12 +538,12 @@ export default function Dashboard() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {resonance.resonance_hits.map((hit, i) => (
                 <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{hit.momentum_3d.toFixed(2)}%），板块内策略触发{hit.stocks.length}只：{hit.stocks.map(s => s.name).join('、')}
+                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{(hit.momentum_3d ?? 0).toFixed(2)}%），板块内策略触发{(hit.stocks ?? []).length}只：{(hit.stocks ?? []).map(s => s.name).join('、')}
                 </div>
               ))}
               {resonance.retreat_warnings.map((warn, i) => (
                 <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{warn.today_pct_chg.toFixed(2)}%），持仓{warn.stocks.map(s => s.name).join('、')}属该板块，注意卖点
+                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{(warn.today_pct_chg ?? 0).toFixed(2)}%），持仓{(warn.stocks ?? []).map(s => s.name).join('、')}属该板块，注意卖点
                 </div>
               ))}
               {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
