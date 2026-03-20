@@ -9073,3 +9073,6 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .badge-green { background:rgba(34,197,94,0.15); color:#22c55e; }
 .badge-red { background:rgba(239,68,68,0.15); color:#ef4444; }
 .pipeline-log { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-muted); font-size:11px; }
+.pipeline-row.coverage-row { grid-template-columns: 180px 110px 90px 60px 1fr !important; }
+.pipeline-row.health-row { grid-template-columns: 180px 50px 180px 60px 1fr !important; }
+.pipeline-row.runlog-row { grid-template-columns: 120px 200px 120px 70px 1fr !important; }

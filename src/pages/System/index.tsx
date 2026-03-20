@@ -182,7 +182,7 @@ export default function SystemPage() {
                     const cr = row as CoverageItemRow
                     const ok = cr.updateStatusLabel === '✓ 已更新'
                     return (
-                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                      <div key={row.id} className={`pipeline-row coverage-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
                         <span className="pipeline-name">{TABLE_CN[cr.datasetKey] || row.title}</span>
                         <span className="pipeline-duration numeric">{cr.latestTradeDate}</span>
                         <span className="pipeline-rows numeric">{cr.totalRows}</span>
@@ -197,10 +197,10 @@ export default function SystemPage() {
                     const ar = row as ApiHealthRow
                     const ok = ar.stateTone === 'success' || ar.healthLabel === '正常'
                     return (
-                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                      <div key={row.id} className={`pipeline-row health-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
                         <span className="pipeline-name">{API_CN[ar.apiKey] || row.title}</span>
                         <span className="pipeline-duration numeric">{ar.httpStatus}</span>
-                        <span className="pipeline-rows numeric">{ar.latestCheck}</span>
+                        <span className="pipeline-rows numeric">{(ar.latestCheck ?? '').replace('T', ' ').substring(0, 19)}</span>
                         <span className={`pipeline-badge ${ok ? 'badge-green' : 'badge-red'}`}>{row.stateLabel || ar.healthLabel}</span>
                         <span className="pipeline-log">{ar.responseHint || ''}</span>
                       </div>
@@ -211,9 +211,9 @@ export default function SystemPage() {
                   if (row.objectType === 'runlog-item') {
                     const rr = row as RunlogVersionRow
                     return (
-                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                      <div key={row.id} className={`pipeline-row runlog-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
                         <span className="pipeline-name">{row.title}</span>
-                        <span className="pipeline-duration numeric">{rr.publishedAt}</span>
+                        <span className="pipeline-duration numeric">{(rr.publishedAt ?? '').replace('T', ' ').substring(0, 19)}</span>
                         <span className="pipeline-rows">{rr.scopeHint}</span>
                         <span className={`pipeline-badge ${rr.stateTone === 'fail' ? 'badge-red' : 'badge-green'}`}>{row.stateLabel || rr.anomalyLevel}</span>
                         <span className="pipeline-log" title={rr.logHint}>{rr.logHint || ''}</span>
