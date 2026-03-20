@@ -6679,8 +6679,8 @@ button.research-mini-item {
 }
 
 .system-tabs .page-tab {
-  min-height: 72px;
-  padding: 12px 14px;
+  min-height: auto;
+  padding: 8px 14px;
   border-radius: 10px;
   border: 1px solid var(--bg-item-border);
   background: rgba(255, 255, 255, 0.018);
@@ -9053,3 +9053,10 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .system-page .stat-label { font-size: 10px !important; font-weight: 500 !important; color: var(--text-muted) !important; }
 .system-metric-card strong { font-size: 15px !important; font-weight: 600 !important; }
 .system-metric-card span { font-size: 10px !important; font-weight: 500 !important; }
+
+/* Pipeline steps compact */
+.pipeline-step { gap: 6px; padding: 6px 12px; }
+.pipeline-step-name { font-size: 12px; }
+.pipeline-step-message { font-size: 11px; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.pipeline-step-meta { gap: 4px; font-size: 11px; }
+.pipeline-step-labels { gap: 4px; }
