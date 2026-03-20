@@ -131,6 +131,10 @@ export interface StockContextRiskData {
   blockReason: string | null;
   blockSource: string | null;
   capMultiplier: number | null;
+  riskScoreFinancial: number | null;
+  riskScoreMarket: number | null;
+  riskScoreEvent: number | null;
+  riskScoreCompliance: number | null;
 }
 
 export interface StockContextLifecycleData {

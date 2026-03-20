@@ -209,11 +209,10 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
   const watchlistMaxGain = detail?.watchlist_max_gain ?? null
   const financialRows = useMemo(() => detail?.financials ?? [], [detail?.financials])
 
-  // Risk dimension scores from detail_json (if available via context raw)
-  const riskFinancial = (risk as any)?.riskScoreFinancial ?? null
-  const riskMarket = (risk as any)?.riskScoreMarket ?? null
-  const riskEvent = (risk as any)?.riskScoreEvent ?? null
-  const riskCompliance = (risk as any)?.riskScoreCompliance ?? null
+  const riskFinancial = risk?.riskScoreFinancial ?? null
+  const riskMarket = risk?.riskScoreMarket ?? null
+  const riskEvent = risk?.riskScoreEvent ?? null
+  const riskCompliance = risk?.riskScoreCompliance ?? null
 
   async function handleBuy() {
     if (!stock) return

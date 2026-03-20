@@ -114,6 +114,10 @@ function normalizeRisk(risk: RiskApiItem | null): StockContextRiskData | null {
     blockReason: translateBlock(risk.block_reason, BLOCK_REASON_MAP),
     blockSource: translateBlock(risk.block_source, BLOCK_SOURCE_MAP),
     capMultiplier: risk.position_cap_multiplier_final ?? null,
+    riskScoreFinancial: (risk as any).risk_score_financial ?? null,
+    riskScoreMarket: (risk as any).risk_score_market ?? null,
+    riskScoreEvent: (risk as any).risk_score_event ?? null,
+    riskScoreCompliance: (risk as any).risk_score_compliance ?? null,
   }
 }
 
