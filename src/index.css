@@ -79,7 +79,7 @@
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
 
   /* Layout */
-  --sidebar-width: 220px;
+  --sidebar-width: 180px;
   --topbar-height: 48px;
 }
 
