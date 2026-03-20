@@ -4467,6 +4467,7 @@ a { text-decoration: none; color: inherit; }
   font-weight: 600 !important;
   font-variant-numeric: tabular-nums;
   line-height: 1.3;
+  text-align: center;
 }
 
 .portfolio-summary-card .stat-sub {
