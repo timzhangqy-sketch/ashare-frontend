@@ -113,6 +113,14 @@ export interface StockContextMainData {
   peTtm?: number | null;
   pb?: number | null;
   totalMvYi?: number | null;
+  primaryConcept?: string | null;
+  isLeader?: boolean;
+  pctChg5d?: number | null;
+  pctChg10d?: number | null;
+  pctChg20d?: number | null;
+  high60d?: number | null;
+  low60d?: number | null;
+  closeVsMa20Pct?: number | null;
 }
 
 export interface StockContextKlineData {

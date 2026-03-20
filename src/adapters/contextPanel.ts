@@ -89,6 +89,14 @@ function normalizeMain(
     peTtm: quote?.pe_ttm ?? null,
     pb: quote?.pb ?? null,
     totalMvYi: quote?.total_mv_yi ?? null,
+    primaryConcept: (detail as any)?.primary_concept ?? null,
+    isLeader: Boolean((detail as any)?.is_leader),
+    pctChg5d: quote?.pct_chg_5d ?? null,
+    pctChg10d: quote?.pct_chg_10d ?? null,
+    pctChg20d: quote?.pct_chg_20d ?? null,
+    high60d: quote?.high_60d ?? null,
+    low60d: quote?.low_60d ?? null,
+    closeVsMa20Pct: quote?.close_vs_ma20_pct ?? null,
   }
 }
 

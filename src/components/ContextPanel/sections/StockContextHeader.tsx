@@ -14,6 +14,8 @@ interface StockContextHeaderProps {
   tsCode: string;
   sourcePage: ContextPanelSourcePage;
   sourceStrategy?: string | null;
+  primaryConcept?: string | null;
+  isLeader?: boolean;
 }
 
 export default function StockContextHeader({
@@ -21,6 +23,8 @@ export default function StockContextHeader({
   tsCode,
   sourcePage,
   sourceStrategy,
+  primaryConcept,
+  isLeader,
 }: StockContextHeaderProps) {
   const kicker = getKicker(sourcePage)
   const [klineHover, setKlineHover] = useState(false)
@@ -57,6 +61,7 @@ export default function StockContextHeader({
       </div>
       <div className="global-context-stock-meta">
         {sourceStrategy ? <span className="context-panel-tag">{getStrategyDisplayName(sourceStrategy) || sourceStrategy}</span> : null}
+        {primaryConcept ? <span className="context-panel-tag context-tag-concept">{primaryConcept}{isLeader ? ' 👑' : ''}</span> : null}
       </div>
     </header>
   );

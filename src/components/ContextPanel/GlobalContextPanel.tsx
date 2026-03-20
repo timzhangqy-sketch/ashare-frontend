@@ -6,13 +6,10 @@ import type {
   StockContextPanelPayload,
   StockContextViewModel,
 } from '../../types/contextPanel'
-import StockContextActions from './sections/StockContextActions'
-import StockContextBasic from './sections/StockContextBasic'
 import StockContextHeader from './sections/StockContextHeader'
-import StockContextKline from './sections/StockContextKline'
-import StockContextLifecycle from './sections/StockContextLifecycle'
-import StockContextRisk from './sections/StockContextRisk'
 import StockContextTags from './sections/StockContextTags'
+import StockContextQuote from './sections/StockContextQuote'
+import StockContextStatus from './sections/StockContextStatus'
 
 function readStockPayload(payload: ContextPanelState['payload']): StockContextPanelPayload {
   if (!payload || typeof payload !== 'object') return {}
@@ -51,22 +48,11 @@ export default function GlobalContextPanel({ panel }: { panel: ContextPanelState
 
   useEffect(() => {
     if (!requestKey) return
-
     let cancelled = false
-
     loadStockContextViewModel(panel, selectedDate)
-      .then((result) => {
-        if (cancelled) return
-        setLoadState({ key: requestKey, viewModel: result })
-      })
-      .catch(() => {
-        if (cancelled) return
-        setLoadState({ key: requestKey, viewModel: null })
-      })
-
-    return () => {
-      cancelled = true
-    }
+      .then((result) => { if (!cancelled) setLoadState({ key: requestKey, viewModel: result }) })
+      .catch(() => { if (!cancelled) setLoadState({ key: requestKey, viewModel: null }) })
+    return () => { cancelled = true }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestKey, selectedDate])
 
@@ -87,34 +73,27 @@ export default function GlobalContextPanel({ panel }: { panel: ContextPanelState
 
   const title = viewModel?.title ?? payload.name ?? payload.title ?? stockCode
   const sourceStrategy = viewModel?.sourceStrategy ?? payload.sourceStrategy ?? null
+  const mainData = viewModel?.main ?? null
 
   return (
     <aside className="context-panel-slot" aria-label="右侧详情">
       <div className="context-panel-card global-context-panel" data-testid="context-panel">
-        <StockContextHeader name={title} tsCode={stockCode} sourcePage={panel.sourcePage} sourceStrategy={sourceStrategy} />
+        <StockContextHeader
+          name={title}
+          tsCode={stockCode}
+          sourcePage={panel.sourcePage}
+          sourceStrategy={sourceStrategy}
+          primaryConcept={mainData?.primaryConcept}
+          isLeader={mainData?.isLeader}
+        />
         <StockContextTags tags={viewModel?.tags ?? payload.tags ?? []} />
-        <StockContextBasic
-          data={viewModel?.main ?? null}
+        <StockContextQuote data={mainData} loading={loading} />
+        <StockContextStatus
+          risk={viewModel?.risk.data ?? null}
+          lifecycle={viewModel?.lifecycle.data ?? null}
           loading={loading}
-          summaryItems={viewModel?.summaryItems ?? payload.summaryItems ?? []}
         />
-        <StockContextKline
-          status={viewModel?.kline.status ?? (loading ? 'loading' : 'empty')}
-          note={viewModel?.kline.note ?? 'K 线暂未返回可用结果。'}
-          data={viewModel?.kline.data ?? null}
-        />
-        <StockContextRisk
-          status={viewModel?.risk.status ?? (loading ? 'loading' : 'empty')}
-          data={viewModel?.risk.data ?? null}
-        />
-        <StockContextLifecycle
-          status={viewModel?.lifecycle.status ?? (loading ? 'loading' : 'empty')}
-          data={viewModel?.lifecycle.data ?? null}
-        />
-        <StockContextActions actions={viewModel?.actions ?? payload.actions ?? []} />
       </div>
     </aside>
   )
 }
-
-
