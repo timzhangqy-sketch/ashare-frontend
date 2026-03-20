@@ -312,8 +312,8 @@ export default function Dashboard() {
                         </span>
                       )}
                     </div>
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
-                    <ResponsiveContainer width="100%" height="100%" minHeight={180}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, outline: 'none' }} tabIndex={-1}>
+                    <ResponsiveContainer width="100%" height={220}>
                       <ComposedChart data={chartData} margin={{ top: 4, right: 8, left: 4, bottom: 2 }}>
                         <defs>
                           <linearGradient id="turnoverGrad" x1="0" y1="0" x2="0" y2="1">
@@ -396,32 +396,22 @@ export default function Dashboard() {
                       ];
                       return (
                         <>
-                          <div style={{ height: 8 }} />
-                          <ResponsiveContainer width="100%" height={120}>
-                            <BarChart data={distData} margin={{ top: 15, right: 5, bottom: 0, left: 5 }}>
-                              <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#999' }} axisLine={false} tickLine={false} />
-                              <YAxis hide />
-                              <Tooltip
-                                content={({ active, payload }) => {
-                                  if (!active || !payload?.length) return null;
-                                  const d = payload[0]?.payload;
-                                  if (!d) return null;
-                                  return (
-                                    <div style={{ background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', fontSize: '12px', padding: '6px 10px' }}>
-                                      <span style={{ color: d.color }}>{d.label}：{d.value}</span>
-                                    </div>
-                                  );
-                                }}
-                              />
-                              <Bar dataKey="value" barSize={20}>
-                                <LabelList dataKey="value" position="top" style={{ fontSize: 10, fill: '#ccc' }} />
-                                {distData.map((entry, idx) => (
-                                  <Cell key={idx} fill={entry.color} />
-                                ))}
-                              </Bar>
-                            </BarChart>
-                          </ResponsiveContainer>
-                          <div style={{ textAlign: 'right', fontSize: 11, color: '#666', padding: '2px 4px 0' }}>共 {(distribution.total_stocks ?? 0).toLocaleString()} 只</div>
+                          <div style={{ height: 4 }} />
+                          <div style={{ position: 'relative' }}>
+                            <span style={{ position: 'absolute', right: 8, top: 0, fontSize: 11, color: '#666' }}>{(distribution.total_stocks ?? 0).toLocaleString()}</span>
+                            <ResponsiveContainer width="100%" height={100}>
+                              <BarChart data={distData} margin={{ top: 15, right: 5, bottom: 0, left: 5 }}>
+                                <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#999' }} axisLine={false} tickLine={false} />
+                                <YAxis hide />
+                                <Bar dataKey="value" barSize={20}>
+                                  <LabelList dataKey="value" position="top" style={{ fontSize: 10, fill: '#ccc' }} />
+                                  {distData.map((entry, idx) => (
+                                    <Cell key={idx} fill={entry.color} />
+                                  ))}
+                                </Bar>
+                              </BarChart>
+                            </ResponsiveContainer>
+                          </div>
                         </>
                       );
                     })()}

@@ -8917,3 +8917,9 @@ textarea {
 .topbar-index-pct {
   font-size: 11px;
 }
+
+/* Recharts focus outline removal */
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none !important;
+}
