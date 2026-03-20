@@ -8923,3 +8923,9 @@ textarea {
 .recharts-surface:focus {
   outline: none !important;
 }
+
+svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}

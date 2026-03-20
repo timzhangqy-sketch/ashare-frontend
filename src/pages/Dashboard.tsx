@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ComposedChart, BarChart, Bar, Cell, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 import { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance, fetchMarketDistribution } from '../api';
 import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance, MarketDistribution } from '../types/dashboard';
@@ -129,6 +129,23 @@ export default function Dashboard() {
   );
   const pipelineKpi = kpis.find((item) => item.id === 'failedStepsCount');
   const versionKpi = kpis.find((item) => item.id === 'versionLabel');
+
+  const distData = useMemo(() => {
+    if (!distribution) return [];
+    return [
+      { label: '>10%', value: distribution.gt10_up ?? 0, color: '#006400' },
+      { label: '7~10', value: distribution.up_7_10 ?? 0, color: '#228B22' },
+      { label: '5~7', value: distribution.up_5_7 ?? 0, color: '#32CD32' },
+      { label: '3~5', value: distribution.up_3_5 ?? 0, color: '#66BB6A' },
+      { label: '0~3', value: distribution.up_0_3 ?? 0, color: '#A5D6A7' },
+      { label: '0', value: distribution.flat ?? 0, color: '#666666' },
+      { label: '0~-3', value: distribution.down_0_3 ?? 0, color: '#EF9A9A' },
+      { label: '-3~5', value: distribution.down_3_5 ?? 0, color: '#EF5350' },
+      { label: '-5~7', value: distribution.down_5_7 ?? 0, color: '#E53935' },
+      { label: '-7~10', value: distribution.down_7_10 ?? 0, color: '#C62828' },
+      { label: '<-10%', value: distribution.gt10_down ?? 0, color: '#8B0000' },
+    ];
+  }, [distribution]);
 
   return (
     <div className="dashboard-page" data-testid="dashboard-page">
@@ -380,41 +397,26 @@ export default function Dashboard() {
                       </ComposedChart>
                     </ResponsiveContainer>
                     </div>
-                    {distribution && (() => {
-                      const distData = [
-                        { label: '>10%', value: distribution.gt10_up ?? 0, color: '#006400' },
-                        { label: '7~10', value: distribution.up_7_10 ?? 0, color: '#228B22' },
-                        { label: '5~7', value: distribution.up_5_7 ?? 0, color: '#32CD32' },
-                        { label: '3~5', value: distribution.up_3_5 ?? 0, color: '#66BB6A' },
-                        { label: '0~3', value: distribution.up_0_3 ?? 0, color: '#A5D6A7' },
-                        { label: '0', value: distribution.flat ?? 0, color: '#666666' },
-                        { label: '0~-3', value: distribution.down_0_3 ?? 0, color: '#EF9A9A' },
-                        { label: '-3~5', value: distribution.down_3_5 ?? 0, color: '#EF5350' },
-                        { label: '-5~7', value: distribution.down_5_7 ?? 0, color: '#E53935' },
-                        { label: '-7~10', value: distribution.down_7_10 ?? 0, color: '#C62828' },
-                        { label: '<-10%', value: distribution.gt10_down ?? 0, color: '#8B0000' },
-                      ];
-                      return (
-                        <>
-                          <div style={{ height: 4 }} />
-                          <div style={{ position: 'relative' }}>
-                            <span style={{ position: 'absolute', right: 8, top: 0, fontSize: 11, color: '#666' }}>{(distribution.total_stocks ?? 0).toLocaleString()}</span>
-                            <ResponsiveContainer width="100%" height={100}>
-                              <BarChart data={distData} margin={{ top: 15, right: 5, bottom: 0, left: 5 }}>
-                                <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#999' }} axisLine={false} tickLine={false} />
-                                <YAxis hide />
-                                <Bar dataKey="value" barSize={20}>
-                                  <LabelList dataKey="value" position="top" style={{ fontSize: 10, fill: '#ccc' }} />
-                                  {distData.map((entry, idx) => (
-                                    <Cell key={idx} fill={entry.color} />
-                                  ))}
-                                </Bar>
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-                        </>
-                      );
-                    })()}
+                    {distData.length > 0 && (
+                      <>
+                        <div style={{ height: 4 }} />
+                        <div style={{ position: 'relative' }}>
+                          <span style={{ position: 'absolute', right: 8, top: 0, fontSize: 11, color: '#666' }}>{(distribution?.total_stocks ?? 0).toLocaleString()}</span>
+                          <ResponsiveContainer key="dist-chart" width="100%" height={100}>
+                            <BarChart data={distData} margin={{ top: 15, right: 5, bottom: 0, left: 5 }}>
+                              <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#999' }} axisLine={false} tickLine={false} />
+                              <YAxis hide />
+                              <Bar dataKey="value" barSize={20} isAnimationActive={false}>
+                                <LabelList dataKey="value" position="top" style={{ fontSize: 10, fill: '#ccc' }} />
+                                {distData.map((entry, idx) => (
+                                  <Cell key={idx} fill={entry.color} />
+                                ))}
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      </>
+                    )}
                   </>
                 );
               })()}
