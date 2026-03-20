@@ -40,7 +40,7 @@
   --source-pending:  #5A6B85;
 
   /* Sidebar tokens */
-  --sidebar-bg:       #0C1220;
+  --sidebar-bg:       #111827;
   --sidebar-text:     #E8ECF1;
   --sidebar-text-dim: #5A6B85;
   --sidebar-active:   rgba(6, 182, 212, 0.12);
@@ -125,7 +125,7 @@
   --source-pending:  #8C95A6;
 
   /* Sidebar tokens */
-  --sidebar-bg:       #0C1220;
+  --sidebar-bg:       #111827;
   --sidebar-text:     #E8ECF1;
   --sidebar-text-dim: #5A6B85;
   --sidebar-active:   rgba(8, 145, 178, 0.12);
@@ -7955,7 +7955,7 @@ textarea {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%),
     var(--sidebar-bg);
-  border-right-color: rgba(255, 255, 255, 0.04);
+  border-right-color: rgba(255, 255, 255, 0.06);
 }
 
 [data-theme="light"] .sidebar {
