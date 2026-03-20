@@ -11,6 +11,17 @@ import { getSourcePanelText, getSourcePanelTitle } from '../../components/data-s
 import { useApiData } from '../../hooks/useApiData'
 import type { ApiHealthRow, CoverageItemRow, PipelineStepRow, RunlogVersionRow, SystemRow, SystemTab } from '../../types/system'
 
+const TABLE_CN: Record<string, string> = {
+  ashare_daily_price: '日线行情', ashare_daily_basic: '基础指标', ashare_adj_factor: '复权因子',
+  ashare_daily_price_adj: '复权日线', ashare_index_daily_price: '指数日线', ashare_intraday_5m: '5分钟行情',
+  ashare_fin_income: '财务数据', ashare_stock_basic: '股票基础', ashare_trade_calendar: '交易日历',
+  ashare_pledge_stat: '质押统计', ashare_risk_score: '风险评分', ashare_market_breadth: '市场宽度',
+  ashare_ths_concept: '概念定义', ashare_ths_concept_member: '概念成分', ashare_ths_hot_stock: '热股榜',
+  ashare_ths_hot_concept: '概念热度', ashare_concept_daily_stats: '板块统计', ashare_market_distribution: '涨跌分布',
+  ashare_market_turnover: '成交额汇总', ashare_market_summary: 'AI综述', ashare_watchlist: '观察池',
+  ashare_portfolio: '持仓', ashare_sim_orders: '模拟订单',
+}
+
 const STEP_LABEL: Record<string, string> = {
   intraday_5m: '5分钟行情', daily_price: '日线行情', daily_basic: '基础指标',
   adj_factor: '复权因子', index_daily: '指数日线', intraday_retention_60d: '5分钟清理',
@@ -29,44 +40,7 @@ const STEP_LABEL: Record<string, string> = {
   healthcheck: '健康检查', pool_export: '榜单导出', SIGNAL_GEN: '信号生成',
 }
 
-function getRowMeta(row: SystemRow) {
-  if (row.objectType === 'pipeline-step') {
-    const pipelineRow = row as PipelineStepRow
-    return [
-      { label: 'Owner', value: pipelineRow.owner, numeric: false },
-      { label: '耗时', value: pipelineRow.duration, numeric: true },
-      { label: '行数', value: pipelineRow.rowCount, numeric: true },
-    ]
-  }
-
-  if (row.objectType === 'coverage-item') {
-    const coverageRow = row as CoverageItemRow
-    return [
-      { label: '最新交易日', value: coverageRow.latestTradeDate, numeric: true },
-      { label: '状态', value: coverageRow.updateStatusLabel, numeric: false, tone: coverageRow.updateStatusLabel === '✓ 已更新' ? 'success' : 'warning' },
-      { label: '总行数', value: coverageRow.totalRows, numeric: true },
-      ...(coverageRow.dqStatus ? [{ label: 'DQ 状态', value: coverageRow.dqStatus, numeric: false }] : []),
-    ]
-  }
-
-  if (row.objectType === 'api-item') {
-    const apiRow = row as ApiHealthRow
-    return [
-      ...(apiRow.domain && apiRow.domain !== '--' ? [{ label: '域', value: apiRow.domain, numeric: false }] : []),
-      { label: '最近检查', value: apiRow.latestCheck, numeric: true },
-      { label: 'HTTP', value: apiRow.httpStatus, numeric: true },
-      { label: '响应', value: apiRow.responseHint, numeric: false },
-    ]
-  }
-
-  const runlogRow = row as RunlogVersionRow
-  return [
-    { label: '版本', value: runlogRow.versionLabel, numeric: true },
-    { label: '发布时间', value: runlogRow.publishedAt, numeric: true },
-    { label: '范围', value: runlogRow.scopeHint, numeric: false },
-    { label: '异常级别', value: runlogRow.anomalyLevel, numeric: false },
-  ]
-}
+// getRowMeta removed — all tabs now use inline compact rendering
 
 export default function SystemPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -181,8 +155,6 @@ export default function SystemPage() {
               <div ref={listRef} className="system-list-container">
               <div className="system-list">
                 {rows.map((row) => {
-                  const metaItems = getRowMeta(row)
-
                   // Pipeline steps: compact single-row layout
                   if (row.objectType === 'pipeline-step') {
                     const pr = row as PipelineStepRow
@@ -198,57 +170,52 @@ export default function SystemPage() {
                     )
                   }
 
-                  // Other tabs: original card layout
-                  return (
-                    <button
-                      key={row.id}
-                      type="button"
-                      className={row.id === highlightedId ? 'system-row selected' : 'system-row'}
-                      onClick={() => {
-                        setFocus(row)
-                        setHighlightedId(row.id)
-                      }}
-                    >
-                      <div className="system-row-body">
-                        <div className="system-row-top">
-                          <div className="system-row-copy">
-                            <strong>{row.title}</strong>
-                            <p>{row.subtitle}</p>
-                          </div>
-                        </div>
-
-                        <div className="system-row-meta">
-                          {metaItems.map((item) => (
-                            <div key={item.label} className="system-row-meta-item">
-                              <span>{item.label}</span>
-                              <strong
-                                className={[
-                                  item.numeric ? 'numeric' : '',
-                                  item.tone ? `system-row-meta-value--${item.tone}` : '',
-                                ].filter(Boolean).join(' ') || undefined}
-                              >
-                                {item.value}
-                              </strong>
-                            </div>
-                          ))}
-                        </div>
-
-                        {row.summary ? <div className="system-row-summary">{row.summary}</div> : null}
+                  // Coverage: compact row
+                  if (row.objectType === 'coverage-item') {
+                    const cr = row as CoverageItemRow
+                    const ok = cr.updateStatusLabel === '✓ 已更新'
+                    return (
+                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                        <span className="pipeline-name">{TABLE_CN[cr.datasetKey] || row.title}</span>
+                        <span className="pipeline-duration numeric">{cr.latestTradeDate}</span>
+                        <span className="pipeline-rows numeric">{cr.totalRows}</span>
+                        <span className={`pipeline-badge ${ok ? 'badge-green' : 'badge-yellow'}`}>{ok ? '正常' : '待更新'}</span>
+                        <span className="pipeline-log">{cr.dqStatus || cr.freshness || ''}</span>
                       </div>
+                    )
+                  }
 
-                      {row.stateLabel ? (
-                        <div
-                          className={
-                            (row as any).stateTone
-                              ? `system-status-pill system-status-pill--${(row as any).stateTone}`
-                              : 'system-status-pill'
-                          }
-                        >
-                          {row.stateLabel}
-                        </div>
-                      ) : null}
-                    </button>
-                  )
+                  // API health: compact row
+                  if (row.objectType === 'api-item') {
+                    const ar = row as ApiHealthRow
+                    const ok = ar.stateTone === 'success' || ar.healthLabel === '正常'
+                    return (
+                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                        <span className="pipeline-name">{row.title}</span>
+                        <span className="pipeline-duration numeric">{ar.httpStatus}</span>
+                        <span className="pipeline-rows numeric">{ar.latestCheck}</span>
+                        <span className={`pipeline-badge ${ok ? 'badge-green' : 'badge-red'}`}>{row.stateLabel || ar.healthLabel}</span>
+                        <span className="pipeline-log">{ar.responseHint || ''}</span>
+                      </div>
+                    )
+                  }
+
+                  // Runlog: compact row
+                  if (row.objectType === 'runlog-item') {
+                    const rr = row as RunlogVersionRow
+                    return (
+                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                        <span className="pipeline-name">{row.title}</span>
+                        <span className="pipeline-duration numeric">{rr.publishedAt}</span>
+                        <span className="pipeline-rows">{rr.scopeHint}</span>
+                        <span className={`pipeline-badge ${rr.stateTone === 'fail' ? 'badge-red' : 'badge-green'}`}>{row.stateLabel || rr.anomalyLevel}</span>
+                        <span className="pipeline-log" title={rr.logHint}>{rr.logHint || ''}</span>
+                      </div>
+                    )
+                  }
+
+                  // Fallback (should not reach)
+                  return null
                 })}
               </div>
               </div>
