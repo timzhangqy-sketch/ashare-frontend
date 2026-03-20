@@ -183,6 +183,22 @@ export default function SystemPage() {
                 {rows.map((row) => {
                   const metaItems = getRowMeta(row)
 
+                  // Pipeline steps: compact single-row layout
+                  if (row.objectType === 'pipeline-step') {
+                    const pr = row as PipelineStepRow
+                    const tone = pr.stateTone ?? (pr.stateLabel === '成功' ? 'success' : 'fail')
+                    return (
+                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                        <span className="pipeline-name">{STEP_LABEL[pr.stepKey] || row.title}</span>
+                        <span className="pipeline-duration numeric">{pr.duration}</span>
+                        <span className="pipeline-rows numeric">{pr.rowCount}</span>
+                        <span className={`pipeline-badge ${tone === 'success' ? 'badge-green' : tone === 'fail' ? 'badge-red' : 'badge-yellow'}`}>{row.stateLabel}</span>
+                        <span className="pipeline-log">{row.summary ?? ''}</span>
+                      </div>
+                    )
+                  }
+
+                  // Other tabs: original card layout
                   return (
                     <button
                       key={row.id}
@@ -196,11 +212,7 @@ export default function SystemPage() {
                       <div className="system-row-body">
                         <div className="system-row-top">
                           <div className="system-row-copy">
-                            <strong>
-                              {row.objectType === 'pipeline-step'
-                                ? STEP_LABEL[(row as PipelineStepRow).stepKey] || row.title
-                                : row.title}
-                            </strong>
+                            <strong>{row.title}</strong>
                             <p>{row.subtitle}</p>
                           </div>
                         </div>
