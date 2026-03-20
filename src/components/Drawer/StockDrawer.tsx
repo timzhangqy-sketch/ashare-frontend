@@ -15,6 +15,19 @@ import { displaySignalLabel } from '../../utils/labelMaps'
 import { MultiStrategyBadge } from '../CrossTags'
 import KlineChart from './KlineChart'
 
+/* ═══ Strategy CN mapping ═══ */
+const STRATEGY_CN: Record<string, string> = {
+  'VOL_SURGE': '连续放量蓄势',
+  'RETOC2': '异动反抽(RETOC2)',
+  'PATTERN_T2UP9': '形态策略(T2UP9)',
+  'WEAK_BUY': '弱市吸筹',
+  'SIGNALS': '信号中心',
+}
+function displayStrategy(raw: string | null | undefined): string {
+  if (!raw) return '--'
+  return STRATEGY_CN[raw] ?? raw
+}
+
 /* ═══ Icons ═══ */
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="15" height="15">
@@ -241,7 +254,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
                   <span className="drawer-stock-title" data-testid="signals-stock-drawer-title" style={{ fontSize: '16px', fontWeight: 700 }}>{stock.name}</span>
                   <span className="numeric" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{stock.code}</span>
                   {detail?.primary_concept && <span className="page-badge badge-blue" style={{ fontSize: '10px' }}>{detail.primary_concept}{detail.is_leader ? ' 👑' : ''}</span>}
-                  {stock.lists.map(l => <span key={l} className="page-badge badge-gold" style={{ fontSize: '10px' }}>{l}</span>)}
+                  {stock.lists.map(l => <span key={l} className="page-badge badge-gold" style={{ fontSize: '10px' }}>{displayStrategy(l)}</span>)}
                   <MultiStrategyBadge tsCode={stock.code} />
                 </div>
                 <button className="drawer-close-btn" type="button" onClick={onClose} title="关闭 (Esc)" data-testid="signals-stock-drawer-close"><CloseIcon /></button>
@@ -321,7 +334,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
                     <div className="drawer-col-card">
                       <div className="col-title">交易状态</div>
                       <div className="drawer-mini-grid">
-                        <div className="drawer-mini-cell"><div className="mc-label">来源策略</div><div className="mc-value">{main?.sourceStrategy ?? stock.lists[0] ?? '--'}</div></div>
+                        <div className="drawer-mini-cell"><div className="mc-label">来源策略</div><div className="mc-value">{displayStrategy(main?.sourceStrategy ?? stock.lists[0])}</div></div>
                         <div className="drawer-mini-cell"><div className="mc-label">生命周期</div><div className="mc-value">{lifecycle?.lifecycleLabel ?? '--'}</div></div>
                         <div className="drawer-mini-cell"><div className="mc-label">买点信号</div><div className="mc-value"><SignalBadge label={main?.buySignal ?? detail?.watchlist_buy_signal} /></div></div>
                         <div className="drawer-mini-cell"><div className="mc-label">卖点信号</div><div className="mc-value"><SignalBadge label={main?.sellSignal ?? detail?.watchlist_sell_signal} /></div></div>
