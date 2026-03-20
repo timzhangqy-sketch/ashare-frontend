@@ -711,7 +711,7 @@ a { text-decoration: none; color: inherit; }
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 24px;
+  padding: 12px;
 }
 
 .context-panel-slot {
@@ -1934,7 +1934,7 @@ a { text-decoration: none; color: inherit; }
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px 20px;
+  padding: 12px;
 }
 
 .dashboard-hero .page-title {
@@ -7322,7 +7322,7 @@ textarea:focus-visible {
 }
 
 .content {
-  padding: 24px 26px 28px;
+  padding: 12px;
 }
 
 .page-header,
