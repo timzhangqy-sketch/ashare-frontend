@@ -7,7 +7,7 @@ import type {
   StockContextViewModel,
 } from '../../types/contextPanel'
 import StockContextHeader from './sections/StockContextHeader'
-import StockContextTags from './sections/StockContextTags'
+// StockContextTags removed - info now in Header
 import StockContextQuote from './sections/StockContextQuote'
 import StockContextStatus from './sections/StockContextStatus'
 
@@ -86,7 +86,7 @@ export default function GlobalContextPanel({ panel }: { panel: ContextPanelState
           primaryConcept={mainData?.primaryConcept}
           isLeader={mainData?.isLeader}
         />
-        <StockContextTags tags={viewModel?.tags ?? payload.tags ?? []} />
+        {/* Tags removed - concept + strategy shown in Header */}
         <StockContextQuote data={mainData} loading={loading} />
         <StockContextStatus
           risk={viewModel?.risk.data ?? null}
