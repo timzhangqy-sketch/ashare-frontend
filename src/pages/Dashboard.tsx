@@ -18,9 +18,11 @@ import RiskSection from '../components/Dashboard/RiskSection';
 import StatusState from '../components/Dashboard/StatusState';
 import SystemHealthSection from '../components/Dashboard/SystemHealthSection';
 import SourceSummaryBar from '../components/data-source/SourceSummaryBar';
+import StockDrawer from '../components/Drawer/StockDrawer';
 import { useDashboardRuntime } from '../context/useDashboardRuntime';
 import { useDate } from '../context/useDate';
 import type { DashboardViewModel } from '../types/dashboard';
+import type { StockDetail } from '../types/stock';
 
 export default function Dashboard() {
   const { selectedDate } = useDate();
@@ -34,6 +36,7 @@ export default function Dashboard() {
   const [retreat, setRetreat] = useState<ConceptRetreat[]>([]);
   const [resonance, setResonance] = useState<ConceptResonance>({ resonance_hits: [], retreat_warnings: [] });
   const [distribution, setDistribution] = useState<MarketDistribution | null>(null);
+  const [drawerStock, setDrawerStock] = useState<StockDetail | null>(null);
   const [retrySeed, setRetrySeed] = useState(0);
   const [loadState, setLoadState] = useState<{
     key: string | null;
@@ -114,6 +117,10 @@ export default function Dashboard() {
     setRetrySeed((seed) => seed + 1);
   };
 
+  const handleStockClick = (ts_code: string, name: string) => {
+    setDrawerStock({ code: ts_code, name, close: 0, changePct: 0, lists: [], dims: [], gates: [] } as StockDetail);
+  };
+
   const status = loadState.key === selectedDate ? loadState.status : 'loading';
   const viewModel = loadState.key === selectedDate ? loadState.viewModel : null;
   const errorMessage = loadState.key === selectedDate ? loadState.errorMessage : '';
@@ -186,7 +193,7 @@ export default function Dashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '12px', color: '#4ade80', fontWeight: 600, minWidth: '48px' }}>● 待卖出</span>
                   {hasSell ? actionList!.sell!.slice(0, 5).map((item, i) => (
-                    <span key={`sell-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    <span key={`sell-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: item.ts_code ? 'pointer' : 'default' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
                       {item.name} <span style={{ color: (item.gain_pct ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>{formatSignedPercentSafe(item.gain_pct, 2, 100, '—')}</span>
                     </span>
                   )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
@@ -194,7 +201,7 @@ export default function Dashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '12px', color: 'var(--up)', fontWeight: 600, minWidth: '48px' }}>● 待买入</span>
                   {hasBuy ? actionList!.buy!.slice(0, 5).map((item, i) => (
-                    <span key={`buy-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    <span key={`buy-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: item.ts_code ? 'pointer' : 'default' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
                       {item.name}
                     </span>
                   )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
@@ -203,7 +210,7 @@ export default function Dashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
                   <span style={{ fontSize: '12px', color: '#f59e0b', fontWeight: 600, minWidth: '48px' }}>● 关注</span>
                   {hasWatch ? actionList!.watch!.slice(0, 3).map((item, i) => (
-                    <span key={`watch-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    <span key={`watch-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: item.ts_code ? 'pointer' : 'default' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
                       {item.name}
                     </span>
                   )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
@@ -463,8 +470,8 @@ export default function Dashboard() {
                       }}
                     >
                       <td style={{ padding: '6px 8px', color: 'var(--text-muted)', width: '28px', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{s.rank ?? i + 1}</td>
-                      <td style={{ padding: '6px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
-                        {s.name}{s.is_leader && <span title="概念龙头" style={{ marginLeft: '4px', fontSize: '11px' }}>👑</span>}
+                      <td style={{ padding: '6px 8px', fontWeight: 500 }}>
+                        <span style={{ color: 'var(--text-primary)', cursor: s.ts_code ? 'pointer' : 'default' }} onClick={() => s.ts_code && handleStockClick(s.ts_code, s.name)}>{s.name}</span>{s.is_leader && <span title="概念龙头" style={{ marginLeft: '4px', fontSize: '11px' }}>👑</span>}
                       </td>
                       <td style={{ padding: '6px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
                         {s.primary_concept ? s.primary_concept : '—'}
@@ -694,6 +701,8 @@ export default function Dashboard() {
         <PortfolioSection data={viewModel?.portfolio} onRetry={handleRetry} status={status} />
         <SystemHealthSection data={viewModel?.systemHealth} onRetry={handleRetry} status={status} />
       </section>
+
+      <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} />
     </div>
   );
 }
