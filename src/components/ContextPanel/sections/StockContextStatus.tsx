@@ -62,11 +62,11 @@ export default function StockContextStatus({ risk, lifecycle, loading }: Props) 
 
       {/* Lifecycle */}
       {lifecycle ? (
-        <div className="ctx-lc-grid">
-          <div className="ctx-lc-cell"><div className="lc-label">阶段</div><div className="lc-value">{lifecycle.lifecycleLabel}</div></div>
-          <div className="ctx-lc-cell"><div className="lc-label">天数</div><div className="lc-value numeric">{lifecycle.poolDay ?? '--'}</div></div>
-          <div className="ctx-lc-cell"><div className="lc-label">入池收益</div><div className={`lc-value numeric ${pctCls(lifecycle.gainSinceEntry)}`}>{fmtRatio(lifecycle.gainSinceEntry)}</div></div>
-          <div className="ctx-lc-cell"><div className="lc-label">状态</div><div className="lc-value">{STATUS_CN[lifecycle.positionStatus ?? ''] ?? lifecycle.positionStatus ?? '--'}</div></div>
+        <div className="ctx-lc-list">
+          <div className="ctx-lc-row"><span className="lc-label">阶段</span><span className="lc-value">{lifecycle.lifecycleLabel}</span></div>
+          <div className="ctx-lc-row"><span className="lc-label">天数</span><span className="lc-value numeric">{lifecycle.poolDay ?? '--'}</span></div>
+          <div className="ctx-lc-row"><span className="lc-label">入池收益</span><span className={`lc-value numeric ${pctCls(lifecycle.gainSinceEntry)}`}>{fmtRatio(lifecycle.gainSinceEntry)}</span></div>
+          <div className="ctx-lc-row"><span className="lc-label">状态</span><span className="lc-value">{STATUS_CN[lifecycle.positionStatus ?? ''] ?? lifecycle.positionStatus ?? '--'}</span></div>
         </div>
       ) : (
         <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>未入池</div>
