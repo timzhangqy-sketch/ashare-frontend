@@ -259,12 +259,17 @@ export interface ConceptResonance {
 
 export interface MarketDistribution {
   trade_date: string;
-  limit_up: number;
-  up_5_to_limit: number;
-  up_0_to_5: number;
-  down_0_to_5: number;
-  down_5_to_limit: number;
-  limit_down: number;
+  gt10_up: number;
+  up_7_10: number;
+  up_5_7: number;
+  up_3_5: number;
+  up_0_3: number;
+  flat: number;
+  down_0_3: number;
+  down_3_5: number;
+  down_5_7: number;
+  down_7_10: number;
+  gt10_down: number;
   total_stocks: number;
 }
 

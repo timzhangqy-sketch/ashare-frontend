@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ComposedChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance } from '../api';
-import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance } from '../types/dashboard';
+import { ComposedChart, BarChart, Bar, Cell, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+import { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance, fetchMarketDistribution } from '../api';
+import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance, MarketDistribution } from '../types/dashboard';
 import {
   buildDashboardRuntimeSnapshot,
   fetchActionList,
@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [surge, setSurge] = useState<ConceptSurge[]>([]);
   const [retreat, setRetreat] = useState<ConceptRetreat[]>([]);
   const [resonance, setResonance] = useState<ConceptResonance>({ resonance_hits: [], retreat_warnings: [] });
+  const [distribution, setDistribution] = useState<MarketDistribution | null>(null);
   const [retrySeed, setRetrySeed] = useState(0);
   const [loadState, setLoadState] = useState<{
     key: string | null;
@@ -105,6 +106,7 @@ export default function Dashboard() {
       setRetreat(r);
       setResonance(res);
     });
+    fetchMarketDistribution(selectedDate).then(d => { if (!cancelled) setDistribution(d); });
     return () => { cancelled = true; };
   }, [selectedDate]);
 
@@ -276,8 +278,6 @@ export default function Dashboard() {
                   breadth_score: breadthMap[t.date] ?? null,
                 }));
 
-                if (chartData.length > 0) console.log('[breadth debug]', chartData.slice(0, 3).map((d: any) => ({ date: d.date, breadth_score: d.breadth_score })));
-
                 const latest = turnoverHistory.length > 0 ? turnoverHistory[turnoverHistory.length - 1] : null;
                 const avg5 = turnoverHistory.length >= 5
                   ? Math.round(turnoverHistory.slice(-5).reduce((s: number, d: any) => s + d.amount, 0) / 5)
@@ -380,6 +380,51 @@ export default function Dashboard() {
                       </ComposedChart>
                     </ResponsiveContainer>
                     </div>
+                    {distribution && (() => {
+                      const distData = [
+                        { label: '>10%', value: distribution.gt10_up ?? 0, color: '#006400' },
+                        { label: '7~10', value: distribution.up_7_10 ?? 0, color: '#228B22' },
+                        { label: '5~7', value: distribution.up_5_7 ?? 0, color: '#32CD32' },
+                        { label: '3~5', value: distribution.up_3_5 ?? 0, color: '#66BB6A' },
+                        { label: '0~3', value: distribution.up_0_3 ?? 0, color: '#A5D6A7' },
+                        { label: '0', value: distribution.flat ?? 0, color: '#666666' },
+                        { label: '0~-3', value: distribution.down_0_3 ?? 0, color: '#EF9A9A' },
+                        { label: '-3~5', value: distribution.down_3_5 ?? 0, color: '#EF5350' },
+                        { label: '-5~7', value: distribution.down_5_7 ?? 0, color: '#E53935' },
+                        { label: '-7~10', value: distribution.down_7_10 ?? 0, color: '#C62828' },
+                        { label: '<-10%', value: distribution.gt10_down ?? 0, color: '#8B0000' },
+                      ];
+                      return (
+                        <>
+                          <div style={{ height: 8 }} />
+                          <ResponsiveContainer width="100%" height={120}>
+                            <BarChart data={distData} margin={{ top: 15, right: 5, bottom: 0, left: 5 }}>
+                              <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#999' }} axisLine={false} tickLine={false} />
+                              <YAxis hide />
+                              <Tooltip
+                                content={({ active, payload }) => {
+                                  if (!active || !payload?.length) return null;
+                                  const d = payload[0]?.payload;
+                                  if (!d) return null;
+                                  return (
+                                    <div style={{ background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '6px', fontSize: '12px', padding: '6px 10px' }}>
+                                      <span style={{ color: d.color }}>{d.label}：{d.value}</span>
+                                    </div>
+                                  );
+                                }}
+                              />
+                              <Bar dataKey="value" barSize={20}>
+                                <LabelList dataKey="value" position="top" style={{ fontSize: 10, fill: '#ccc' }} />
+                                {distData.map((entry, idx) => (
+                                  <Cell key={idx} fill={entry.color} />
+                                ))}
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                          <div style={{ textAlign: 'right', fontSize: 11, color: '#666', padding: '2px 4px 0' }}>共 {(distribution.total_stocks ?? 0).toLocaleString()} 只</div>
+                        </>
+                      );
+                    })()}
                   </>
                 );
               })()}
