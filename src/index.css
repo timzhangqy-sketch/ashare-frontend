@@ -9062,14 +9062,14 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .pipeline-step-labels { gap: 4px; }
 
 /* ═══ Pipeline compact rows ═══ */
-.pipeline-row { display:flex; align-items:center; gap:12px; padding:6px 12px; border-bottom:1px solid var(--border-subtle); font-size:12px; cursor:pointer; }
+.pipeline-row { display:grid; grid-template-columns:160px 80px 80px 56px 1fr; align-items:center; gap:8px; padding:7px 16px; border-bottom:1px solid var(--border-subtle); font-size:12px; cursor:pointer; }
 .pipeline-row:last-child { border-bottom:none; }
 .pipeline-row:hover { background:var(--bg-hover); }
 .pipeline-row.selected { background:var(--bg-active); }
-.pipeline-name { font-weight:600; min-width:140px; flex-shrink:0; white-space:nowrap; }
-.pipeline-duration { min-width:50px; text-align:right; color:var(--text-muted); }
-.pipeline-rows { min-width:70px; text-align:right; }
-.pipeline-badge { font-size:11px; padding:1px 6px; border-radius:3px; font-weight:500; flex-shrink:0; }
+.pipeline-name { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pipeline-duration { text-align:right; color:var(--text-muted); }
+.pipeline-rows { text-align:right; }
+.pipeline-badge { font-size:11px; padding:1px 6px; border-radius:3px; font-weight:500; text-align:center; }
 .badge-green { background:rgba(34,197,94,0.15); color:#22c55e; }
 .badge-red { background:rgba(239,68,68,0.15); color:#ef4444; }
-.pipeline-log { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-muted); font-size:11px; min-width:0; }
+.pipeline-log { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-muted); font-size:11px; }

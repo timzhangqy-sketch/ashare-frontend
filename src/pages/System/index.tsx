@@ -23,6 +23,12 @@ const TABLE_CN: Record<string, string> = {
   ashare_vol_surge_pool: '放量蓄势池', ashare_portfolio: '持仓', ashare_sim_orders: '模拟订单',
 }
 
+const API_CN: Record<string, string> = {
+  health: '健康检查', dashboard_summary: 'Dashboard摘要', watchlist_stats: '标的池统计',
+  portfolio: '持仓中心', signals: '信号中心', risk: '风控中心', system: '系统中心',
+  context: '上下文面板', market: '市场数据', research: '研究中心', execution: '执行中心',
+}
+
 const STEP_LABEL: Record<string, string> = {
   intraday_5m: '5分钟行情', daily_price: '日线行情', daily_basic: '基础指标',
   adj_factor: '复权因子', index_daily: '指数日线', intraday_retention_60d: '5分钟清理',
@@ -192,7 +198,7 @@ export default function SystemPage() {
                     const ok = ar.stateTone === 'success' || ar.healthLabel === '正常'
                     return (
                       <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
-                        <span className="pipeline-name">{row.title}</span>
+                        <span className="pipeline-name">{API_CN[ar.apiKey] || row.title}</span>
                         <span className="pipeline-duration numeric">{ar.httpStatus}</span>
                         <span className="pipeline-rows numeric">{ar.latestCheck}</span>
                         <span className={`pipeline-badge ${ok ? 'badge-green' : 'badge-red'}`}>{row.stateLabel || ar.healthLabel}</span>
