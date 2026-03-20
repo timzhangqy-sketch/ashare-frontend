@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { getDashboardSummary } from '../api';
+import { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance } from '../api';
+import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance } from '../types/dashboard';
 import {
   buildDashboardRuntimeSnapshot,
   fetchActionList,
@@ -28,6 +29,10 @@ export default function Dashboard() {
   const [actionList, setActionList] = useState<ActionListResponse | null>(null);
   const [hoveredConceptRow, setHoveredConceptRow] = useState<number | null>(null);
   const [hoveredHotStockRow, setHoveredHotStockRow] = useState<number | null>(null);
+  const [momentum, setMomentum] = useState<ConceptMomentum[]>([]);
+  const [surge, setSurge] = useState<ConceptSurge[]>([]);
+  const [retreat, setRetreat] = useState<ConceptRetreat[]>([]);
+  const [resonance, setResonance] = useState<ConceptResonance>({ resonance_hits: [], retreat_warnings: [] });
   const [retrySeed, setRetrySeed] = useState(0);
   const [loadState, setLoadState] = useState<{
     key: string | null;
@@ -85,6 +90,23 @@ export default function Dashboard() {
       });
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      fetchConceptMomentum(selectedDate),
+      fetchConceptSurge(selectedDate),
+      fetchConceptRetreat(selectedDate),
+      fetchConceptResonance(selectedDate),
+    ]).then(([m, s, r, res]) => {
+      if (cancelled) return;
+      setMomentum(m);
+      setSurge(s);
+      setRetreat(r);
+      setResonance(res);
+    });
+    return () => { cancelled = true; };
+  }, [selectedDate]);
 
   const handleRetry = () => {
     setRetrySeed((seed) => seed + 1);
@@ -363,6 +385,170 @@ export default function Dashboard() {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 第3行：板块轮动三栏 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '2fr 1fr 1fr', alignItems: 'stretch' }}>
+        {/* 左栏：强势板块 Top10 */}
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>强势板块 Top10</h3>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, width: '24px', fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>3日涨幅</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>今日</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>涨停</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>上涨占比</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>龙头</th>
+                    <th style={{ textAlign: 'center', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>命中</th>
+                    <th style={{ textAlign: 'center', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>热度</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {momentum.length > 0 ? momentum.map((c, i) => (
+                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '5px 6px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: c.momentum_3d >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.momentum_3d >= 0 ? '+' : ''}{c.momentum_3d.toFixed(2)}%
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: c.avg_pct_chg >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.avg_pct_chg >= 0 ? '+' : ''}{c.avg_pct_chg.toFixed(2)}%
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_up_count}</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{Math.round(c.up_ratio * 100)}%</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${c.leader_avg_pct_chg.toFixed(2)}%` : '—'}
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'center', fontSize: '11px' }}>
+                        {c.strategy_hit_count > 0 ? <span style={{ color: 'var(--info)' }}>🎯{c.strategy_hit_count}</span> : null}
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'center', fontSize: '11px' }}>
+                        {c.heat_persistence > 0 ? <span style={{ color: '#f59e0b' }}>🔥×{c.heat_persistence}天</span> : null}
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan={9} style={{ padding: '20px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {/* 中栏：异动板块 Top5 */}
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>异动板块 Top5</h3>
+            <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>近3日放量但价格未动</p>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, width: '24px', fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>量比</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>3日均额</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>今日</th>
+                    <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>龙头领涨</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {surge.length > 0 ? surge.map((c, i) => (
+                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '5px 6px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: c.concept_vr3 >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
+                        {c.concept_vr3.toFixed(1)}倍
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
+                        {c.amount_3d_avg.toFixed(1)}亿
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: c.avg_pct_chg >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.avg_pct_chg >= 0 ? '+' : ''}{c.avg_pct_chg.toFixed(2)}%
+                      </td>
+                      <td style={{ padding: '5px 6px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+                        {c.leader_top_stock ? (
+                          <span>{c.leader_top_stock} <span style={{ color: (c.leader_top_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500 }}>{c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${c.leader_top_pct_chg.toFixed(1)}%` : ''}</span></span>
+                        ) : '—'}
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan={6} style={{ padding: '20px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无异动板块</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {/* 右栏：退潮板块 Top5 */}
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>退潮板块 Top5</h3>
+            <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>前期强势→今日回落</p>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, width: '24px', fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>今日涨幅</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>3日累计</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>跌停</th>
+                    <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>龙头</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {retreat.length > 0 ? retreat.map((c, i) => (
+                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '5px 6px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.today_pct_chg.toFixed(2)}%
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--up)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        +{c.momentum_3d.toFixed(2)}%
+                      </td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_down_count}</td>
+                      <td style={{ padding: '5px 6px', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg.toFixed(2)}%` : '—'}
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan={6} style={{ padding: '20px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无退潮板块</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 第4行：板块×策略共振 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr', alignItems: 'stretch' }}>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {resonance.resonance_hits.map((hit, i) => (
+                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{hit.momentum_3d.toFixed(2)}%），板块内策略触发{hit.stocks.length}只：{hit.stocks.map(s => s.name).join('、')}
+                </div>
+              ))}
+              {resonance.retreat_warnings.map((warn, i) => (
+                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{warn.today_pct_chg.toFixed(2)}%），持仓{warn.stocks.map(s => s.name).join('、')}属该板块，注意卖点
+                </div>
+              ))}
+              {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
+                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
+              )}
             </div>
           </div>
         </div>

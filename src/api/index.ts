@@ -919,4 +919,56 @@ export async function fetchMarketRegime(): Promise<MarketRegimeResp | null> {
   return payload as MarketRegimeResp;
 }
 
+// ── Concept Stats ─────────────────────────────────────────────────────────
+
+import type {
+  ConceptMomentum,
+  ConceptSurge,
+  ConceptRetreat,
+  ConceptResonance,
+  MarketDistribution,
+} from '../types/dashboard';
+
+export async function fetchConceptMomentum(date: string): Promise<ConceptMomentum[]> {
+  try {
+    const res = await api.get('/api/concept-stats/top-momentum', { params: { date } });
+    return toArray<ConceptMomentum>(res.data);
+  } catch { return []; }
+}
+
+export async function fetchConceptSurge(date: string): Promise<ConceptSurge[]> {
+  try {
+    const res = await api.get('/api/concept-stats/surge', { params: { date } });
+    return toArray<ConceptSurge>(res.data);
+  } catch { return []; }
+}
+
+export async function fetchConceptRetreat(date: string): Promise<ConceptRetreat[]> {
+  try {
+    const res = await api.get('/api/concept-stats/retreat', { params: { date } });
+    return toArray<ConceptRetreat>(res.data);
+  } catch { return []; }
+}
+
+export async function fetchConceptResonance(date: string): Promise<ConceptResonance> {
+  try {
+    const res = await api.get('/api/concept-stats/resonance', { params: { date } });
+    return (res.data ?? { resonance_hits: [], retreat_warnings: [] }) as ConceptResonance;
+  } catch { return { resonance_hits: [], retreat_warnings: [] }; }
+}
+
+export async function fetchMarketDistribution(date: string): Promise<MarketDistribution | null> {
+  try {
+    const res = await api.get(`/api/market-distribution/${date}`);
+    return (res.data ?? null) as MarketDistribution | null;
+  } catch { return null; }
+}
+
+export async function fetchMarketDistributionHistory(days: number = 60): Promise<MarketDistribution[]> {
+  try {
+    const res = await api.get('/api/market-distribution/history', { params: { days } });
+    return toArray<MarketDistribution>(res.data);
+  } catch { return []; }
+}
+
 export default api;

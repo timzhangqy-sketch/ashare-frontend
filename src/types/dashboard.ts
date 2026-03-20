@@ -200,6 +200,72 @@ export interface SystemHealthSummaryDto {
   systemHint: string | null;
 }
 
+// ── Concept Stats ────────────────────────────────────────────────────────
+
+export interface ConceptMomentum {
+  concept_code: string;
+  concept_name: string;
+  momentum_3d: number;
+  momentum_5d: number;
+  avg_pct_chg: number;
+  limit_up_count: number;
+  up_ratio: number;
+  leader_avg_pct_chg: number;
+  total_amount: number;
+  heat_persistence: number;
+  strategy_hit_count: number;
+}
+
+export interface ConceptSurge {
+  concept_code: string;
+  concept_name: string;
+  concept_vr3: number;
+  amount_3d_avg: number;
+  amount_20d_avg: number;
+  avg_pct_chg: number;
+  leader_top_stock: string | null;
+  leader_top_pct_chg: number | null;
+}
+
+export interface ConceptRetreat {
+  concept_code: string;
+  concept_name: string;
+  today_pct_chg: number;
+  momentum_3d: number;
+  limit_down_count: number;
+  leader_avg_pct_chg: number;
+}
+
+export interface ResonanceHit {
+  concept_name: string;
+  momentum_3d: number;
+  stocks: { ts_code: string; name: string; source_strategy: string }[];
+}
+
+export interface RetreatWarning {
+  concept_name: string;
+  today_pct_chg: number;
+  stocks: { ts_code: string; name: string }[];
+}
+
+export interface ConceptResonance {
+  resonance_hits: ResonanceHit[];
+  retreat_warnings: RetreatWarning[];
+}
+
+export interface MarketDistribution {
+  trade_date: string;
+  limit_up: number;
+  up_5_to_limit: number;
+  up_0_to_5: number;
+  down_0_to_5: number;
+  down_5_to_limit: number;
+  limit_down: number;
+  total_stocks: number;
+}
+
+// ── Dashboard View Models ────────────────────────────────────────────────
+
 export interface DashboardKpiVm {
   id: string;
   label: string;
