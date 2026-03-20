@@ -670,6 +670,56 @@ export default function Portfolio() {
         </div>
       </section>
 
+      {stats && (
+        <div className="portfolio-stats-section">
+          <div className="portfolio-stats-card">
+            <div className="portfolio-stats-title">策略收益统计</div>
+            <div className="table-shell"><table className="data-table"><thead><tr>
+              <th>策略</th><th className="right">笔数</th><th className="right">胜率</th><th className="right">平均收益</th>
+              <th className="right">总盈亏</th><th className="right">均持天</th><th className="right">最佳</th><th className="right">最差</th><th className="right">盈亏比</th>
+            </tr></thead><tbody>
+              {stats.strategy_summary.map(s => (
+                <tr key={s.source_strategy}>
+                  <td>{PF_STRATEGY_CN[s.source_strategy] ?? s.source_strategy}</td>
+                  <td className="right numeric">{s.total_trades}</td>
+                  <td className="right numeric">{s.win_rate}%</td>
+                  <td className={`right numeric ${s.avg_return_pct > 0 ? 'c-up' : s.avg_return_pct < 0 ? 'c-down' : ''}`}>{s.avg_return_pct > 0 ? '+' : ''}{s.avg_return_pct}%</td>
+                  <td className={`right numeric ${s.total_pnl > 0 ? 'c-up' : s.total_pnl < 0 ? 'c-down' : ''}`}>{s.total_pnl > 0 ? '+' : ''}{s.total_pnl.toLocaleString()}</td>
+                  <td className="right numeric">{s.avg_hold_days}</td>
+                  <td className="right numeric c-up">+{s.best_return_pct}%</td>
+                  <td className={`right numeric ${(s.worst_return_pct ?? 0) < 0 ? 'c-down' : ''}`}>{(s.worst_return_pct ?? 0) >= 0 ? '+' : ''}{s.worst_return_pct}%</td>
+                  <td className="right numeric">{s.profit_loss_ratio ?? '--'}</td>
+                </tr>
+              ))}
+            </tbody></table></div>
+          </div>
+          <div className="portfolio-stats-two-col">
+            <div className="portfolio-stats-card">
+              <div className="portfolio-stats-title">获利最大 TOP10</div>
+              <div className="table-shell"><table className="data-table"><thead><tr>
+                <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
+              </tr></thead><tbody>
+                {stats.top_winners.length === 0 ? <tr><td colSpan={6} className="table-empty">暂无</td></tr> : stats.top_winners.map(r => (
+                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
+                    <td className="right numeric">{r.hold_days}</td><td className="right numeric c-up">+{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-up">+{r.return_pct}%</td></tr>
+                ))}
+              </tbody></table></div>
+            </div>
+            <div className="portfolio-stats-card">
+              <div className="portfolio-stats-title">亏损最大 TOP10</div>
+              <div className="table-shell"><table className="data-table"><thead><tr>
+                <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
+              </tr></thead><tbody>
+                {stats.top_losers.length === 0 ? <tr><td colSpan={6} className="table-empty">暂无</td></tr> : stats.top_losers.map(r => (
+                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
+                    <td className="right numeric">{r.hold_days}</td><td className="right numeric c-down">{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-down">{r.return_pct}%</td></tr>
+                ))}
+              </tbody></table></div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {activeTab === 'open' && concentration ? (() => {
         const strategyDist = Array.isArray(concentration.strategy_distribution) ? concentration.strategy_distribution : [];
         const industryDist = Array.isArray(concentration.industry_distribution) ? concentration.industry_distribution : [];
@@ -684,7 +734,7 @@ export default function Portfolio() {
               {strategyDist.length > 0 ? strategyDist.map((item: unknown, i: number) => {
                 const row = item as Record<string, unknown>;
                 const key = (row.strategy as string) ?? (row.key as string);
-                const label = (row.label as string) ?? getStrategyDisplayName(key) ?? key ?? '—';
+                const label = (row.label as string) ?? PF_STRATEGY_CN[key] ?? getStrategyDisplayName(key) ?? key ?? '—';
                 const count = row.count != null ? Number(row.count) : 0;
                 const pct = row.pct != null ? Number(row.pct) : 0;
                 const widthPct = pct * 100;
@@ -721,56 +771,6 @@ export default function Portfolio() {
           </section>
         );
       })() : null}
-
-      {stats && (
-        <div className="portfolio-stats-section">
-          <div className="portfolio-stats-card">
-            <div className="portfolio-stats-title">策略收益统计</div>
-            <div className="table-shell"><table className="data-table"><thead><tr>
-              <th>策略</th><th className="right">笔数</th><th className="right">胜率</th><th className="right">平均收益</th>
-              <th className="right">总盈亏</th><th className="right">均持天</th><th className="right">最佳</th><th className="right">最差</th><th className="right">盈亏比</th>
-            </tr></thead><tbody>
-              {stats.strategy_summary.map(s => (
-                <tr key={s.source_strategy}>
-                  <td>{PF_STRATEGY_CN[s.source_strategy] ?? s.source_strategy}</td>
-                  <td className="right numeric">{s.total_trades}</td>
-                  <td className="right numeric">{s.win_rate}%</td>
-                  <td className={`right numeric ${s.avg_return_pct > 0 ? 'c-up' : s.avg_return_pct < 0 ? 'c-down' : ''}`}>{s.avg_return_pct > 0 ? '+' : ''}{s.avg_return_pct}%</td>
-                  <td className={`right numeric ${s.total_pnl > 0 ? 'c-up' : s.total_pnl < 0 ? 'c-down' : ''}`}>{s.total_pnl > 0 ? '+' : ''}{s.total_pnl.toLocaleString()}</td>
-                  <td className="right numeric">{s.avg_hold_days}</td>
-                  <td className="right numeric c-up">+{s.best_return_pct}%</td>
-                  <td className={`right numeric ${(s.worst_return_pct ?? 0) < 0 ? 'c-down' : ''}`}>{s.worst_return_pct}%</td>
-                  <td className="right numeric">{s.profit_loss_ratio ?? '--'}</td>
-                </tr>
-              ))}
-            </tbody></table></div>
-          </div>
-          <div className="portfolio-stats-two-col">
-            <div className="portfolio-stats-card">
-              <div className="portfolio-stats-title">获利最大 TOP10</div>
-              <div className="table-shell"><table className="data-table"><thead><tr>
-                <th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
-              </tr></thead><tbody>
-                {stats.top_winners.length === 0 ? <tr><td colSpan={5} className="table-empty">暂无</td></tr> : stats.top_winners.map(r => (
-                  <tr key={r.ts_code}><td>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
-                    <td className="right numeric">{r.hold_days}</td><td className="right numeric c-up">+{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-up">+{r.return_pct}%</td></tr>
-                ))}
-              </tbody></table></div>
-            </div>
-            <div className="portfolio-stats-card">
-              <div className="portfolio-stats-title">亏损最大 TOP10</div>
-              <div className="table-shell"><table className="data-table"><thead><tr>
-                <th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
-              </tr></thead><tbody>
-                {stats.top_losers.length === 0 ? <tr><td colSpan={5} className="table-empty">暂无</td></tr> : stats.top_losers.map(r => (
-                  <tr key={r.ts_code}><td>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
-                    <td className="right numeric">{r.hold_days}</td><td className="right numeric c-down">{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-down">{r.return_pct}%</td></tr>
-                ))}
-              </tbody></table></div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="page-tabs portfolio-tabs">
         {(['open', 'closed', 'transactions'] as PortfolioTabKey[]).map((tab) => (
