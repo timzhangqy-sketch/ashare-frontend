@@ -10,12 +10,10 @@ import {
 import { useDate } from '../../context/useDate'
 import { useStockContextViewModel } from '../../hooks/useStockContextViewModel'
 import type { StockContextPanelPayload } from '../../types/contextPanel'
-import type { DataSourceMeta } from '../../types/dataSource'
 import type { StockDetail } from '../../types/stock'
-import { buildDataSourceMeta } from '../../utils/dataSource'
 import { displaySignalLabel } from '../../utils/labelMaps'
 import { MultiStrategyBadge } from '../CrossTags'
-import SourceNotice from '../data-source/SourceNotice'
+// SourceNotice removed for compact layout
 import KlineChart from './KlineChart'
 
 const CloseIcon = () => (
@@ -127,92 +125,17 @@ function SignalBadge({ label }: { label: string | null | undefined }) {
   return <span className={`status-badge tag-pill drawer-pill drawer-pill-${getSignalTone(label)}`}>{text}</span>
 }
 
-function buildDetailMeta(detail: StockDetailResp | null, loading: boolean, stock: StockDetail | null): DataSourceMeta | null {
-  if (detail) {
-    return buildDataSourceMeta({
-      data_source: 'real',
-      source_label: 'Signals drawer stock detail',
-      source_detail: '财务与技术明细来自股票详情接口。',
-    })
-  }
-
-  if (loading || !stock) return null
-
-  return buildDataSourceMeta({
-    data_source: 'degraded',
-    source_label: 'Signals drawer stock detail',
-    source_detail: '财务与技术明细当前未能从股票详情接口完整返回。',
-    degraded: true,
-    degrade_reason: '股票详情接口当前未返回可用明细。',
-  })
-}
-
-function buildAiMeta(stock: StockDetail | null, loading: boolean, aiData: AIAnalysisResp | null, fallbackUsed: boolean): DataSourceMeta | null {
-  if (!stock || loading) return null
-  if (aiData) {
-    return buildDataSourceMeta({
-      data_source: 'real',
-      source_label: 'Signals drawer AI analysis',
-      source_detail: 'AI 分析来自 AI 分析接口。',
-    })
-  }
-
-  return buildDataSourceMeta({
-    data_source: 'degraded',
-    source_label: 'Signals drawer AI analysis',
-    source_detail: 'AI 分析当前使用兼容兜底摘要。',
-    degraded: true,
-    degrade_reason: fallbackUsed ? 'AI 分析接口未返回可用结果。' : 'AI 分析接口当前不可用。',
-  })
-}
-
-function buildSeedMeta(stock: StockDetail | null, contextReady: boolean): DataSourceMeta | null {
-  if (!stock || contextReady) return null
-  return buildDataSourceMeta({
-    data_source: 'placeholder',
-    source_label: 'Signals 抽屉首屏承接',
-    source_detail: '抽屉首屏先承接当前信号行摘要，详细上下文返回后会更新为真实结果。',
-    empty_reason: '抽屉首屏先承接当前信号行摘要，详细上下文返回后会更新为真实结果。',
-  })
-}
-
-function buildDrawerContextMeta(meta: DataSourceMeta | null | undefined): DataSourceMeta | null {
-  if (!meta) return null
-  if (meta.data_source === 'real_empty') {
-    return {
-      ...meta,
-      source_label: 'Signals 股票上下文',
-      source_detail: '真实股票上下文已接通，但当前标的暂无可补充的详情记录。',
-      empty_reason: '真实股票上下文已接通，但当前标的暂无可补充的详情记录。',
-    }
-  }
-
-  if (meta.data_source === 'degraded' || meta.data_source === 'mixed') {
-    return {
-      ...meta,
-      source_label: 'Signals 股票上下文',
-      source_detail: '抽屉详情以真实股票上下文为主，局部子块当前按兼容结果展示。',
-      degrade_reason: '部分上下文接口未返回可用结果。',
-    }
-  }
-
-  return {
-    ...meta,
-    source_label: 'Signals 股票上下文',
-    source_detail: '抽屉详情优先承接真实股票上下文。',
-  }
-}
+// build*Meta functions removed — SourceNotice no longer rendered
 
 interface Props {
   stock: StockDetail | null
-  sourceMeta?: DataSourceMeta | null
+  sourceMeta?: unknown
   onClose: () => void
   autoOpenBuyForm?: boolean
-  /** 建仓均价，用于在 K 线图上叠加横线（如从持仓页打开） */
   avgCost?: number | null
 }
 
-export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyForm = false, avgCost = null }: Props) {
+export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, avgCost = null }: Props) {
   const { selectedDate } = useDate()
   const open = !!stock
 
@@ -220,7 +143,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
   const [detailLoading, setDetailLoading] = useState(false)
   const [aiData, setAiData] = useState<AIAnalysisResp | null>(null)
   const [aiLoading, setAiLoading] = useState(false)
-  const [aiFallback, setAiFallback] = useState(false)
+  const [, setAiFallback] = useState(false)
 
   const [showBuyForm, setShowBuyForm] = useState(false)
   const [buyPrice, setBuyPrice] = useState('')
@@ -344,10 +267,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
   const risk = contextView?.risk.data ?? null
   const lifecycle = contextView?.lifecycle.data ?? null
   const ai = aiData ?? (stock ? getAIData(stock.code) : null)
-  const drawerSourceMeta = useMemo(() => buildDrawerContextMeta(contextView?.dataSource ?? sourceMeta ?? null), [contextView?.dataSource, sourceMeta])
-  const seedMeta = useMemo(() => buildSeedMeta(stock, Boolean(contextView?.main)), [stock, contextView?.main])
-  const detailMeta = useMemo(() => buildDetailMeta(detail, detailLoading, stock), [detail, detailLoading, stock])
-  const aiMeta = useMemo(() => buildAiMeta(stock, aiLoading, aiData, aiFallback), [stock, aiLoading, aiData, aiFallback])
+  // meta builders removed — SourceNotice no longer rendered
 
   const closeValue = main?.close ?? detail?.close ?? stock?.close ?? 0
   const changePct = main?.pctChg ?? detail?.pct_chg ?? stock?.changePct ?? 0
@@ -402,11 +322,14 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
               <div className="drawer-header-copy">
                 <div className="drawer-stock-title" data-testid="signals-stock-drawer-title">
                   {stock.name}
+                  <span className="numeric numeric-muted" style={{ fontSize: '12px', marginLeft: '6px' }}>{stock.code}</span>
                 </div>
                 <div className="drawer-header-tags">
-                  <span className="numeric numeric-muted">{stock.code}</span>
+                  {detail?.primary_concept && (
+                    <span className="page-badge badge-blue">{detail.primary_concept}{detail.is_leader ? ' 👑' : ''}</span>
+                  )}
                   {stock.lists.map((item) => (
-                    <span key={item} className="page-badge badge-blue">
+                    <span key={item} className="page-badge badge-gold">
                       {item}
                     </span>
                   ))}
@@ -442,8 +365,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
               </div>
             </div>
 
-            <SourceNotice meta={drawerSourceMeta} />
-            <SourceNotice meta={seedMeta} />
+            {/* source notices removed for compact layout */}
 
             {showBuyForm ? (
               <section className="drawer-buy-form">
@@ -492,7 +414,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
               <section className="drawer-section-block">
                 <div className="drawer-section-head">
                   <div className="drawer-section-title">K 线承接</div>
-                  <SourceNotice meta={contextView?.kline.dataSource} />
+                  {/* source notice removed */}
                 </div>
                 <KlineChart tsCode={stock.code} avgCost={avgCost ?? undefined} />
               </section>
@@ -500,7 +422,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
               <section className="drawer-section-block">
                 <div className="drawer-section-head">
                   <div className="drawer-section-title">交易标的池与生命周期</div>
-                  <SourceNotice meta={contextView?.lifecycle.dataSource} />
+                  {/* source notice removed */}
                 </div>
                 <div className="drawer-card">
                   {contextLoading ? (
@@ -537,7 +459,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
               <section className="drawer-section-block">
                 <div className="drawer-section-head">
                   <div className="drawer-section-title">风险摘要</div>
-                  <SourceNotice meta={contextView?.risk.dataSource} />
+                  {/* source notice removed */}
                 </div>
                 <div className="drawer-card">
                   {contextLoading ? (
@@ -585,7 +507,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
                   <div className="drawer-section-title">AI 分析</div>
                   {aiLoading ? <div className="spinner drawer-inline-spinner" /> : null}
                 </div>
-                <SourceNotice meta={aiMeta} />
+                {/* source notice removed */}
                 {aiLoading ? (
                   <div className="drawer-inline-note">正在加载 AI 分析...</div>
                 ) : ai ? (
@@ -629,7 +551,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
               <section className="drawer-section-block">
                 <div className="drawer-section-head">
                   <div className="drawer-section-title">财务概览</div>
-                  <SourceNotice meta={detailMeta} />
+                  {/* source notice removed */}
                 </div>
                 <div className="drawer-card drawer-table-card">
                   {detailLoading ? (
@@ -669,7 +591,7 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
               <section className="drawer-section-block">
                 <div className="drawer-section-head">
                   <div className="drawer-section-title">技术概览</div>
-                  <SourceNotice meta={detailMeta} />
+                  {/* source notice removed */}
                 </div>
                 <div className="drawer-card">
                   {detailLoading ? (
@@ -690,16 +612,29 @@ export default function StockDrawer({ stock, sourceMeta, onClose, autoOpenBuyFor
                         <InfoItem label="最新价" value={formatNumber(closeValue)} numeric />
                       </div>
                       {(detail || main) ? (
-                        <div className="drawer-info-grid drawer-info-grid-4 drawer-subgrid">
-                          <InfoItem label="开盘价" value={formatNumber(detail?.open ?? main?.open)} numeric />
-                          <InfoItem label="最高价" value={formatNumber(detail?.high ?? main?.high)} numeric />
-                          <InfoItem label="最低价" value={formatNumber(detail?.low ?? main?.low)} numeric />
-                          <InfoItem label="总市值(亿)" value={formatYi(detail?.market_cap_yi ?? main?.totalMvYi ?? null, 1)} numeric />
-                          <InfoItem label="PE(TTM)" value={(detail?.pe_ttm ?? main?.peTtm) != null ? formatNumber(detail?.pe_ttm ?? main?.peTtm, 1) : '--'} numeric={(detail?.pe_ttm ?? main?.peTtm) != null} />
-                          <InfoItem label="PB" value={formatNumber(detail?.pb ?? main?.pb)} numeric />
-                          <InfoItem label="行业" value={detail?.industry ?? main?.industry ?? '--'} />
-                          <InfoItem label="上市日期" value={detail?.list_date ?? '--'} numeric />
-                        </div>
+                        <>
+                          <div className="drawer-info-grid drawer-info-grid-4 drawer-subgrid">
+                            <InfoItem label="开盘价" value={formatNumber(detail?.open ?? main?.open)} numeric />
+                            <InfoItem label="最高价" value={formatNumber(detail?.high ?? main?.high)} numeric />
+                            <InfoItem label="最低价" value={formatNumber(detail?.low ?? main?.low)} numeric />
+                            <InfoItem label="总市值(亿)" value={formatYi(detail?.market_cap_yi ?? main?.totalMvYi ?? null, 1)} numeric />
+                            <InfoItem label="PE(TTM)" value={(detail?.pe_ttm ?? main?.peTtm) != null ? formatNumber(detail?.pe_ttm ?? main?.peTtm, 1) : '--'} numeric={(detail?.pe_ttm ?? main?.peTtm) != null} />
+                            <InfoItem label="PB" value={formatNumber(detail?.pb ?? main?.pb)} numeric />
+                            <InfoItem label="行业" value={detail?.industry ?? main?.industry ?? '--'} />
+                            <InfoItem label="上市日期" value={detail?.list_date ?? '--'} numeric />
+                          </div>
+                          <div className="drawer-info-grid drawer-info-grid-4 drawer-subgrid">
+                            <InfoItem label="5日涨幅" value={<span className={(detail?.pct_chg_5d ?? 0) > 0 ? 'c-up' : (detail?.pct_chg_5d ?? 0) < 0 ? 'c-down' : ''}>{formatPercentFromRatio(detail?.pct_chg_5d)}</span>} numeric />
+                            <InfoItem label="10日涨幅" value={<span className={(detail?.pct_chg_10d ?? 0) > 0 ? 'c-up' : (detail?.pct_chg_10d ?? 0) < 0 ? 'c-down' : ''}>{formatPercentFromRatio(detail?.pct_chg_10d)}</span>} numeric />
+                            <InfoItem label="20日涨幅" value={<span className={(detail?.pct_chg_20d ?? 0) > 0 ? 'c-up' : (detail?.pct_chg_20d ?? 0) < 0 ? 'c-down' : ''}>{formatPercentFromRatio(detail?.pct_chg_20d)}</span>} numeric />
+                            <InfoItem label="距MA20" value={<span className={(detail?.close_vs_ma20_pct ?? 0) > 0 ? 'c-up' : (detail?.close_vs_ma20_pct ?? 0) < 0 ? 'c-down' : ''}>{formatPercentFromRatio(detail?.close_vs_ma20_pct)}</span>} numeric />
+                          </div>
+                          {detail?.high_60d != null && (
+                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', padding: '4px 0 0', borderTop: '1px solid rgba(255,255,255,0.04)', marginTop: '4px' }}>
+                              60日区间 <span className="numeric">{formatNumber(detail?.low_60d)}</span> ~ <span className="numeric">{formatNumber(detail?.high_60d)}</span>
+                            </div>
+                          )}
+                        </>
                       ) : (
                         <div className="drawer-inline-note">当前没有可展示的技术扩展字段。</div>
                       )}

@@ -474,6 +474,15 @@ export interface StockDetailResp {
   watchlist_buy_signal?:       string | null;
   watchlist_sell_signal?:      string | null;
   financials: FinancialYear[];
+  primary_concept?: string | null;
+  is_leader?: boolean;
+  leader_reason?: string | null;
+  pct_chg_5d?: number | null;
+  pct_chg_10d?: number | null;
+  pct_chg_20d?: number | null;
+  high_60d?: number | null;
+  low_60d?: number | null;
+  close_vs_ma20_pct?: number | null;
   error?: string;
 }
 
