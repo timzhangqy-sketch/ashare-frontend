@@ -9022,5 +9022,5 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .pf-detail-row { display:flex; justify-content:space-between; align-items:center; padding:5px 0; border-bottom:1px solid var(--border-subtle); }
 .pf-detail-row:last-child { border-bottom:none; }
 .pf-detail-row .pf-label { font-size:11px; color:var(--text-muted); }
-.pf-detail-row .pf-value { font-size:12px; font-weight:500; text-align:right; }
+.pf-detail-row .pf-value { font-size:12px; font-weight:500; text-align:right; max-width:60%; word-break:break-word; }
 .pf-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
