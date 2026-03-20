@@ -28,7 +28,7 @@ const SIGNAL_LABEL_MAP: Record<string, string> = {
 };
 
 const ACTION_COPY: Record<string, { label: string; suggestion: string }> = {
-  HOLD: { label: '持续持有', suggestion: '当前没有新的执行动作，先按持仓观察链路继续跟踪。' },
+  HOLD: { label: '持续持有', suggestion: '等待后端接入' },
   REDUCE: { label: '减仓观察', suggestion: '信号提示应优先评估减仓，不应直接视作真实执行结果。' },
   CLOSE: { label: '准备退出', suggestion: '当前建议靠近退出动作，但仍需到 Execution 或研究承接页复核。' },
   STOP_LOSS: { label: '止损出场', suggestion: '当前建议带有止损语义，属于前端建议动作，不是后端成交结果。' },
