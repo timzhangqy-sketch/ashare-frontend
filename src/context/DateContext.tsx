@@ -52,6 +52,9 @@ export function DateProvider({ children }: { children: ReactNode }) {
   const selectedDateRef = useRef(selectedDate);
   useEffect(() => { selectedDateRef.current = selectedDate; }, [selectedDate]);
 
+  // Track whether fetchLatestDataDate has already set the date
+  const latestDataDateRef = useRef<string | null>(null);
+
   // Fetch trade calendar once on mount
   useEffect(() => {
     fetchTradeDates()
@@ -59,7 +62,9 @@ export function DateProvider({ children }: { children: ReactNode }) {
         const sorted = [...dates].sort();
         setTradeDates(sorted);
         setReady(true);
-        _setRaw(latestInList(sorted));
+        if (!latestDataDateRef.current) {
+          _setRaw(latestInList(sorted));
+        }
       })
       .catch(() => {
         // API unavailable — keep weekend-snap fallback, still mark ready
@@ -72,6 +77,7 @@ export function DateProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     fetchLatestDataDate().then((latestDate) => {
       if (!cancelled && latestDate) {
+        latestDataDateRef.current = latestDate;
         _setRaw(latestDate);
       }
     });
