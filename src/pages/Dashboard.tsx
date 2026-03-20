@@ -11,12 +11,7 @@ import {
 } from '../adapters/dashboard';
 import type { ActionListResponse } from '../api';
 import { formatSignedPercentSafe } from '../utils/formatters';
-import KpiCard from '../components/Dashboard/KpiCard';
-import OpportunitySection from '../components/Dashboard/OpportunitySection';
-import PortfolioSection from '../components/Dashboard/PortfolioSection';
-import RiskSection from '../components/Dashboard/RiskSection';
 import StatusState from '../components/Dashboard/StatusState';
-import SystemHealthSection from '../components/Dashboard/SystemHealthSection';
 import SourceSummaryBar from '../components/data-source/SourceSummaryBar';
 import StockDrawer from '../components/Drawer/StockDrawer';
 import { useDashboardRuntime } from '../context/useDashboardRuntime';
@@ -130,12 +125,10 @@ export default function Dashboard() {
   const hasWatch = Array.isArray(actionList?.watch) && actionList.watch.length > 0;
   const hasAnyAction = hasSell || hasBuy || hasWatch;
 
-  const kpis = viewModel?.kpis ?? [];
-  const mainKpis = kpis.filter(
-    (item) => item.id !== 'failedStepsCount' && item.id !== 'versionLabel',
-  );
-  const pipelineKpi = kpis.find((item) => item.id === 'failedStepsCount');
-  const versionKpi = kpis.find((item) => item.id === 'versionLabel');
+  const opp = viewModel?.opportunity;
+  const risk = viewModel?.risk;
+  const port = viewModel?.portfolio;
+  const sys = viewModel?.systemHealth;
 
   const distData = useMemo(() => {
     if (!distribution) return [];
@@ -664,42 +657,143 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <section className="dashboard-kpi-strip card">
-        {status === 'loading' ? (
-          <div className="dashboard-kpi-strip-skeleton" />
-        ) : (
-          <>
-            <div className="dashboard-kpi-strip-main">
-              {mainKpis.slice(0, 8).map((item) => (
-                <KpiCard item={item} key={item.id} />
-              ))}
-            </div>
-            <div className="dashboard-kpi-strip-side">
-              <div className="dashboard-kpi-pipeline">
-                <span
-                  className={
-                    pipelineKpi && pipelineKpi.tone === 'danger'
-                      ? 'kpi-dot kpi-dot--bad'
-                      : 'kpi-dot kpi-dot--ok'
-                  }
-                />
-                <span className="dashboard-kpi-pipeline-text">
-                  Pipeline {pipelineKpi?.value ?? '—'}
+      {/* ═══ 第5行：机会 + 风控 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>机会</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                  买点 {opp?.metrics?.find(m => m.id === 'opp-buy')?.value ?? '—'} | 共振 {opp?.metrics?.find(m => m.id === 'opp-resonance')?.value ?? '—'} | 候选 {opp?.metrics?.find(m => m.id === 'opp-watchlist')?.value ?? '—'}
                 </span>
-              </div>
-              <div className="dashboard-kpi-version">
-                {versionKpi?.value ?? '—'}
+                <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
               </div>
             </div>
-          </>
-        )}
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '8px 12px' }}>
+              {(opp?.topOpportunities?.length ?? 0) > 0 ? (
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>股票</th>
+                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>策略</th>
+                      <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>评分</th>
+                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {opp!.topOpportunities.map((item) => (
+                      <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', height: 32 }}>
+                        <td style={{ padding: '5px 6px', fontWeight: 500 }}>
+                          <span style={{ color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
+                        </td>
+                        <td style={{ padding: '5px 6px', color: 'var(--text-secondary)' }}>{item.strategyLabel?.split(' / ')[0] ?? '—'}</td>
+                        <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
+                        <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontSize: 11 }}>{item.helperText}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div style={{ padding: 16, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>暂无买点信号</div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>风控</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                  拦截 {risk?.metrics?.find(m => m.id === 'risk-gate')?.value ?? '—'} | 最高风险 {risk?.metrics?.find(m => m.id === 'risk-highest')?.value ?? '—'}
+                </span>
+                <a href="/risk" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>风控 →</a>
+              </div>
+            </div>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '8px 12px' }}>
+              {(risk?.events?.length ?? 0) > 0 ? (
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>事件</th>
+                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>详情</th>
+                      <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>风险分</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {risk!.events.map((ev) => (
+                      <tr key={ev.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', height: 32 }}>
+                        <td style={{ padding: '5px 6px', color: 'var(--warn)', fontWeight: 500 }}>{ev.name}</td>
+                        <td style={{ padding: '5px 6px', color: 'var(--text-secondary)' }}>{ev.helperText}</td>
+                        <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{ev.scoreLabel}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div style={{ padding: 16, textAlign: 'center', color: '#52c41a', fontSize: 13 }}>风控正常，无拦截</div>
+              )}
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="dashboard-section-grid">
-        <OpportunitySection data={viewModel?.opportunity} onRetry={handleRetry} status={status} />
-        <RiskSection data={viewModel?.risk} onRetry={handleRetry} status={status} />
-        <PortfolioSection data={viewModel?.portfolio} onRetry={handleRetry} status={status} />
-        <SystemHealthSection data={viewModel?.systemHealth} onRetry={handleRetry} status={status} />
+      {/* ═══ 第6行：组合 + 系统 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                  持仓 {port?.metrics?.find(m => m.id === 'portfolio-positions')?.value ?? '—'} | 市值 {port?.metrics?.find(m => m.id === 'portfolio-value')?.value ?? '—'}
+                </span>
+                <a href="/portfolio" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>组合 →</a>
+              </div>
+            </div>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '10px 12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 16px', fontSize: 13 }}>
+                {(port?.metrics ?? []).map((m) => (
+                  <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{m.label}</span>
+                    <span style={{ color: m.tone === 'positive' ? 'var(--up)' : m.tone === 'danger' ? 'var(--down)' : 'var(--text-primary)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{m.value}</span>
+                  </div>
+                ))}
+              </div>
+              {port?.actionHint && (
+                <div style={{ marginTop: 8, fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: 6 }}>{port.actionHint}</div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>系统</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {(() => {
+                  const failed = sys?.metrics?.find(m => m.id === 'system-failed');
+                  const isOk = (failed?.value ?? '0') === '0';
+                  return <span style={{ fontSize: 11, color: isOk ? '#52c41a' : '#ff4d4f', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                    {isOk ? '运行正常' : `异常 ${failed?.value ?? ''}步`}
+                  </span>;
+                })()}
+                <a href="/system" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>系统 →</a>
+              </div>
+            </div>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '10px 12px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px', fontSize: 13 }}>
+                {(sys?.metrics ?? []).map((m) => (
+                  <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{m.label}</span>
+                    <span style={{ color: m.tone === 'positive' ? '#52c41a' : m.tone === 'danger' ? '#ff4d4f' : 'var(--text-primary)', fontWeight: 500 }}>{m.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} />
