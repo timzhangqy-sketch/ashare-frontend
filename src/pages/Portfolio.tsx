@@ -686,8 +686,8 @@ export default function Portfolio() {
                   <td className={`right numeric ${s.avg_return_pct > 0 ? 'c-up' : s.avg_return_pct < 0 ? 'c-down' : ''}`}>{s.avg_return_pct > 0 ? '+' : ''}{s.avg_return_pct}%</td>
                   <td className={`right numeric ${s.total_pnl > 0 ? 'c-up' : s.total_pnl < 0 ? 'c-down' : ''}`}>{s.total_pnl > 0 ? '+' : ''}{s.total_pnl.toLocaleString()}</td>
                   <td className="right numeric">{s.avg_hold_days}</td>
-                  <td className="right numeric c-up">+{s.best_return_pct}%</td>
-                  <td className={`right numeric ${(s.worst_return_pct ?? 0) < 0 ? 'c-down' : ''}`}>{(s.worst_return_pct ?? 0) >= 0 ? '+' : ''}{s.worst_return_pct}%</td>
+                  <td className={`right numeric ${(s.best_return_pct ?? 0) > 0 ? 'c-up' : ''}`}>{(s.best_return_pct ?? 0) > 0 ? '+' : ''}{s.best_return_pct}%</td>
+                  <td className={`right numeric ${(s.worst_return_pct ?? 0) < 0 ? 'c-down' : ''}`}>{(s.worst_return_pct ?? 0) > 0 ? '+' : ''}{s.worst_return_pct}%</td>
                   <td className="right numeric">{s.profit_loss_ratio ?? '--'}</td>
                 </tr>
               ))}
