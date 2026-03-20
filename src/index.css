@@ -409,6 +409,7 @@ a { text-decoration: none; color: inherit; }
   font-weight: 500;
   line-height: 1.4;
   color: #ffffff;
+  letter-spacing: 0.05em;
 }
 
 .nav-item.active .nav-label {
@@ -7978,10 +7979,10 @@ textarea {
 }
 
 .nav-item.active {
-  background: rgba(88, 213, 208, 0.08);
+  background: rgba(245, 166, 35, 0.08);
   box-shadow:
-    inset 3px 0 0 var(--accent),
-    0 0 0 1px rgba(88, 213, 208, 0.08);
+    inset 3px 0 0 #F5A623,
+    0 0 0 1px rgba(245, 166, 35, 0.08);
 }
 
 .topbar {
