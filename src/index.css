@@ -9034,5 +9034,10 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .portfolio-stats-card .data-table { font-size: 12px; }
 .portfolio-stats-card .data-table th { font-size: 10px; font-weight: 500; color: var(--text-muted); padding: 4px 8px; }
 .portfolio-stats-card .data-table td { padding: 5px 8px; font-size: 12px; }
+.portfolio-stats-card .data-table { table-layout: auto; width: 100%; }
+.portfolio-stats-card .data-table th,
+.portfolio-stats-card .data-table td { white-space: nowrap; padding: 5px 6px; }
 .portfolio-stats-card .data-table th:first-child,
-.portfolio-stats-card .data-table td:first-child { width: auto; white-space: nowrap; }
+.portfolio-stats-card .data-table td:first-child { width: 1%; white-space: nowrap; }
+.data-table .c-up { color: var(--color-up) !important; }
+.data-table .c-down { color: var(--color-down) !important; }
