@@ -980,4 +980,26 @@ export async function fetchMarketDistributionHistory(days: number = 60): Promise
   } catch { return []; }
 }
 
+// ── Portfolio Stats ────────────────────────────────────────────────────────
+
+export interface StrategyStatRow {
+  source_strategy: string; total_trades: number; win_count: number; win_rate: number;
+  avg_return_pct: number; total_pnl: number; avg_hold_days: number;
+  best_return_pct: number; worst_return_pct: number; profit_loss_ratio: number | null;
+}
+
+export interface TradeRankRow {
+  ts_code: string; name: string; source_strategy: string;
+  hold_days: number; realized_pnl: number; return_pct: number;
+}
+
+export interface PortfolioStatsResp {
+  strategy_summary: StrategyStatRow[]; top_winners: TradeRankRow[]; top_losers: TradeRankRow[];
+}
+
+export async function fetchPortfolioStats(): Promise<PortfolioStatsResp> {
+  const res = await api.get('/api/portfolio/stats');
+  return res.data as PortfolioStatsResp;
+}
+
 export default api;

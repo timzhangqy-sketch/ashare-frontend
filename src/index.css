@@ -9025,3 +9025,12 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .pf-detail-row .pf-label { font-size:11px; color:var(--text-muted); }
 .pf-detail-row .pf-value { font-size:12px; font-weight:500; text-align:right; max-width:60%; word-break:break-word; }
 .pf-divider { height:1px; background:var(--border-subtle); margin:8px 0; }
+
+/* ═══ Portfolio Stats Tables ═══ */
+.portfolio-stats-section { padding: 0 20px 16px; }
+.portfolio-stats-card { background: var(--bg-card); border: 1px solid var(--border-default); border-radius: 6px; padding: 12px; margin-bottom: 10px; }
+.portfolio-stats-title { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+.portfolio-stats-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.portfolio-stats-card .data-table { font-size: 12px; }
+.portfolio-stats-card .data-table th { font-size: 10px; font-weight: 500; color: var(--text-muted); padding: 4px 8px; }
+.portfolio-stats-card .data-table td { padding: 5px 8px; font-size: 12px; }
