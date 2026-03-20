@@ -37,6 +37,7 @@ function Row({ label, value, cls }: { label: string; value: string | number; cls
 function getFactValue(label: string, value: string | null | undefined): string {
   if (label === 'action_signal') return ACTION_SIGNAL_MAP[value ?? ''] ?? value ?? '--'
   if (label === 'signal_reason' || label === 'exit_reason') return formatSignalReason(value) ?? '--'
+  if (label === 'execution_hint') return value || '等待后端接入'
   return value ?? '--'
 }
 
