@@ -8990,7 +8990,6 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .ctx-row:last-child { border-bottom:none; }
 .ctx-row .ctx-label { font-size:11px; color:var(--text-muted); }
 .ctx-row .ctx-val { font-size:12px; font-weight:500; }
-.ctx-row.ctx-hero .ctx-val { font-size:14px; font-weight:600; }
 .ctx-row.ctx-group-start { border-top:1px solid var(--border-default); }
 
 .ctx-status-section { margin-bottom:12px; padding:0 4px; }

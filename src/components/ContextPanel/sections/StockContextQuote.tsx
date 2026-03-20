@@ -4,9 +4,9 @@ function fmt(v: number | null | undefined, d = 2) { return v == null || Number.i
 function fmtRatio(v: number | null | undefined) { return v == null || Number.isNaN(v) ? '--' : `${v >= 0 ? '+' : ''}${(v * 100).toFixed(2)}%` }
 function pctCls(v: number | null | undefined) { return (v ?? 0) > 0 ? 'c-up' : (v ?? 0) < 0 ? 'c-down' : '' }
 
-function Row({ label, value, cls, hero, groupStart }: { label: string; value: string | number; cls?: string; hero?: boolean; groupStart?: boolean }) {
+function Row({ label, value, cls, groupStart }: { label: string; value: string | number; cls?: string; groupStart?: boolean }) {
   return (
-    <div className={`ctx-row${hero ? ' ctx-hero' : ''}${groupStart ? ' ctx-group-start' : ''}`}>
+    <div className={`ctx-row${groupStart ? ' ctx-group-start' : ''}`}>
       <span className="ctx-label">{label}</span>
       <span className={`ctx-val numeric ${cls ?? ''}`}>{value}</span>
     </div>
@@ -28,8 +28,8 @@ export default function StockContextQuote({ data, loading }: Props) {
   return (
     <div className="ctx-quote-grid">
       {/* Group 1: Price */}
-      <Row label="收盘价" value={fmt(data.close)} cls={pCls} hero />
-      <Row label="涨跌幅" value={pctChg != null ? `${pctChg >= 0 ? '+' : ''}${pctChg.toFixed(2)}%` : '--'} cls={pCls} hero />
+      <Row label="收盘价" value={fmt(data.close)} cls={pCls} />
+      <Row label="涨跌幅" value={pctChg != null ? `${pctChg >= 0 ? '+' : ''}${pctChg.toFixed(2)}%` : '--'} cls={pCls} />
       {/* Group 2: Trading */}
       <Row label="成交额(亿)" value={fmt(data.amountYi)} groupStart />
       <Row label="换手率%" value={fmt(data.turnoverRate)} />
