@@ -276,6 +276,8 @@ export default function Dashboard() {
                   breadth_score: breadthMap[t.date] ?? null,
                 }));
 
+                if (chartData.length > 0) console.log('[breadth debug]', chartData.slice(0, 3).map((d: any) => ({ date: d.date, breadth_score: d.breadth_score })));
+
                 const latest = turnoverHistory.length > 0 ? turnoverHistory[turnoverHistory.length - 1] : null;
                 const avg5 = turnoverHistory.length >= 5
                   ? Math.round(turnoverHistory.slice(-5).reduce((s: number, d: any) => s + d.amount, 0) / 5)
@@ -374,7 +376,7 @@ export default function Dashboard() {
                           dot={false}
                           activeDot={{ r: 3, fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5 }}
                         />
-                        <Line yAxisId="breadth" type="monotone" dataKey="breadth_score" stroke="#faad14" strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls />
+                        <Line yAxisId="breadth" type="monotone" dataKey="breadth_score" stroke="rgba(250,173,20,0.4)" strokeWidth={1} strokeDasharray="3 2" dot={false} connectNulls />
                       </ComposedChart>
                     </ResponsiveContainer>
                     </div>
