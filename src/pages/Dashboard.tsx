@@ -10,6 +10,7 @@ import {
   mapRawDashboardResponseToDto,
 } from '../adapters/dashboard';
 import type { ActionListResponse } from '../api';
+import { getStrategyDisplayName } from '../utils/displayNames';
 import { formatSignedPercentSafe } from '../utils/formatters';
 import StatusState from '../components/Dashboard/StatusState';
 import SourceSummaryBar from '../components/data-source/SourceSummaryBar';
@@ -672,24 +673,30 @@ export default function Dashboard() {
             </div>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '8px 12px' }}>
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                  <colgroup>
+                    <col style={{ width: '25%' }} />
+                    <col style={{ width: '25%' }} />
+                    <col style={{ width: '15%' }} />
+                    <col style={{ width: '35%' }} />
+                  </colgroup>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>股票</th>
-                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>策略</th>
-                      <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>评分</th>
-                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>状态</th>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                      <th style={{ textAlign: 'left', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>股票</th>
+                      <th style={{ textAlign: 'left', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>策略</th>
+                      <th style={{ textAlign: 'right', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>评分</th>
+                      <th style={{ textAlign: 'right', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {opp!.topOpportunities.map((item) => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', height: 32 }}>
-                        <td style={{ padding: '5px 6px', fontWeight: 500 }}>
+                      <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                        <td style={{ padding: '6px 0', fontSize: 13, fontWeight: 500 }}>
                           <span style={{ color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
-                        <td style={{ padding: '5px 6px', color: 'var(--text-secondary)' }}>{item.strategyLabel?.split(' / ')[0] ?? '—'}</td>
-                        <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
-                        <td style={{ padding: '5px 6px', color: 'var(--text-muted)', fontSize: 11 }}>{item.helperText}</td>
+                        <td style={{ padding: '6px 0', fontSize: 13, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
+                        <td style={{ padding: '6px 0', fontSize: 13, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
+                        <td style={{ padding: '6px 0', fontSize: 12, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
                   </tbody>
