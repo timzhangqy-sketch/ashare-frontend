@@ -364,7 +364,7 @@ function buildOpenSummary(
   const fmtBenchmark = (v: number | null | undefined) => (v == null ? '--' : `${v >= 0 ? '+' : ''}${Number(v).toFixed(2)}%`);
 
   const noHelper = '';
-  const benchmarkHelper = `自 ${startDate} 至今`;
+  const benchmarkHelper = '';
   return {
     title: '',
     description: '账户总览、资产结构与风控指标来自 /api/portfolio/summary。',
