@@ -12,21 +12,21 @@ import { useApiData } from '../../hooks/useApiData'
 import type { ApiHealthRow, CoverageItemRow, PipelineStepRow, RunlogVersionRow, SystemRow, SystemTab } from '../../types/system'
 
 const STEP_LABEL: Record<string, string> = {
-  intraday_5m: '日内5分钟行情',
-  daily_price: '日线行情',
-  daily_basic: '每日基础指标',
-  adj_factor: '复权因子',
-  index_daily: '指数日线',
-  intraday_retention_60d: '5分钟历史保留',
-  scan_snapshot: '策略扫描快照',
-  SUPPLEMENT_DATA: '补充数据',
-  ANN_COLLECT: '公告采集',
-  EVENT_DETECT: '事件检测',
-  RISK_SCORE: '风险评分',
-  SIGNAL_GEN: '信号生成',
-  PERF_ANALYZE: '绩效分析',
-  pool_export: '榜单导出',
-  healthcheck: '健康检查',
+  intraday_5m: '5分钟行情', daily_price: '日线行情', daily_basic: '基础指标',
+  adj_factor: '复权因子', index_daily: '指数日线', intraday_retention_60d: '5分钟清理',
+  scan_snapshot: '策略快照', SUPPLEMENT_DATA: '补充数据', ANN_COLLECT: '公告采集',
+  EVENT_DETECT: '事件检测', RISK_SCORE: '风险评分', MARKET_BREADTH: '市场宽度',
+  'VOL_SURGE:SCAN': '放量:扫描', 'VOL_SURGE:TRACK': '放量:跟踪',
+  retoc2_v3_signals: 'RETOC2信号', pattern_t2up9_2dup_lt5: 'T2UP9候选',
+  pattern_t2up9_watch: 'T2UP9观察', WEAK_BUY: '弱市吸筹', WEAK_BUY_TRIGGER: '弱市触发',
+  WATCH_EXPIRE: '观察过期', WATCHLIST_ENTRY: '入池', WATCHLIST_TRACK: '池跟踪',
+  WATCHLIST_SIGNAL: '信号生成', POSITION_SIZE: '仓位计算', SELL_SIGNAL: '卖点信号',
+  SIM_ENGINE: '模拟引擎', WATCHLIST_EXIT: '退池', PORTFOLIO_TRACK: '持仓跟踪',
+  SYNC_LEGACY: '同步兼容', FACTOR_IC: '因子IC', PERF_ANALYZE: '绩效分析',
+  DATA_AUDIT: '数据审计', strategy_snapshot: '策略快照', index_turnover: '指数成交额',
+  ths_hot_daily: '热度采集', concept_drift_fix: '概念修正', concept_daily_stats: '板块统计',
+  market_summary_gen: 'AI综述', mailer: '邮件通知', dq_gate: '数据质量',
+  healthcheck: '健康检查', pool_export: '榜单导出', SIGNAL_GEN: '信号生成',
 }
 
 function getRowMeta(row: SystemRow) {
@@ -193,7 +193,7 @@ export default function SystemPage() {
                         <span className="pipeline-duration numeric">{pr.duration}</span>
                         <span className="pipeline-rows numeric">{pr.rowCount}</span>
                         <span className={`pipeline-badge ${tone === 'success' ? 'badge-green' : tone === 'fail' ? 'badge-red' : 'badge-yellow'}`}>{row.stateLabel}</span>
-                        <span className="pipeline-log">{row.summary ?? ''}</span>
+                        <span className="pipeline-log" title={row.summary ?? ''}>{row.summary ?? ''}</span>
                       </div>
                     )
                   }
