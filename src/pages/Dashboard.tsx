@@ -235,6 +235,7 @@ export default function Dashboard() {
                     <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>连续</th>
                     <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>3日涨幅</th>
                     <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>龙头</th>
+                    <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>涨停</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -277,11 +278,14 @@ export default function Dashboard() {
                       <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '-'}
                       </td>
+                      <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.limit_up_count ?? 0) > 0 ? 'var(--text-secondary)' : 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
+                        {c.limit_up_count ?? 0}
+                      </td>
                     </tr>
                   ))}
                   {((viewModel as any)?.hotConcepts || []).length === 0 && (
                     <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td colSpan={7} style={{ padding: '6px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td>
+                      <td colSpan={8} style={{ padding: '6px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td>
                     </tr>
                   )}
                 </tbody>
