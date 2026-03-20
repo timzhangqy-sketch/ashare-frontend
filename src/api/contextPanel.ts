@@ -31,13 +31,18 @@ export interface StockContextLifecycleResp {
 
 interface ContextStockResp {
   data?: {
-    basic?: { name?: string; industry?: string; is_st?: boolean; list_date?: string };
+    basic?: {
+      name?: string; industry?: string; is_st?: boolean; list_date?: string;
+      primary_concept?: string | null; is_leader?: boolean; leader_reason?: string | null;
+    };
     quote?: {
       close?: number; open?: number; high?: number; low?: number;
       pct_chg?: number; turnover_rate?: number; amount_yi?: number;
       ma5?: number; ma10?: number; ma20?: number; vr?: number;
       pe_ttm?: number; pb?: number; total_mv_yi?: number;
       vol?: number; amount?: number;
+      pct_chg_5d?: number; pct_chg_10d?: number; pct_chg_20d?: number;
+      high_60d?: number; low_60d?: number; close_vs_ma20_pct?: number;
     };
     watchlist_context?: {
       in_watchlist?: boolean; buy_signal?: string | null; sell_signal?: string | null;
@@ -83,6 +88,15 @@ function mapContextToDetail(raw: ContextStockResp, tsCode: string): StockDetailR
     watchlist_buy_signal: w.buy_signal ?? null,
     watchlist_sell_signal: w.sell_signal ?? null,
     financials: [],
+    primary_concept: b.primary_concept ?? null,
+    is_leader: b.is_leader ?? false,
+    leader_reason: b.leader_reason ?? null,
+    pct_chg_5d: q.pct_chg_5d ?? null,
+    pct_chg_10d: q.pct_chg_10d ?? null,
+    pct_chg_20d: q.pct_chg_20d ?? null,
+    high_60d: q.high_60d ?? null,
+    low_60d: q.low_60d ?? null,
+    close_vs_ma20_pct: q.close_vs_ma20_pct ?? null,
   };
 }
 

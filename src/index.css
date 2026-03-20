@@ -9006,3 +9006,7 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .ctx-lc-cell .lc-label { font-size:10px; color:var(--text-muted); }
 .ctx-lc-cell .lc-value { font-size:12px; font-weight:600; }
 .context-tag-concept { background:rgba(59,130,246,0.15); color:#60a5fa; }
+
+/* ContextPanel full height */
+.context-panel-slot { display:flex; flex-direction:column; height:100%; }
+.global-context-panel { flex:1; overflow-y:auto; }

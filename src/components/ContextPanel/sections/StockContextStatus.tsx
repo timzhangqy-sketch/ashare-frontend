@@ -1,5 +1,8 @@
 import type { StockContextRiskData, StockContextLifecycleData } from '../../../types/contextPanel'
-// displaySignalLabel available if needed
+const STATUS_CN: Record<string, string> = {
+  in_watchlist: '交易标的池中', held: '持仓中', candidate: '候选中',
+  signaled: '已触发买点', exited: '已退出', closed: '已平仓',
+}
 
 function fmtRatio(v: number | null | undefined) { return v == null || Number.isNaN(v) ? '--' : `${v >= 0 ? '+' : ''}${(v * 100).toFixed(2)}%` }
 function pctCls(v: number | null | undefined) { return (v ?? 0) > 0 ? 'c-up' : (v ?? 0) < 0 ? 'c-down' : '' }
@@ -63,7 +66,7 @@ export default function StockContextStatus({ risk, lifecycle, loading }: Props) 
           <div className="ctx-lc-cell"><div className="lc-label">阶段</div><div className="lc-value">{lifecycle.lifecycleLabel}</div></div>
           <div className="ctx-lc-cell"><div className="lc-label">天数</div><div className="lc-value numeric">{lifecycle.poolDay ?? '--'}</div></div>
           <div className="ctx-lc-cell"><div className="lc-label">入池收益</div><div className={`lc-value numeric ${pctCls(lifecycle.gainSinceEntry)}`}>{fmtRatio(lifecycle.gainSinceEntry)}</div></div>
-          <div className="ctx-lc-cell"><div className="lc-label">状态</div><div className="lc-value">{lifecycle.positionStatus ?? '--'}</div></div>
+          <div className="ctx-lc-cell"><div className="lc-label">状态</div><div className="lc-value">{STATUS_CN[lifecycle.positionStatus ?? ''] ?? lifecycle.positionStatus ?? '--'}</div></div>
         </div>
       ) : (
         <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>未入池</div>
