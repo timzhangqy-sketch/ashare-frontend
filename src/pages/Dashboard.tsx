@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ComposedChart, BarChart, Bar, Cell, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
-import { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance, fetchMarketDistribution } from '../api';
+import api, { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance, fetchMarketDistribution } from '../api';
 import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance, MarketDistribution } from '../types/dashboard';
 import {
   buildDashboardRuntimeSnapshot,
@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [resonance, setResonance] = useState<ConceptResonance>({ resonance_hits: [], retreat_warnings: [] });
   const [distribution, setDistribution] = useState<MarketDistribution | null>(null);
   const [drawerStock, setDrawerStock] = useState<StockDetail | null>(null);
+  const [portfolioRaw, setPortfolioRaw] = useState<any>(null);
   const [retrySeed, setRetrySeed] = useState(0);
   const [loadState, setLoadState] = useState<{
     key: string | null;
@@ -106,6 +107,7 @@ export default function Dashboard() {
       setResonance(res);
     });
     fetchMarketDistribution(selectedDate).then(d => { if (!cancelled) setDistribution(d); });
+    api.get('/api/portfolio/summary').then(r => { if (!cancelled) setPortfolioRaw(r.data ?? null); }).catch(() => {});
     return () => { cancelled = true; };
   }, [selectedDate]);
 
@@ -128,7 +130,6 @@ export default function Dashboard() {
 
   const opp = viewModel?.opportunity;
   const risk = viewModel?.risk;
-  const port = viewModel?.portfolio;
   const sys = viewModel?.systemHealth;
 
   const distData = useMemo(() => {
@@ -753,25 +754,65 @@ export default function Dashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
-                  持仓 {port?.metrics?.find(m => m.id === 'portfolio-positions')?.value ?? '—'} | 市值 {port?.metrics?.find(m => m.id === 'portfolio-value')?.value ?? '—'}
-                </span>
+                {portfolioRaw && (
+                  <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                    持仓 {portfolioRaw.position_count ?? '—'} | NAV {(() => { const v = portfolioRaw.snapshot?.total_nav; return v != null ? (v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString()) : '—'; })()}
+                  </span>
+                )}
                 <a href="/portfolio" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>组合 →</a>
               </div>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '10px 12px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 16px', fontSize: 13 }}>
-                {(port?.metrics ?? []).map((m) => (
-                  <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>{m.label}</span>
-                    <span style={{ color: m.tone === 'positive' ? 'var(--up)' : m.tone === 'danger' ? 'var(--down)' : 'var(--text-primary)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{m.value}</span>
+            {portfolioRaw ? (() => {
+              const snap = portfolioRaw.snapshot ?? {};
+              const nav = snap.total_nav ?? 0;
+              const initCap = portfolioRaw.initial_capital ?? 1000000;
+              const cumPct = (snap.cumulative_pnl_pct ?? 0) * 100;
+              const startDate = portfolioRaw.start_date ?? '';
+              const daysDiff = startDate ? Math.max(1, Math.floor((Date.now() - new Date(startDate).getTime()) / 86400000)) : 1;
+              const annPct = cumPct / daysDiff * 365;
+              const mv = snap.snap_market_value ?? 0;
+              const cash = snap.cash ?? 0;
+              const unrealPnl = portfolioRaw.total_unrealized_pnl ?? 0;
+              const posCnt = portfolioRaw.position_count ?? 0;
+              const cashRatio = (portfolioRaw.cash_ratio ?? 0) * 100;
+              const mdd = portfolioRaw.max_drawdown_pct ?? 0;
+              const bench = portfolioRaw.benchmark_pct ?? 0;
+              const benchLabel = portfolioRaw.benchmark_label ?? '';
+              const fmtMoney = (v: number) => v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString();
+              const fmtPct = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`;
+              const pctColor = (v: number) => v > 0 ? '#52c41a' : v < 0 ? '#ff4d4f' : 'var(--text-primary)';
+
+              const cells: { label: string; value: string; color?: string; sub?: string }[] = [
+                { label: '总资产(NAV)', value: fmtMoney(nav) },
+                { label: '初始本金', value: fmtMoney(initCap) },
+                { label: '累计收益', value: fmtPct(cumPct), color: pctColor(cumPct) },
+                { label: '年化收益', value: fmtPct(annPct), color: pctColor(annPct) },
+                { label: '股票市值', value: fmtMoney(mv) },
+                { label: '现金', value: fmtMoney(cash) },
+                { label: '持仓浮盈', value: `${unrealPnl >= 0 ? '+' : ''}${fmtMoney(unrealPnl)}`, color: pctColor(unrealPnl) },
+                { label: '开始日期', value: startDate || '—' },
+                { label: '当前持仓', value: `${posCnt}只` },
+                { label: '现金比例', value: `${cashRatio.toFixed(1)}%` },
+                { label: '最大回撤', value: `-${mdd.toFixed(2)}%`, color: '#ff4d4f' },
+                { label: benchLabel || '基准', value: fmtPct(bench), color: pctColor(bench), sub: startDate ? `自${startDate.slice(5)}至今` : '' },
+              ];
+
+              return (
+                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '10px 12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
+                    {cells.map((c) => (
+                      <div key={c.label}>
+                        <div style={{ fontSize: 11, color: '#666', marginBottom: 2 }}>{c.label}</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: c.color ?? 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.02em' }}>{c.value}</div>
+                        {c.sub && <div style={{ fontSize: 10, color: '#666', marginTop: 1 }}>{c.sub}</div>}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              {port?.actionHint && (
-                <div style={{ marginTop: 8, fontSize: 12, color: 'var(--text-muted)', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: 6 }}>{port.actionHint}</div>
-              )}
-            </div>
+                </div>
+              );
+            })() : (
+              <div style={{ padding: 16, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>加载中...</div>
+            )}
           </div>
         </div>
         <div className="card">
