@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance } from '../api';
 import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance } from '../types/dashboard';
 import {
@@ -261,13 +261,31 @@ export default function Dashboard() {
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）</h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               {(() => {
-                const turnoverHistory = (viewModel as any)?.marketIndex?.turnoverHistory
+                const turnoverHistory: any[] = (viewModel as any)?.marketIndex?.turnoverHistory
                   ?? (viewModel as any)?.marketIndex?.turnover_history
                   ?? [];
+                const breadthHistory: any[] = (viewModel as any)?.marketIndex?.breadthHistory
+                  ?? (viewModel as any)?.marketIndex?.breadth_history
+                  ?? [];
+                const breadthScore = (viewModel as any)?.marketIndex?.breadth_score ?? (viewModel as any)?.marketIndex?.breadthScore ?? null;
+                const breadthDelta = (viewModel as any)?.marketIndex?.breadth_delta ?? (viewModel as any)?.marketIndex?.breadthDelta ?? null;
+                const breadthState: string = (viewModel as any)?.marketIndex?.breadth_state ?? (viewModel as any)?.marketIndex?.breadthState ?? '';
+
+                // Merge breadth_score into chart data
+                const breadthMap: Record<string, number> = {};
+                for (const b of breadthHistory) if (b.date && b.score != null) breadthMap[b.date] = b.score;
+                const chartData = turnoverHistory.map((t: any) => ({
+                  ...t,
+                  breadth_score: breadthMap[t.date] ?? null,
+                }));
+
                 const latest = turnoverHistory.length > 0 ? turnoverHistory[turnoverHistory.length - 1] : null;
                 const avg5 = turnoverHistory.length >= 5
                   ? Math.round(turnoverHistory.slice(-5).reduce((s: number, d: any) => s + d.amount, 0) / 5)
                   : null;
+
+                const stateLabelMap: Record<string, string> = { strong: '强势', bullish: '偏强', neutral: '中性', bearish: '偏弱', weak: '弱势' };
+
                 return (
                   <>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px 4px', fontSize: '12px' }}>
@@ -275,17 +293,29 @@ export default function Dashboard() {
                         今日 <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '16px' }}>
                           {latest ? Math.round(latest.amount).toLocaleString() : '—'}
                         </span> 亿
+                        {avg5 != null && latest && (
+                          <span style={{ color: latest.amount > avg5 * 1.1 ? 'var(--up)' : latest.amount < avg5 * 0.9 ? 'var(--down)' : 'var(--text-muted)', marginLeft: '8px' }}>
+                            5日均 {avg5.toLocaleString()} 亿
+                            ({latest.amount > avg5 ? '+' : ''}{((latest.amount / avg5 - 1) * 100).toFixed(0)}%)
+                          </span>
+                        )}
                       </span>
-                      {avg5 && latest && (
-                        <span style={{ color: latest.amount > avg5 * 1.1 ? 'var(--up)' : latest.amount < avg5 * 0.9 ? 'var(--down)' : 'var(--text-muted)', fontSize: '12px' }}>
-                          5日均 {avg5.toLocaleString()} 亿
-                          ({latest.amount > avg5 ? '+' : ''}{((latest.amount / avg5 - 1) * 100).toFixed(0)}%)
+                      {breadthScore != null && (
+                        <span style={{ fontSize: '12px' }}>
+                          <span style={{ color: 'var(--text-secondary)' }}>宽度 </span>
+                          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{breadthScore}</span>
+                          {breadthDelta != null && (
+                            <span style={{ color: breadthDelta > 0 ? '#52c41a' : breadthDelta < 0 ? '#ff4d4f' : 'var(--text-primary)', marginLeft: '2px' }}>
+                              {breadthDelta > 0 ? '↑' : breadthDelta < 0 ? '↓' : '→'}
+                            </span>
+                          )}
+                          <span style={{ color: 'var(--text-secondary)', marginLeft: '4px' }}>{stateLabelMap[breadthState] ?? ''}</span>
                         </span>
                       )}
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
                     <ResponsiveContainer width="100%" height="100%" minHeight={180}>
-                      <AreaChart data={turnoverHistory} margin={{ top: 4, right: 8, left: 4, bottom: 2 }}>
+                      <ComposedChart data={chartData} margin={{ top: 4, right: 8, left: 4, bottom: 2 }}>
                         <defs>
                           <linearGradient id="turnoverGrad" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.5} />
@@ -297,9 +327,10 @@ export default function Dashboard() {
                           tick={{ fontSize: 11, fill: '#64748b', dy: 4 }}
                           axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
                           tickLine={false}
-                          interval={Math.floor(turnoverHistory.length / 5)}
+                          interval={Math.floor(chartData.length / 5)}
                         />
                         <YAxis
+                          yAxisId="left"
                           tick={{ fontSize: 11, fill: '#64748b' }}
                           axisLine={false}
                           tickLine={false}
@@ -313,6 +344,7 @@ export default function Dashboard() {
                           }}
                           domain={['auto', 'auto']}
                         />
+                        <YAxis yAxisId="breadth" orientation="right" domain={[0, 100]} hide />
                         <Tooltip
                           contentStyle={{
                             background: 'rgba(15,23,42,0.95)',
@@ -322,9 +354,21 @@ export default function Dashboard() {
                             padding: '8px 12px',
                           }}
                           labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
-                          formatter={((value: number) => [`${Math.round(value).toLocaleString()} 亿`, '成交额']) as any}
+                          content={({ active, payload, label }) => {
+                            if (!active || !payload?.length) return null;
+                            const d = payload[0]?.payload;
+                            if (!d) return null;
+                            return (
+                              <div style={{ background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', fontSize: '12px', padding: '8px 12px' }}>
+                                <div style={{ color: '#94a3b8', marginBottom: '4px' }}>{label}</div>
+                                <div style={{ color: '#3b82f6' }}>成交额：{Math.round(d.amount ?? 0).toLocaleString()} 亿</div>
+                                {d.breadth_score != null && <div style={{ color: '#faad14' }}>市场宽度：{d.breadth_score} 分</div>}
+                              </div>
+                            );
+                          }}
                         />
                         <Area
+                          yAxisId="left"
                           type="monotone"
                           dataKey="amount"
                           stroke="#3b82f6"
@@ -333,7 +377,8 @@ export default function Dashboard() {
                           dot={false}
                           activeDot={{ r: 3, fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5 }}
                         />
-                      </AreaChart>
+                        <Line yAxisId="breadth" type="monotone" dataKey="breadth_score" stroke="#faad14" strokeWidth={1.5} strokeDasharray="4 3" dot={false} connectNulls />
+                      </ComposedChart>
                     </ResponsiveContainer>
                     </div>
                   </>
