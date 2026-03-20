@@ -700,7 +700,7 @@ export default function Portfolio() {
                 <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
               </tr></thead><tbody>
                 {stats.top_winners.length === 0 ? <tr><td colSpan={6} className="table-empty">暂无</td></tr> : stats.top_winners.map(r => (
-                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
+                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td style={{cursor:'pointer',color:'var(--accent)'}} onClick={() => setDrawerStock(getMockDetail(r.ts_code, r.name, [r.source_strategy], 0, 0))}>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
                     <td className="right numeric">{r.hold_days}</td><td className="right numeric c-up">+{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-up">+{r.return_pct}%</td></tr>
                 ))}
               </tbody></table></div>
@@ -711,7 +711,7 @@ export default function Portfolio() {
                 <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
               </tr></thead><tbody>
                 {stats.top_losers.length === 0 ? <tr><td colSpan={6} className="table-empty">暂无</td></tr> : stats.top_losers.map(r => (
-                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
+                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td style={{cursor:'pointer',color:'var(--accent)'}} onClick={() => setDrawerStock(getMockDetail(r.ts_code, r.name, [r.source_strategy], 0, 0))}>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
                     <td className="right numeric">{r.hold_days}</td><td className="right numeric c-down">{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-down">{r.return_pct}%</td></tr>
                 ))}
               </tbody></table></div>
