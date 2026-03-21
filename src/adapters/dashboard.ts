@@ -248,6 +248,7 @@ export function mapRawDashboardResponseToDto(raw: RawDashboardSummaryResponse): 
           breadthScore: (payload.market_index as any).breadth_score ?? null,
           breadthDelta: (payload.market_index as any).breadth_delta ?? null,
           breadthState: (payload.market_index as any).breadth_state ?? '',
+            avgPctChg: (payload.market_breadth as any)?.avg_pct_chg ?? null,
         }
       : null,
     marketSummary: payload.market_summary ?? '',

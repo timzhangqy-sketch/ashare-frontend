@@ -303,6 +303,7 @@ export default function Dashboard() {
                 const breadthHistory: any[] = mi?.breadthHistory ?? [];
                 const breadthScore = mi?.breadthScore ?? null;
                 const breadthDelta = mi?.breadthDelta ?? null;
+                  const avgPctChg: number | null = viewModel?.marketIndex?.avgPctChg ?? (viewModel as any)?.marketBreadth?.avg_pct_chg ?? null;
                 const breadthState: string = mi?.breadthState ?? '';
 
                 // Merge breadth_score into chart data
@@ -346,6 +347,14 @@ export default function Dashboard() {
                           <span style={{ color: 'var(--text-secondary)', marginLeft: '4px' }}>{stateLabelMap[breadthState] ?? ''}</span>
                         </span>
                       )}
+                        {avgPctChg != null && (
+                          <span style={{ fontSize: '12px', marginLeft: '12px' }}>
+                            <span style={{ color: 'var(--text-secondary)' }}>等权 </span>
+                            <span style={{ color: avgPctChg > 0 ? 'var(--up)' : avgPctChg < 0 ? 'var(--down)' : 'var(--text-primary)', fontWeight: 600 }}>
+                              {avgPctChg > 0 ? '+' : ''}{avgPctChg.toFixed(2)}%
+                            </span>
+                          </span>
+                        )}
                     </div>
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, outline: 'none' }} tabIndex={-1}>
                     <ResponsiveContainer width="100%" height={220}>

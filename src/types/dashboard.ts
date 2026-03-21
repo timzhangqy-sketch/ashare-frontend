@@ -123,6 +123,7 @@ export interface MarketIndexDto {
   breadthScore?: number | null;
   breadthDelta?: number | null;
   breadthState?: string;
+  avgPctChg?: number | null;
 }
 
 export interface DashboardSummaryDto {
