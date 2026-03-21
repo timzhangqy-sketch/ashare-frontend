@@ -188,12 +188,12 @@ export default function Dashboard() {
                 <>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8, tableLayout: 'fixed' }}>
                     <colgroup>
-                      <col style={{ width: '10%' }} />
-                      <col style={{ width: '18%' }} />
-                      <col style={{ width: '13%' }} />
-                      <col style={{ width: '12%' }} />
-                      <col style={{ width: '17%' }} />
-                      <col style={{ width: '17%' }} />
+                      <col style={{ width: '8%' }} />
+                      <col style={{ width: '15%' }} />
+                      <col style={{ width: '11%' }} />
+                      <col style={{ width: '11%' }} />
+                      <col style={{ width: '22%' }} />
+                      <col style={{ width: '20%' }} />
                       <col style={{ width: '13%' }} />
                     </colgroup>
                     <thead>
@@ -210,13 +210,14 @@ export default function Dashboard() {
                     <tbody>
                       {fills.map((f: any, i: number) => {
                         const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败' };
+                        const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
                         return (
                         <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                           <td style={{ padding: '3px 4px', color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)', fontWeight: 600, fontSize: '11px' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
                           <td style={{ padding: '3px 4px', color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
                           <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
                           <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
-                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.strategy}</td>
+                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
                           <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
                           <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 500, color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
                             {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
