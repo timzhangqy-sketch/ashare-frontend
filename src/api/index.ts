@@ -880,12 +880,25 @@ interface ActionListRawResponse {
     sell?: ActionListSellItem[];
     buy?: ActionListBuyItem[];
     watch?: ActionListWatchItem[];
+    fills?: ActionListFillItem[];
   };
   summary?: {
     sell_count?: number;
     buy_count?: number;
     watch_count?: number;
   };
+}
+
+export interface ActionListFillItem {
+  direction: string;
+  ts_code: string;
+  name: string;
+  fill_price: number | null;
+  fill_shares: number | null;
+  fill_amount: number | null;
+  strategy: string;
+  signal_type: string;
+  pnl_pct: number | null;
 }
 
 export interface ActionListResponse {
@@ -895,6 +908,7 @@ export interface ActionListResponse {
   sell: ActionListSellItem[];
   buy: ActionListBuyItem[];
   watch: ActionListWatchItem[];
+  fills: ActionListFillItem[];
 }
 
 export async function fetchActionList(): Promise<ActionListResponse> {
@@ -906,6 +920,7 @@ export async function fetchActionList(): Promise<ActionListResponse> {
     sell: Array.isArray(actions.sell) ? actions.sell : [],
     buy: Array.isArray(actions.buy) ? actions.buy : [],
     watch: Array.isArray(actions.watch) ? actions.watch : [],
+    fills: Array.isArray(actions.fills) ? actions.fills : [],
     sell_count: summary.sell_count ?? 0,
     buy_count: summary.buy_count ?? 0,
     watch_count: summary.watch_count ?? 0,

@@ -11,7 +11,6 @@ import {
 } from '../adapters/dashboard';
 import type { ActionListResponse } from '../api';
 import { getStrategyDisplayName } from '../utils/displayNames';
-import { formatSignedPercentSafe } from '../utils/formatters';
 import StatusState from '../components/Dashboard/StatusState';
 import SourceSummaryBar from '../components/data-source/SourceSummaryBar';
 import StockDrawer from '../components/Drawer/StockDrawer';
@@ -127,8 +126,8 @@ export default function Dashboard() {
 
   const hasSell = Array.isArray(actionList?.sell) && actionList.sell.length > 0;
   const hasBuy = Array.isArray(actionList?.buy) && actionList.buy.length > 0;
-  const hasWatch = Array.isArray(actionList?.watch) && actionList.watch.length > 0;
-  const hasAnyAction = hasSell || hasBuy || hasWatch;
+  const fills = actionList?.fills ?? [];
+  const hasFills = fills.length > 0;
 
   const opp = viewModel?.opportunity;
   const risk = viewModel?.risk;
@@ -184,38 +183,71 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
-            {hasAnyAction ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '12px', color: '#4ade80', fontWeight: 600, minWidth: '48px' }}>● 待卖出</span>
-                  {hasSell ? actionList!.sell!.slice(0, 5).map((item, i) => (
-                    <span key={`sell-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: item.ts_code ? 'pointer' : 'default' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
-                      {item.name} <span style={{ color: (item.gain_pct ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>{formatSignedPercentSafe(item.gain_pct, 2, 100, '—')}</span>
-                    </span>
-                  )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '12px', color: 'var(--up)', fontWeight: 600, minWidth: '48px' }}>● 待买入</span>
-                  {hasBuy ? actionList!.buy!.slice(0, 5).map((item, i) => (
-                    <span key={`buy-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: item.ts_code ? 'pointer' : 'default' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
-                      {item.name}
-                    </span>
-                  )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
-                  {hasBuy && actionList!.buy!.length > 5 ? <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>(+{actionList!.buy!.length - 5}更多)</span> : null}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '12px', color: '#f59e0b', fontWeight: 600, minWidth: '48px' }}>● 关注</span>
-                  {hasWatch ? actionList!.watch!.slice(0, 3).map((item, i) => (
-                    <span key={`watch-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: item.ts_code ? 'pointer' : 'default' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
-                      {item.name}
-                    </span>
-                  )) : <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>暂无</span>}
-                </div>
-              </div>
-            ) : (
-              <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>今日无需操作</span>
-            )}
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
+              {hasFills && (
+                <>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: 4, fontWeight: 500 }}>今日成交</div>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8 }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>方向</th>
+                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>股票</th>
+                        <th style={{ textAlign: 'right', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>价格</th>
+                        <th style={{ textAlign: 'right', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>数量</th>
+                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>策略</th>
+                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>信号</th>
+                        <th style={{ textAlign: 'right', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>盈亏</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {fills.map((f: any, i: number) => (
+                        <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
+                          <td style={{ padding: '3px 4px', color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)', fontWeight: 600, fontSize: '11px' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                          <td style={{ padding: '3px 4px', color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
+                          <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
+                          <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
+                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px' }}>{f.strategy}</td>
+                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px' }}>{f.signal_type}</td>
+                          <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 500, color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
+                            {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
+              {(hasSell || hasBuy) && (
+                <>
+                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: 4, fontWeight: 500 }}>{hasFills ? '待执行信号' : '今日信号'}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {hasSell && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '11px', color: 'var(--down)', fontWeight: 600, minWidth: 40 }}>● 卖出</span>
+                        {actionList!.sell!.slice(0, 5).map((item: any, i: number) => (
+                          <span key={`sell-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: 'pointer' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
+                            {item.name} <span style={{ color: (item.gain_pct ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontSize: '11px' }}>{item.gain_pct != null ? `${item.gain_pct >= 0 ? '+' : ''}${(item.gain_pct * 100).toFixed(1)}%` : ''}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {hasBuy && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '11px', color: 'var(--up)', fontWeight: 600, minWidth: 40 }}>● 买入</span>
+                        {actionList!.buy!.slice(0, 5).map((item: any, i: number) => (
+                          <span key={`buy-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: 'var(--text-secondary)', cursor: 'pointer' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
+                            {item.name}
+                          </span>
+                        ))}
+                        {actionList!.buy!.length > 5 && <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>(+{actionList!.buy!.length - 5})</span>}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+              {!hasFills && !hasSell && !hasBuy && (
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>今日无成交与信号</span>
+              )}
             </div>
           </div>
         </div>
