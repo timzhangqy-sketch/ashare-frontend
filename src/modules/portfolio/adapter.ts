@@ -344,7 +344,7 @@ function buildOpenSummary(
   summaryApi: PortfolioSummaryApi,
   tradeDate: string,
 ): PortfolioSummaryVm {
-  const startDate = summaryApi.start_date ?? '2026-03-04';
+  const startDate = summaryApi.start_date ?? '';
   const daysFromApiOrCalc = summaryApi.running_days ?? daysBetween(startDate, tradeDate);
   const runningDays = daysFromApiOrCalc > 0 ? daysFromApiOrCalc : 9;
   const cumPct = summaryApi.cumulative_pnl_pct ?? 0;
@@ -352,7 +352,7 @@ function buildOpenSummary(
     runningDays > 0
       ? Math.pow(1 + cumPct, 365 / runningDays) - 1
       : 0;
-  const initialCap = summaryApi.initial_capital ?? 1_000_000;
+  const initialCap = summaryApi.initial_capital ?? 10_000_000;
   const floatPnl = summaryApi.total_unrealized_pnl ?? 0;
   const maxDdRaw = summaryApi.max_drawdown_pct;
   const maxDdDisplay = maxDdRaw == null ? '--' : `-${Math.abs(Number(maxDdRaw)).toFixed(2)}%`;
@@ -386,7 +386,7 @@ function buildOpenSummary(
       buildMetric('股票市值', formatNav(summaryApi.total_market_value), noHelper, truthMeta('real', 'marketValue', 'total_market_value'), undefined),
       buildMetric('现金', formatNav(summaryApi.cash), noHelper, truthMeta('real', 'marketValue', 'cash'), undefined),
       buildMetric('持仓浮盈', fmtFloatPnl(floatPnl), noHelper, truthMeta('real', 'unrealizedPnl', 'total_unrealized_pnl'), floatPnl >= 0 ? 'up' : 'down'),
-      buildMetric('开始日期', startDate, noHelper, truthMeta('real', 'openDate', 'start_date'), undefined),
+      buildMetric('开始日期', startDate || '--', noHelper, truthMeta('real', 'openDate', 'start_date'), undefined),
       buildMetric('当前持仓', `${summaryApi.position_count ?? resp.count}只`, noHelper, truthMeta('real', 'summaryTotalPositions', 'position_count'), undefined),
       buildMetric('现金比例', fmtCashRatio(summaryApi.cash_ratio), noHelper, truthMeta('real', 'summaryCashRatio', 'cash_ratio'), undefined),
       buildMetric('最大回撤', maxDdDisplay, noHelper, truthMeta('placeholder', 'summaryConcentration', 'max_drawdown_pct'), 'down'),
