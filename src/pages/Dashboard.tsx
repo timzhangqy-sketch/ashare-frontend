@@ -186,8 +186,16 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: 4, fontWeight: 500 }}>今日成交</div>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8, tableLayout: 'fixed' }}>
+                    <colgroup>
+                      <col style={{ width: '10%' }} />
+                      <col style={{ width: '18%' }} />
+                      <col style={{ width: '13%' }} />
+                      <col style={{ width: '12%' }} />
+                      <col style={{ width: '17%' }} />
+                      <col style={{ width: '17%' }} />
+                      <col style={{ width: '13%' }} />
+                    </colgroup>
                     <thead>
                       <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                         <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>方向</th>
@@ -200,19 +208,22 @@ export default function Dashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {fills.map((f: any, i: number) => (
+                      {fills.map((f: any, i: number) => {
+                        const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败' };
+                        return (
                         <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                           <td style={{ padding: '3px 4px', color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)', fontWeight: 600, fontSize: '11px' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
-                          <td style={{ padding: '3px 4px', color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
+                          <td style={{ padding: '3px 4px', color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
                           <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
                           <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
-                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px' }}>{f.strategy}</td>
-                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px' }}>{f.signal_type}</td>
+                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.strategy}</td>
+                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
                           <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 500, color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
                             {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
                           </td>
                         </tr>
-                      ))}
+                        );
+                      })}
                     </tbody>
                   </table>
                 </>
