@@ -11,6 +11,8 @@ import { fetchPortfolioConcentration, fetchPortfolioStats, type PortfolioStatsRe
 import { buildPortfolioContext, loadPortfolioWorkspace } from '../modules/portfolio/adapter';
 import { getStrategyDisplayName } from '../utils/displayNames';
 import { FileText } from 'lucide-react';
+import InfoTip from '../components/InfoTip';
+import { PORTFOLIO_META } from '../config/portfolioMeta';
 import type {
   PortfolioActionShellVm,
   PortfolioClosedRowVm,
@@ -673,7 +675,7 @@ export default function Portfolio() {
       {stats && (
         <div className="portfolio-stats-section">
           <div className="portfolio-stats-card">
-            <div className="portfolio-stats-title">策略收益统计</div>
+            <div className="portfolio-stats-title">策略收益统计<InfoTip data={PORTFOLIO_META.strategy_stats} /></div>
             <div className="table-shell"><table className="data-table"><thead><tr>
               <th>策略</th><th className="right">笔数</th><th className="right">胜率</th><th className="right">平均收益</th>
               <th className="right">总盈亏</th><th className="right">均持天</th><th className="right">最佳</th><th className="right">最差</th><th className="right">盈亏比</th>
@@ -695,7 +697,7 @@ export default function Portfolio() {
           </div>
           <div className="portfolio-stats-two-col">
             <div className="portfolio-stats-card">
-              <div className="portfolio-stats-title">获利最大 TOP10</div>
+              <div className="portfolio-stats-title">获利最大 TOP10<InfoTip data={PORTFOLIO_META.top_winners} /></div>
               <div className="table-shell"><table className="data-table"><thead><tr>
                 <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
               </tr></thead><tbody>
@@ -706,7 +708,7 @@ export default function Portfolio() {
               </tbody></table></div>
             </div>
             <div className="portfolio-stats-card">
-              <div className="portfolio-stats-title">亏损最大 TOP10</div>
+              <div className="portfolio-stats-title">亏损最大 TOP10<InfoTip data={PORTFOLIO_META.top_losers} /></div>
               <div className="table-shell"><table className="data-table"><thead><tr>
                 <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
               </tr></thead><tbody>
@@ -730,7 +732,7 @@ export default function Portfolio() {
         return (
           <section className="concentration-section">
             <div className="concentration-col">
-              <div className="concentration-title">策略分布</div>
+              <div className="concentration-title">策略分布<InfoTip data={PORTFOLIO_META.strategy_distribution} /></div>
               {strategyDist.length > 0 ? strategyDist.map((item: unknown, i: number) => {
                 const row = item as Record<string, unknown>;
                 const key = (row.strategy as string) ?? (row.key as string);
@@ -750,7 +752,7 @@ export default function Portfolio() {
               }) : null}
             </div>
             <div className="concentration-col">
-              <div className="concentration-title">行业分布</div>
+              <div className="concentration-title">行业分布<InfoTip data={PORTFOLIO_META.industry_distribution} /></div>
               {industryDist.length > 0 ? industryDist.map((item: unknown, i: number) => {
                 const row = item as Record<string, unknown>;
                 const label = (row.industry as string) ?? (row.label as string) ?? (row.name as string) ?? '—';
