@@ -1078,7 +1078,7 @@ a { text-decoration: none; color: inherit; }
 
 .stat-value {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   line-height: 1;
   color: var(--stat-value-color);
@@ -4362,7 +4362,7 @@ a { text-decoration: none; color: inherit; }
 .portfolio-page .kpi-value,
 .portfolio-page .metric-value {
   font-size: 15px !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   font-variant-numeric: tabular-nums;
   line-height: 1.3;
 }
@@ -4464,7 +4464,7 @@ a { text-decoration: none; color: inherit; }
 
 .portfolio-summary-card .stat-value {
   font-size: 15px !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   font-variant-numeric: tabular-nums;
   line-height: 1.3;
   text-align: center;
@@ -9045,13 +9045,13 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 /* Risk page compact rows + KPI normalize */
 .risk-page .data-table td { padding: 8px 10px; vertical-align: middle; white-space: nowrap; }
 .risk-page .data-table td:last-child { white-space: normal; max-width: 400px; }
-.risk-page .stat-value { font-size: 15px !important; font-weight: 600 !important; }
+.risk-page .stat-value { font-size: 15px !important; font-weight: 500 !important; }
 .risk-page .stat-label { font-size: 10px !important; font-weight: 500 !important; color: var(--text-muted) !important; }
 
 /* System page KPI normalize */
-.system-page .stat-value { font-size: 15px !important; font-weight: 600 !important; }
+.system-page .stat-value { font-size: 15px !important; font-weight: 500 !important; }
 .system-page .stat-label { font-size: 10px !important; font-weight: 500 !important; color: var(--text-muted) !important; }
-.system-metric-card strong { font-size: 15px !important; font-weight: 600 !important; }
+.system-metric-card strong { font-size: 15px !important; font-weight: 500 !important; }
 .system-metric-card span { font-size: 10px !important; font-weight: 500 !important; }
 
 /* Pipeline steps compact */
@@ -9116,7 +9116,7 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 /* ═══ Strategy pages KPI normalize ═══ */
 .stat-value {
   font-size: 15px !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 .stat-label {
   font-size: 10px !important;
