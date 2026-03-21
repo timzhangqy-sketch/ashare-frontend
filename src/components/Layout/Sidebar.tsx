@@ -84,6 +84,32 @@ const IconLegacy = () => (
   </svg>
 );
 
+const IconZap = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </svg>
+);
+
+const IconActivity = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+  </svg>
+);
+
+const IconTrending = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+);
+
+const IconShield = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M9 12l2 2 4-4" />
+  </svg>
+);
+
 const ICONS: Record<NavIconKey, () => React.JSX.Element> = {
   dashboard: IconDashboard,
   signals: IconSignals,
@@ -94,6 +120,10 @@ const ICONS: Record<NavIconKey, () => React.JSX.Element> = {
   research: IconResearch,
   system: IconSystem,
   legacy: IconLegacy,
+  zap: IconZap,
+  activity: IconActivity,
+  trending: IconTrending,
+  shield: IconShield,
 };
 
 function NavItemLink({ item }: { item: AppRouteDefinition }) {
@@ -130,16 +160,13 @@ export default function Sidebar() {
           <NavItemLink key={item.key} item={item} />
         ))}
 
+        <div style={{borderTop:'1px solid rgba(255,255,255,0.08)', margin:'8px 12px'}} />
         <div className="nav-section-label nav-section-label-spaced">策略专页</div>
         {legacyNavigation.map((item) => (
           <NavItemLink key={item.key} item={item} />
         ))}
       </nav>
 
-      <div className="sidebar-footer">
-        <span><span className="status-dot" />专业终端基线</span>
-        <span>v0.1.0</span>
-      </div>
     </aside>
   );
 }

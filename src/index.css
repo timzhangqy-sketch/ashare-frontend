@@ -9123,3 +9123,47 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   font-weight: 500 !important;
   color: var(--text-muted) !important;
 }
+
+/* ═══ Sidebar compact optimize ═══ */
+.sidebar-logo {
+  height: 44px !important;
+  padding: 0 14px !important;
+  gap: 8px !important;
+}
+.sidebar-logo-sub {
+  font-size: 9px !important;
+  opacity: 0.5 !important;
+}
+.sidebar-nav {
+  padding: 6px 0 !important;
+  gap: 1px !important;
+}
+.nav-item {
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 6px 12px !important;
+  gap: 8px !important;
+}
+.nav-label {
+  font-size: 12px !important;
+}
+.nav-item:hover {
+  background: rgba(255,255,255,0.04) !important;
+}
+.nav-item.active {
+  background: rgba(245, 166, 35, 0.10) !important;
+  box-shadow: inset 4px 0 0 #F5A623, 0 0 0 1px rgba(245, 166, 35, 0.08) !important;
+}
+.nav-section-label {
+  font-size: 10px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: var(--text-muted) !important;
+  padding: 4px 20px !important;
+}
+.nav-section-label-spaced {
+  margin-top: 4px !important;
+}
+.sidebar-footer {
+  display: none !important;
+}

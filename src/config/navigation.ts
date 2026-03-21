@@ -23,7 +23,11 @@ export type NavIconKey =
   | 'risk'
   | 'research'
   | 'system'
-  | 'legacy';
+  | 'legacy'
+  | 'zap'
+  | 'activity'
+  | 'trending'
+  | 'shield';
 
 export interface AppRouteDefinition {
   key: AppRouteKey;
@@ -134,7 +138,7 @@ export const appRouteDefinitions: AppRouteDefinition[] = [
     description: '',
     showInMainNav: false,
     isLegacy: true,
-    icon: 'legacy',
+    icon: 'zap',
   },
   {
     key: 'retoc2',
@@ -144,7 +148,7 @@ export const appRouteDefinitions: AppRouteDefinition[] = [
     description: '',
     showInMainNav: false,
     isLegacy: true,
-    icon: 'legacy',
+    icon: 'activity',
   },
   {
     key: 'pattern',
@@ -154,7 +158,7 @@ export const appRouteDefinitions: AppRouteDefinition[] = [
     description: '',
     showInMainNav: false,
     isLegacy: true,
-    icon: 'legacy',
+    icon: 'trending',
   },
   {
     key: 'weak-buy',
@@ -164,7 +168,7 @@ export const appRouteDefinitions: AppRouteDefinition[] = [
     description: '',
     showInMainNav: false,
     isLegacy: true,
-    icon: 'legacy',
+    icon: 'shield',
   },
   {
     key: 'holdings',
