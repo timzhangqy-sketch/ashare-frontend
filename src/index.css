@@ -9167,3 +9167,31 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .sidebar-footer {
   display: none !important;
 }
+
+/* ═══ Sidebar logo vertical center ═══ */
+.sidebar-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 14px !important;
+  height: auto !important;
+}
+.sidebar-logo-text-group {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  line-height: 1 !important;
+}
+.sidebar-logo-text {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+.sidebar-logo-sub {
+  font-size: 9px !important;
+  line-height: 1.2 !important;
+  opacity: 0.5 !important;
+  margin: 0 !important;
+}
