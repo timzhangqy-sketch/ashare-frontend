@@ -9112,3 +9112,14 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   width: auto !important;
   text-align: center !important;
 }
+
+/* ═══ Strategy pages KPI normalize ═══ */
+.stat-value {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+.stat-label {
+  font-size: 10px !important;
+  font-weight: 500 !important;
+  color: var(--text-muted) !important;
+}
