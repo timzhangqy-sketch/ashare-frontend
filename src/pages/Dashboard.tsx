@@ -186,38 +186,28 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8, tableLayout: 'fixed' as const }}>
-                    <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '10%' }}>方向</th>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '18%' }}>股票</th>
-                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '12%' }}>价格</th>
-                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '12%' }}>数量</th>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '18%' }}>策略</th>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '15%' }}>信号</th>
-                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '15%' }}>盈亏</th>
+                  <div className="table-shell"><table className="data-table" style={{ fontSize: '12px' }}><thead><tr>
+                    <th>方向</th><th>股票</th><th className="right">价格</th><th className="right">数量</th><th>策略</th><th>信号</th><th className="right">盈亏</th>
+                  </tr></thead>
+                  <tbody>
+                    {fills.map((f: any, i: number) => {
+                      const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败' };
+                      const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
+                      return (
+                      <tr key={`fill-${i}`}>
+                        <td style={{ color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                        <td style={{ color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
+                        <td className="right" style={{ fontVariantNumeric: 'tabular-nums' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
+                        <td className="right" style={{ fontVariantNumeric: 'tabular-nums' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
+                        <td>{STRAT_CN[f.strategy] ?? f.strategy}</td>
+                        <td>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
+                        <td className="right" style={{ fontVariantNumeric: 'tabular-nums', fontWeight: 500, color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
+                          {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {fills.map((f: any, i: number) => {
-                        const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败' };
-                        const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
-                        return (
-                        <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                          <td style={{ padding: '3px 6px', color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)', fontWeight: 600, fontSize: '11px' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
-                          <td style={{ padding: '3px 6px', color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
-                          <td style={{ padding: '3px 6px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
-                          <td style={{ padding: '3px 6px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
-                          <td style={{ padding: '3px 6px', color: 'var(--text-secondary)', fontSize: '11px' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
-                          <td style={{ padding: '3px 6px', color: 'var(--text-secondary)', fontSize: '11px' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
-                          <td style={{ padding: '3px 6px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 500, color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
-                            {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
-                          </td>
-                        </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                      );
+                    })}
+                  </tbody></table></div>
                 </>
               )}
               {(hasSell || hasBuy) && (
