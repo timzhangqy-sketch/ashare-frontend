@@ -911,8 +911,8 @@ export interface ActionListResponse {
   fills: ActionListFillItem[];
 }
 
-export async function fetchActionList(): Promise<ActionListResponse> {
-  const res = await api.get<ActionListRawResponse>('/api/dashboard/action_list');
+export async function fetchActionList(date?: string): Promise<ActionListResponse> {
+  const res = await api.get<ActionListRawResponse>('/api/dashboard/action_list', { params: date ? { date } : {} });
   const raw = res.data ?? {};
   const actions = raw.actions ?? {};
   const summary = raw.summary ?? {};

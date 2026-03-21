@@ -83,7 +83,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchActionList()
+    fetchActionList(selectedDate)
       .then((data) => {
         if (!cancelled) setActionList(data);
       })
@@ -91,7 +91,7 @@ export default function Dashboard() {
         if (!cancelled) setActionList(null);
       });
     return () => { cancelled = true; };
-  }, []);
+  }, [selectedDate]);
 
   useEffect(() => {
     let cancelled = false;
