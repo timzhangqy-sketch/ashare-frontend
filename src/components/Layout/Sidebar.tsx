@@ -149,10 +149,7 @@ export default function Sidebar() {
     <aside className="sidebar">
       <div className="sidebar-logo">
         <div className="sidebar-logo-mark">AQ</div>
-        <div className="sidebar-logo-text-group">
-          <div className="sidebar-logo-text">A股量化终端</div>
-          <div className="sidebar-logo-sub">专业终端工作台</div>
-        </div>
+        <div className="sidebar-logo-text">A股量化终端</div>
       </div>
 
       <nav className="sidebar-nav">
