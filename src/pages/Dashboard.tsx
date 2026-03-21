@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ComposedChart, BarChart, Bar, Cell, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
+import { ComposedChart, BarChart, Bar, Cell, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, ReferenceLine } from 'recharts';
 import api, { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance, fetchMarketDistribution } from '../api';
 import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance, MarketDistribution } from '../types/dashboard';
 import {
@@ -435,6 +435,7 @@ export default function Dashboard() {
                         <Line yAxisId="breadth" type="monotone" dataKey="breadth_score" stroke="rgba(250,173,20,0.4)" strokeWidth={1} strokeDasharray="3 2" dot={false} connectNulls />
                         <YAxis yAxisId="avgPct" orientation="right" domain={['auto', 'auto']} hide />
                         <Line yAxisId="avgPct" type="monotone" dataKey="avg_pct_chg" stroke="rgba(239,68,68,0.5)" strokeWidth={1.5} dot={false} connectNulls />
+                        <ReferenceLine yAxisId="avgPct" y={0} stroke="rgba(255,255,255,0.15)" strokeDasharray="4 3" />
                       </ComposedChart>
                     </ResponsiveContainer>
                     </div>
