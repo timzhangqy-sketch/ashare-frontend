@@ -25,8 +25,10 @@ const TABLE_CN: Record<string, string> = {
 
 const API_CN: Record<string, string> = {
   health: '健康检查', dashboard_summary: 'Dashboard摘要', watchlist_stats: '标的池统计',
-  portfolio: '持仓中心', signals: '信号中心', risk: '风控中心', system: '系统中心',
-  context: '上下文面板', market: '市场数据', research: '研究中心', execution: '执行中心',
+  portfolio: '持仓中心', signals: '信号中心', signals_buy: '买点信号', signals_sell: '卖点信号',
+  risk: '风控中心', risk_gate: '风控门闸', risk_scores: '风险评分',
+  system: '系统中心', context: '上下文面板', context_stock: '股票上下文',
+  market: '市场数据', research: '研究中心', execution: '执行中心',
 }
 
 const STEP_LABEL: Record<string, string> = {
