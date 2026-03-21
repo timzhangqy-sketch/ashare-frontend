@@ -186,9 +186,7 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <table className="data-table" style={{ marginBottom: 8 }}><colgroup>
-                    <col style={{ width: '9%' }} /><col style={{ width: '16%' }} /><col style={{ width: '12%' }} /><col style={{ width: '11%' }} /><col style={{ width: '20%' }} /><col style={{ width: '18%' }} /><col style={{ width: '14%' }} />
-                  </colgroup><thead><tr>
+                  <div className="table-shell"><table className="data-table"><thead><tr>
                     <th>方向</th><th>股票</th><th className="right">价格</th><th className="right">数量</th><th>策略</th><th>信号</th><th className="right">盈亏</th>
                   </tr></thead>
                   <tbody>
@@ -209,7 +207,7 @@ export default function Dashboard() {
                       </tr>
                       );
                     })}
-                  </tbody></table>
+                  </tbody></table></div>
                 </>
               )}
               {(hasSell || hasBuy) && (
