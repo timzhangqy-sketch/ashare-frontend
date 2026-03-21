@@ -795,7 +795,7 @@ export default function Portfolio() {
           <section className="card">
             <div className="card-header">
               <div className="source-card-head">
-                <span className="card-title">{getTableTitle(activeTab)}</span>
+                <span className="card-title">{getTableTitle(activeTab)}<InfoTip data={PORTFOLIO_META[activeTab === 'open' ? 'open_positions' : activeTab === 'closed' ? 'closed_positions' : 'transactions']} /></span>
               </div>
               <div className="portfolio-card-header-right">
                 {activeTab === 'transactions' && relatedTsCode ? (
