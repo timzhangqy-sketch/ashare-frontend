@@ -9083,8 +9083,8 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 }
 .system-page .pipeline-row.coverage-row {
   display: grid !important;
-  grid-template-columns: 140px 100px 90px 60px 60px !important;
-  gap: 16px !important;
+  grid-template-columns: 140px 100px 100px 80px 80px !important;
+  gap: 24px !important;
   padding: 8px 24px !important;
   align-items: center !important;
 }
