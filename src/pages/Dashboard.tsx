@@ -186,25 +186,16 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8, tableLayout: 'fixed' }}>
-                    <colgroup>
-                      <col style={{ width: '8%' }} />
-                      <col style={{ width: '15%' }} />
-                      <col style={{ width: '11%' }} />
-                      <col style={{ width: '11%' }} />
-                      <col style={{ width: '22%' }} />
-                      <col style={{ width: '20%' }} />
-                      <col style={{ width: '13%' }} />
-                    </colgroup>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8 }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>方向</th>
-                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>股票</th>
-                        <th style={{ textAlign: 'right', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>价格</th>
-                        <th style={{ textAlign: 'right', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>数量</th>
-                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>策略</th>
-                        <th style={{ textAlign: 'left', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>信号</th>
-                        <th style={{ textAlign: 'right', padding: '3px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>盈亏</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 36 }}>方向</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>股票</th>
+                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 56 }}>价格</th>
+                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 50 }}>数量</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>策略</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>信号</th>
+                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 50 }}>盈亏</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -213,13 +204,13 @@ export default function Dashboard() {
                         const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
                         return (
                         <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                          <td style={{ padding: '3px 4px', color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)', fontWeight: 600, fontSize: '11px' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
-                          <td style={{ padding: '3px 4px', color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
-                          <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
-                          <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
-                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
-                          <td style={{ padding: '3px 4px', color: 'var(--text-secondary)', fontSize: '11px' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
-                          <td style={{ padding: '3px 4px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 500, color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
+                          <td style={{ padding: '3px 6px', color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)', fontWeight: 600, fontSize: '11px' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                          <td style={{ padding: '3px 6px', color: 'var(--text-primary)', fontWeight: 500, cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
+                          <td style={{ padding: '3px 6px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
+                          <td style={{ padding: '3px 6px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
+                          <td style={{ padding: '3px 6px', color: 'var(--text-secondary)', fontSize: '11px' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
+                          <td style={{ padding: '3px 6px', color: 'var(--text-secondary)', fontSize: '11px' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
+                          <td style={{ padding: '3px 6px', textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 500, color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
                             {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
                           </td>
                         </tr>
