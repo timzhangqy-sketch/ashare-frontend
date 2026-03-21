@@ -300,7 +300,7 @@ export async function fetchPortfolioSummary(): Promise<PortfolioSummaryApi> {
       total_market_value:   (data?.total_market_value as number) ?? 0,
       cash:                 (snapshot.cash as number) ?? (data?.cash as number) ?? 0,
       total_unrealized_pnl: (data?.total_unrealized_pnl as number) ?? 0,
-      start_date:           (data?.start_date as string) ?? '2026-03-04',
+      start_date:           (data?.start_date as string) ?? '',
       position_count:      (data?.position_count as number) ?? 0,
       cash_ratio:           (data?.cash_ratio as number) ?? 0,
       max_drawdown_pct:     (data?.max_drawdown_pct as number) ?? undefined,
@@ -314,7 +314,7 @@ export async function fetchPortfolioSummary(): Promise<PortfolioSummaryApi> {
       total_market_value:   0,
       cash:                 0,
       total_unrealized_pnl: 0,
-      start_date:           '2026-03-04',
+      start_date:           '',
       position_count:       0,
       cash_ratio:           0,
     };
