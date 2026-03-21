@@ -9076,29 +9076,39 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 /* ═══ System tabs grid — SINGLE SOURCE OF TRUTH ═══ */
 .system-page .pipeline-row.step-row {
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: 120px 60px 70px 50px 1fr !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
 }
 .system-page .pipeline-row.coverage-row {
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: 140px 100px 90px 60px 1fr !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
 }
 .system-page .pipeline-row.health-row {
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: 140px 40px 160px 50px 1fr !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
 }
 .system-page .pipeline-row.runlog-row {
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: 100px 160px 100px 60px 1fr !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
+}
+.system-page .pipeline-row > span:last-child {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+.system-page .pipeline-badge {
+  display: inline-block !important;
+  width: auto !important;
+  text-align: center !important;
 }
