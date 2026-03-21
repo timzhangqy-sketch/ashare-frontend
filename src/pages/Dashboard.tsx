@@ -186,7 +186,16 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8, tableLayout: 'fixed' as const }}>
+                    <colgroup>
+                      <col style={{ width: '8%' }} />
+                      <col style={{ width: '15%' }} />
+                      <col style={{ width: '10%' }} />
+                      <col style={{ width: '10%' }} />
+                      <col style={{ width: '22%' }} />
+                      <col style={{ width: '22%' }} />
+                      <col style={{ width: '13%' }} />
+                    </colgroup>
                   <thead><tr>
                     <th style={{ padding: '4px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px', borderBottom: '1px solid rgba(255,255,255,0.06)', textAlign: 'left' }}>方向</th>
                     <th style={{ padding: '4px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px', borderBottom: '1px solid rgba(255,255,255,0.06)', textAlign: 'left' }}>股票</th>
