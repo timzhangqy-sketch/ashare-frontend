@@ -440,6 +440,25 @@ export default function Dashboard() {
                               </Bar>
                             </BarChart>
                           </ResponsiveContainer>
+                            {/* 涨跌比横柱 */}
+                            {(() => {
+                              const upCount = (distribution?.gt10_up ?? 0) + (distribution?.up_7_10 ?? 0) + (distribution?.up_5_7 ?? 0) + (distribution?.up_3_5 ?? 0) + (distribution?.up_0_3 ?? 0);
+                              const downCount = (distribution?.down_0_3 ?? 0) + (distribution?.down_3_5 ?? 0) + (distribution?.down_5_7 ?? 0) + (distribution?.down_7_10 ?? 0) + (distribution?.gt10_down ?? 0);
+                              const flatCount = distribution?.flat ?? 0;
+                              const total = upCount + downCount + flatCount || 1;
+                              const upPct = upCount / total * 100;
+                              const downPct = downCount / total * 100;
+                              return (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 8px 2px' }}>
+                                  <span style={{ fontSize: 10, color: 'var(--up)', whiteSpace: 'nowrap', minWidth: 32, textAlign: 'right' }}>{upCount}</span>
+                                  <div style={{ flex: 1, display: 'flex', height: 8, borderRadius: 4, overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
+                                    <div style={{ width: `${upPct}%`, background: 'var(--up, #ef4444)', borderRadius: '4px 0 0 4px', transition: 'width 0.3s' }} />
+                                    <div style={{ width: `${downPct}%`, background: 'var(--down, #22c55e)', borderRadius: '0 4px 4px 0', transition: 'width 0.3s', marginLeft: 'auto' }} />
+                                  </div>
+                                  <span style={{ fontSize: 10, color: 'var(--down)', whiteSpace: 'nowrap', minWidth: 32 }}>{downCount}</span>
+                                </div>
+                              );
+                            })()}
                         </div>
                       </>
                     )}
