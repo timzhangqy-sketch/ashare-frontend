@@ -417,7 +417,7 @@ export default function Dashboard() {
                                 <div style={{ color: '#94a3b8', marginBottom: '4px' }}>{label}</div>
                                 <div style={{ color: '#3b82f6' }}>成交额：{Math.round(d.amount ?? 0).toLocaleString()} 亿</div>
                                 {d.breadth_score != null && <div style={{ color: '#faad14' }}>市场宽度：{d.breadth_score} 分</div>}
-                                {d.avg_pct_chg != null && <div style={{ color: '#ef4444' }}>等权涨幅：{d.avg_pct_chg > 0 ? '+' : ''}{d.avg_pct_chg.toFixed(2)}%</div>}
+                                {d.avg_pct_chg != null && <div style={{ color: d.avg_pct_chg > 0 ? 'var(--up)' : d.avg_pct_chg < 0 ? 'var(--down)' : '#999' }}>等权涨幅：{d.avg_pct_chg > 0 ? '+' : ''}{d.avg_pct_chg.toFixed(2)}%</div>}
                               </div>
                             );
                           }}
