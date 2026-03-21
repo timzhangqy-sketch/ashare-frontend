@@ -167,7 +167,7 @@ export default function SystemPage() {
                     const pr = row as PipelineStepRow
                     const tone = pr.stateTone ?? (pr.stateLabel === '成功' ? 'success' : 'fail')
                     return (
-                      <div key={row.id} className={`pipeline-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
+                      <div key={row.id} className={`pipeline-row step-row${row.id === highlightedId ? ' selected' : ''}`} onClick={() => { setFocus(row); setHighlightedId(row.id) }}>
                         <span className="pipeline-name">{STEP_LABEL[pr.stepKey] || row.title}</span>
                         <span className="pipeline-duration numeric">{pr.duration}</span>
                         <span className="pipeline-rows numeric">{pr.rowCount}</span>
