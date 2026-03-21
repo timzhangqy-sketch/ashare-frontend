@@ -9076,28 +9076,28 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 /* ═══ System tabs grid — SINGLE SOURCE OF TRUTH ═══ */
 .system-page .pipeline-row.step-row {
   display: grid !important;
-  grid-template-columns: 1.5fr 0.8fr 0.8fr 0.6fr 5fr !important;
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
 }
 .system-page .pipeline-row.coverage-row {
   display: grid !important;
-  grid-template-columns: 1.5fr 1fr 1fr 0.8fr 0.8fr !important;
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
 }
 .system-page .pipeline-row.health-row {
   display: grid !important;
-  grid-template-columns: 1.5fr 0.5fr 2fr 0.8fr 2fr !important;
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
 }
 .system-page .pipeline-row.runlog-row {
   display: grid !important;
-  grid-template-columns: 1.2fr 1.8fr 1.2fr 0.8fr 2.5fr !important;
+  grid-template-columns: repeat(5, 1fr) !important;
   gap: 16px !important;
   padding: 8px 24px !important;
   align-items: center !important;
