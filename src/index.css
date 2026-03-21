@@ -354,7 +354,7 @@ a { text-decoration: none; color: inherit; }
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(245, 166, 35, 0.5);
+  color: rgba(255, 122, 69, 0.5);
   padding: 10px 20px 4px;
 }
 
@@ -394,7 +394,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .nav-item.active .nav-icon {
-  color: #F5A623;
+  color: #ff7a45;
 }
 
 .nav-label-wrap {
@@ -413,7 +413,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 .nav-item.active .nav-label {
-  color: #F5A623;
+  color: #ff7a45;
 }
 
 .nav-badge {
@@ -7500,7 +7500,7 @@ textarea:focus-visible {
 .system-metric-card span,
 .execution-metric-card span,
 .nav-section-label {
-  color: #F5A623;
+  color: #ff7a45;
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -7980,10 +7980,10 @@ textarea {
 }
 
 .nav-item.active {
-  background: rgba(245, 166, 35, 0.08);
+  background: rgba(255, 122, 69, 0.08);
   box-shadow:
-    inset 3px 0 0 #F5A623,
-    0 0 0 1px rgba(245, 166, 35, 0.08);
+    inset 3px 0 0 #ff7a45,
+    0 0 0 1px rgba(255, 122, 69, 0.08);
 }
 
 .topbar {
@@ -9151,8 +9151,8 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   background: rgba(255,255,255,0.04) !important;
 }
 .nav-item.active {
-  background: rgba(245, 166, 35, 0.10) !important;
-  box-shadow: inset 4px 0 0 #F5A623, 0 0 0 1px rgba(245, 166, 35, 0.08) !important;
+  background: rgba(255, 122, 69, 0.10) !important;
+  box-shadow: inset 4px 0 0 #ff7a45, 0 0 0 1px rgba(255, 122, 69, 0.08) !important;
 }
 .nav-section-label {
   font-size: 10px !important;
