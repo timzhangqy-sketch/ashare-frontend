@@ -135,17 +135,17 @@ export default function Dashboard() {
   const distData = useMemo(() => {
     if (!distribution) return [];
     return [
-      { label: '>10%', value: distribution.gt10_up ?? 0, color: '#006400' },
-      { label: '7~10', value: distribution.up_7_10 ?? 0, color: '#228B22' },
-      { label: '5~7', value: distribution.up_5_7 ?? 0, color: '#32CD32' },
-      { label: '3~5', value: distribution.up_3_5 ?? 0, color: '#66BB6A' },
-      { label: '0~3', value: distribution.up_0_3 ?? 0, color: '#A5D6A7' },
+      { label: '>10%', value: distribution.gt10_up ?? 0, color: '#8B0000' },
+      { label: '7~10', value: distribution.up_7_10 ?? 0, color: '#C62828' },
+      { label: '5~7', value: distribution.up_5_7 ?? 0, color: '#E53935' },
+      { label: '3~5', value: distribution.up_3_5 ?? 0, color: '#EF5350' },
+      { label: '0~3', value: distribution.up_0_3 ?? 0, color: '#EF9A9A' },
       { label: '0', value: distribution.flat ?? 0, color: '#666666' },
-      { label: '0~-3', value: distribution.down_0_3 ?? 0, color: '#EF9A9A' },
-      { label: '-3~5', value: distribution.down_3_5 ?? 0, color: '#EF5350' },
-      { label: '-5~7', value: distribution.down_5_7 ?? 0, color: '#E53935' },
-      { label: '-7~10', value: distribution.down_7_10 ?? 0, color: '#C62828' },
-      { label: '<-10%', value: distribution.gt10_down ?? 0, color: '#8B0000' },
+      { label: '0~-3', value: distribution.down_0_3 ?? 0, color: '#A5D6A7' },
+      { label: '-3~5', value: distribution.down_3_5 ?? 0, color: '#66BB6A' },
+      { label: '-5~7', value: distribution.down_5_7 ?? 0, color: '#32CD32' },
+      { label: '-7~10', value: distribution.down_7_10 ?? 0, color: '#228B22' },
+      { label: '<-10%', value: distribution.gt10_down ?? 0, color: '#006400' },
     ];
   }, [distribution]);
 
