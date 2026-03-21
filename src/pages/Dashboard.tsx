@@ -186,16 +186,16 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', marginBottom: 8, tableLayout: 'fixed' as const }}>
                     <thead>
                       <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 36 }}>方向</th>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>股票</th>
-                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 56 }}>价格</th>
-                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 50 }}>数量</th>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>策略</th>
-                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px' }}>信号</th>
-                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: 50 }}>盈亏</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '10%' }}>方向</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '18%' }}>股票</th>
+                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '12%' }}>价格</th>
+                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '12%' }}>数量</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '18%' }}>策略</th>
+                        <th style={{ textAlign: 'left', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '15%' }}>信号</th>
+                        <th style={{ textAlign: 'right', padding: '3px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '10px', width: '15%' }}>盈亏</th>
                       </tr>
                     </thead>
                     <tbody>
