@@ -19,6 +19,8 @@ import { useDashboardRuntime } from '../context/useDashboardRuntime';
 import { useDate } from '../context/useDate';
 import type { DashboardViewModel } from '../types/dashboard';
 import type { StockDetail } from '../types/stock';
+import InfoTip from '../components/InfoTip';
+import { DASHBOARD_META } from '../config/dashboardMeta';
 
 export default function Dashboard() {
   const { selectedDate } = useDate();
@@ -171,7 +173,7 @@ export default function Dashboard() {
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场综述</h3>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场综述<InfoTip data={DASHBOARD_META.market_summary} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, margin: 0, textAlign: 'left' }}>
                 {viewModel?.marketSummary || '暂无综述数据'}
@@ -181,7 +183,7 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单</h3>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
             {hasAnyAction ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
@@ -223,7 +225,7 @@ export default function Dashboard() {
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1.2fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10</h3>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
@@ -295,7 +297,7 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）</h3>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）<InfoTip data={DASHBOARD_META.turnover_chart} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               {(() => {
                 const mi = (viewModel as any)?.marketIndex;
@@ -486,7 +488,7 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>热门个股 Top10</h3>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>热门个股 Top10<InfoTip data={DASHBOARD_META.hot_stocks} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
@@ -547,7 +549,7 @@ export default function Dashboard() {
         {/* 左栏：强势板块 Top10 */}
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>强势板块 Top10</h3>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
@@ -597,7 +599,7 @@ export default function Dashboard() {
         {/* 中栏：异动板块 Top5 */}
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>异动板块 Top5</h3>
+            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
             <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>近3日放量但价格未动</p>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
@@ -642,7 +644,7 @@ export default function Dashboard() {
         {/* 右栏：退潮板块 Top5 */}
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>退潮板块 Top5</h3>
+            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
             <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>前期强势→今日回落</p>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
@@ -711,7 +713,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>机会</h3>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
                   买点 {opp?.metrics?.find(m => m.id === 'opp-buy')?.value ?? '—'} | 共振 {opp?.metrics?.find(m => m.id === 'opp-resonance')?.value ?? '—'} | 候选 {opp?.metrics?.find(m => m.id === 'opp-watchlist')?.value ?? '—'}
@@ -758,7 +760,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>风控</h3>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>风控<InfoTip data={DASHBOARD_META.risk_alerts} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
                   拦截 {risk?.metrics?.find(m => m.id === 'risk-gate')?.value ?? '—'} | 最高风险 {risk?.metrics?.find(m => m.id === 'risk-highest')?.value ?? '—'}
@@ -799,7 +801,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合</h3>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {portfolioRaw && (
                   <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
@@ -865,7 +867,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>系统</h3>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>系统<InfoTip data={DASHBOARD_META.system_health} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {(() => {
                   const failed = sys?.metrics?.find(m => m.id === 'system-failed');
