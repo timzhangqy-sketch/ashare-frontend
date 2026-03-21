@@ -554,7 +554,7 @@ export default function Dashboard() {
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <th style={{ textAlign: 'left', padding: '4px 4px', color: 'var(--text-muted)', fontWeight: 400, width: '20px', fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '4px 2px', color: 'var(--text-muted)', fontWeight: 400, width: '16px', fontSize: '11px' }}>#</th>
                     <th style={{ textAlign: 'left', padding: '4px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>概念</th>
                     <th style={{ textAlign: 'right', padding: '4px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>3日</th>
                     <th style={{ textAlign: 'right', padding: '4px 4px', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>今日</th>
@@ -567,7 +567,7 @@ export default function Dashboard() {
                 <tbody>
                   {momentum.length > 0 ? momentum.map((c, i) => (
                     <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td style={{ padding: '4px 4px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '4px 2px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '4px 4px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
                       <td style={{ padding: '4px 4px', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
@@ -597,7 +597,6 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
-            <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>近3日放量异动板块</p>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
@@ -615,8 +614,8 @@ export default function Dashboard() {
                     <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                       <td style={{ padding: '4px 4px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '4px 4px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 4px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
-                        {(c.concept_vr3 ?? 0).toFixed(1)}倍
+                      <td style={{ padding: '4px 4px', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
+                        {(c.concept_vr3 ?? 0).toFixed(1)}x
                       </td>
                       <td style={{ padding: '4px 4px', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
                         {(c.amount_3d_avg ?? 0).toFixed(1)}亿
@@ -642,7 +641,6 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
-            <p style={{ margin: '0 0 8px 0', fontSize: '11px', color: 'var(--text-muted)', fontWeight: 400 }}>前期强势→今日回落</p>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
