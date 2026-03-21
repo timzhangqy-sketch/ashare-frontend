@@ -309,9 +309,12 @@ export default function Dashboard() {
                 // Merge breadth_score into chart data
                 const breadthMap: Record<string, number> = {};
                 for (const b of breadthHistory) if (b.date && b.score != null) breadthMap[b.date] = b.score;
+                const avgPctMap: Record<string, number> = {};
+                for (const b of breadthHistory) if (b.date && (b as any).avg_pct_chg != null) avgPctMap[b.date] = (b as any).avg_pct_chg;
                 const chartData = turnoverHistory.map((t: any) => ({
                   ...t,
                   breadth_score: breadthMap[t.date] ?? null,
+                  avg_pct_chg: avgPctMap[t.date] ?? null,
                 }));
 
                 const latest = turnoverHistory.length > 0 ? turnoverHistory[turnoverHistory.length - 1] : null;
@@ -414,6 +417,7 @@ export default function Dashboard() {
                                 <div style={{ color: '#94a3b8', marginBottom: '4px' }}>{label}</div>
                                 <div style={{ color: '#3b82f6' }}>成交额：{Math.round(d.amount ?? 0).toLocaleString()} 亿</div>
                                 {d.breadth_score != null && <div style={{ color: '#faad14' }}>市场宽度：{d.breadth_score} 分</div>}
+                                {d.avg_pct_chg != null && <div style={{ color: '#ef4444' }}>等权涨幅：{d.avg_pct_chg > 0 ? '+' : ''}{d.avg_pct_chg.toFixed(2)}%</div>}
                               </div>
                             );
                           }}
@@ -429,6 +433,8 @@ export default function Dashboard() {
                           activeDot={{ r: 3, fill: '#3b82f6', stroke: '#fff', strokeWidth: 1.5 }}
                         />
                         <Line yAxisId="breadth" type="monotone" dataKey="breadth_score" stroke="rgba(250,173,20,0.4)" strokeWidth={1} strokeDasharray="3 2" dot={false} connectNulls />
+                        <YAxis yAxisId="avgPct" orientation="right" domain={['auto', 'auto']} hide />
+                        <Line yAxisId="avgPct" type="monotone" dataKey="avg_pct_chg" stroke="rgba(239,68,68,0.5)" strokeWidth={1.5} dot={false} connectNulls />
                       </ComposedChart>
                     </ResponsiveContainer>
                     </div>
