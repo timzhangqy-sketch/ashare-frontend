@@ -9173,8 +9173,11 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
-  padding: 10px 14px !important;
-  height: auto !important;
+  padding: 0 14px !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  box-sizing: border-box !important;
+  margin-bottom: 8px !important;
 }
 .sidebar-logo-text-group {
   display: flex !important;
