@@ -361,7 +361,15 @@ export default function Dashboard() {
                           tick={{ fontSize: 11, fill: '#64748b', dy: 4 }}
                           axisLine={{ stroke: 'rgba(255,255,255,0.08)' }}
                           tickLine={false}
-                          interval={Math.floor(chartData.length / 5)}
+                          ticks={(() => {
+                            if (chartData.length === 0) return [];
+                            const step = Math.max(1, Math.floor(chartData.length / 5));
+                            const t: string[] = [];
+                            for (let i = 0; i < chartData.length - 1; i += step) t.push(chartData[i].date);
+                            const last = chartData[chartData.length - 1].date;
+                            if (!t.includes(last)) t.push(last);
+                            return t;
+                          })()}
                         />
                         <YAxis
                           yAxisId="left"
