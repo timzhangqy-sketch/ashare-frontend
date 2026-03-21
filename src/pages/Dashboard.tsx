@@ -83,7 +83,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     let cancelled = false;
-    fetchActionList(selectedDate)
+    fetchActionList(selectedDate.replace(/-/g, ''))
       .then((data) => {
         if (!cancelled) setActionList(data);
       })
