@@ -9073,49 +9073,32 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .badge-green { background:rgba(34,197,94,0.15); color:#22c55e; }
 .badge-red { background:rgba(239,68,68,0.15); color:#ef4444; }
 .pipeline-log { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text-muted); font-size:11px; }
-/* System tabs grid override - percentage based */
-.system-page .pipeline-row { display:grid !important; gap:16px !important; padding:8px 20px !important; align-items:center !important; }
-.system-page .pipeline-row:not(.coverage-row):not(.health-row):not(.runlog-row) { grid-template-columns: 18% 8% 8% 6% 1fr !important; }
-.system-page .pipeline-row.coverage-row { grid-template-columns: 20% 15% 12% 8% 1fr !important; }
-.system-page .pipeline-row.health-row { grid-template-columns: 20% 8% 22% 8% 1fr !important; }
-.system-page .pipeline-row.runlog-row { grid-template-columns: 15% 22% 15% 10% 1fr !important; }
-
-/* ═══ System tabs grid - uniform distribution ═══ */
-.system-page .pipeline-row {
-  display: grid !important;
-  align-items: center !important;
-  padding: 8px 24px !important;
-  border-bottom: 1px solid var(--border-subtle) !important;
-  font-size: 12px !important;
-  width: 100% !important;
-}
-.system-page .pipeline-row:hover { background: var(--bg-hover); }
-
-/* 流程运行: 步骤名 | 耗时 | 行数 | 状态 | 日志 */
+/* ═══ System tabs grid — SINGLE SOURCE OF TRUTH ═══ */
 .system-page .pipeline-row.step-row {
-  grid-template-columns: 2fr 1fr 1fr 0.8fr 4fr !important;
-  gap: 20px !important;
+  display: grid !important;
+  grid-template-columns: 1.5fr 0.8fr 0.8fr 0.6fr 5fr !important;
+  gap: 16px !important;
+  padding: 8px 24px !important;
+  align-items: center !important;
 }
-
-/* 数据覆盖: 表名 | 日期 | 行数 | 状态 | 备注 */
 .system-page .pipeline-row.coverage-row {
-  grid-template-columns: 2.5fr 1.5fr 1.5fr 1fr 2fr !important;
-  gap: 20px !important;
+  display: grid !important;
+  grid-template-columns: 1.5fr 1fr 1fr 0.8fr 0.8fr !important;
+  gap: 16px !important;
+  padding: 8px 24px !important;
+  align-items: center !important;
 }
-
-/* 接口健康: 接口名 | 状态码 | 时间 | 状态 | 延迟 */
 .system-page .pipeline-row.health-row {
-  grid-template-columns: 2fr 0.8fr 2.5fr 1fr 2fr !important;
-  gap: 20px !important;
+  display: grid !important;
+  grid-template-columns: 1.5fr 0.5fr 2fr 0.8fr 2fr !important;
+  gap: 16px !important;
+  padding: 8px 24px !important;
+  align-items: center !important;
 }
-
-/* 运行日志: 标题 | 时间 | 异常 | 状态 | 说明 */
 .system-page .pipeline-row.runlog-row {
-  grid-template-columns: 1.5fr 2fr 1.5fr 1fr 2.5fr !important;
-  gap: 20px !important;
+  display: grid !important;
+  grid-template-columns: 1.2fr 1.8fr 1.2fr 0.8fr 2.5fr !important;
+  gap: 16px !important;
+  padding: 8px 24px !important;
+  align-items: center !important;
 }
-
-.system-page .pipeline-name { font-weight: 600; white-space: nowrap; }
-.system-page .pipeline-duration { text-align: right; color: var(--text-muted); }
-.system-page .pipeline-rows { text-align: right; }
-.system-page .pipeline-log { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-muted); font-size: 11px; }
