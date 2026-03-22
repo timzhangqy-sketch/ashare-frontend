@@ -14,6 +14,10 @@ interface RiskRow {
   risk_score_market: number | null
   risk_score_event: number | null
   risk_score_compliance: number | null
+  cap_financial: number | null
+  cap_market: number | null
+  cap_event: number | null
+  cap_compliance: number | null
   position_cap_multiplier_final: number | null
   in_watchlist: boolean
   in_portfolio: boolean
@@ -103,11 +107,19 @@ const pillStyle = (active: boolean) => ({
 // ─── Detail Panel ────────────────────────────────────────────────────────────
 
 function DetailPanel({ row, onClose }: { row: RiskRow; onClose: () => void }) {
+  const capRows = [
+    { label: '财务', value: row.cap_financial },
+    { label: '市场', value: row.cap_market },
+    { label: '事件', value: row.cap_event },
+    { label: '合规', value: row.cap_compliance },
+  ]
+
   return (
     <div style={{
-      width: 300, flexShrink: 0, background: 'var(--bg-card)', borderRadius: 8,
+      flex: '0 0 35%', minWidth: 320, maxHeight: 'calc(100vh - 240px)', background: 'var(--bg-card)', borderRadius: 8,
       border: '1px solid var(--border-default)', padding: 16, overflowY: 'auto',
     }}>
+      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
         <div>
           <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>{row.name}</div>
@@ -121,8 +133,7 @@ function DetailPanel({ row, onClose }: { row: RiskRow; onClose: () => void }) {
       {/* Verdict */}
       <div style={{ marginBottom: 14 }}>
         <span style={{
-          display: 'inline-block', padding: '3px 10px', borderRadius: 4,
-          fontSize: 12, fontWeight: 600,
+          display: 'inline-block', padding: '3px 10px', borderRadius: 4, fontSize: 12, fontWeight: 600,
           background: row.trade_allowed ? `${GREEN}18` : `${RED}18`,
           color: row.trade_allowed ? GREEN : RED,
         }}>
@@ -144,35 +155,70 @@ function DetailPanel({ row, onClose }: { row: RiskRow; onClose: () => void }) {
 
       {/* 4-Dimension Bars */}
       <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>四维评分</div>
+        <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 8 }}>四维评分</div>
         {dimBar('财务', row.risk_score_financial)}
         {dimBar('市场', row.risk_score_market)}
         {dimBar('事件', row.risk_score_event)}
         {dimBar('合规', row.risk_score_compliance)}
       </div>
 
-      {/* Position Cap */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8 }}>
-        <span style={{ color: 'var(--text-muted)' }}>仓位倍数</span>
-        <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
-          {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
-        </span>
+      {/* Risk Detail */}
+      <div style={{ marginBottom: 14 }}>
+        {!row.trade_allowed ? (
+          <div style={{ padding: '8px 10px', borderRadius: 4, background: `${RED}12`, fontSize: 12, color: RED, lineHeight: 1.5 }}>
+            <div style={{ fontWeight: 600, marginBottom: 4 }}>拦截原因</div>
+            <div>{row.block_reason || '风控拦截'}</div>
+            <div style={{ marginTop: 4, fontSize: 11, opacity: 0.8 }}>该股票已被风控系统拦截，无法生成买入订单</div>
+          </div>
+        ) : (
+          <div style={{ padding: '8px 10px', borderRadius: 4, background: 'rgba(255,255,255,0.03)', fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            <div>{weakestDim(row) !== '--' ? `${weakestDim(row)}，建议持续关注` : '各维度均健康'}</div>
+            {row.position_cap_multiplier_final != null && (
+              <div style={{ marginTop: 4 }}>
+                仓位倍数 {row.position_cap_multiplier_final.toFixed(2)}x，
+                {row.position_cap_multiplier_final >= 0.95 ? '对建仓金额影响较小' : row.position_cap_multiplier_final >= 0.7 ? '建仓金额适度缩减' : '建仓金额大幅缩减'}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Block Reason */}
-      {!row.trade_allowed && row.block_reason && (
-        <div style={{
-          marginTop: 10, padding: '8px 10px', borderRadius: 4,
-          background: `${RED}12`, fontSize: 12, color: RED, lineHeight: 1.5,
-        }}>
-          拦截原因: {row.block_reason}
+      {/* Cap Breakdown */}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 8 }}>仓位倍数拆解</div>
+        {capRows.map(c => (
+          <div key={c.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '3px 0', color: 'var(--text-secondary)' }}>
+            <span>{c.label}倍数</span>
+            <span style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: c.value != null && c.value < 0.8 ? YELLOW : 'var(--text-primary)' }}>
+              {c.value != null ? `${c.value.toFixed(2)}x` : '--'}
+            </span>
+          </div>
+        ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '5px 0 0', borderTop: '1px solid var(--border-default)', marginTop: 4, color: 'var(--text-primary)', fontWeight: 600 }}>
+          <span>最终倍数</span>
+          <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
+          </span>
         </div>
-      )}
+      </div>
 
-      {/* Source */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginTop: 10, color: 'var(--text-muted)' }}>
-        <span>来源</span>
-        <span>{sourceBadges(row)}</span>
+      {/* Navigation Links */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {row.in_watchlist && (
+          <a href={`/watchlist?source=risk&focus=${encodeURIComponent(row.ts_code)}`}
+            style={{ fontSize: 12, color: BLUE, textDecoration: 'none' }}>
+            查看观察池 →
+          </a>
+        )}
+        {row.in_portfolio && (
+          <a href={`/portfolio?source=risk&focus=${encodeURIComponent(row.ts_code)}`}
+            style={{ fontSize: 12, color: BLUE, textDecoration: 'none' }}>
+            查看持仓 →
+          </a>
+        )}
+        {!row.in_watchlist && !row.in_portfolio && (
+          <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>不在观察池或持仓中</span>
+        )}
       </div>
     </div>
   )
@@ -293,7 +339,7 @@ export default function RiskDetailView() {
         </div>
       ) : (
         <div style={{ display: 'flex', gap: 16 }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ flex: selected ? 2 : 1, minWidth: 0 }}>
             <div className="table-shell data-table-shell">
               <table className="data-table">
                 <thead>

@@ -27,12 +27,11 @@ export default function ContextPanelSlot() {
     return <GlobalContextPanel panel={panel} />;
   }
 
-  // Dashboard、模拟执行页、研究中心、系统监控页、策略页、风控总览不展示右侧占位面板
-  const searchParams = new URLSearchParams(window.location.search);
+  // Dashboard、模拟执行页、研究中心、系统监控页、策略页、风控中心不展示右侧占位面板
   if (pathname === '/dashboard' || pathname.startsWith('/dashboard')
       || pathname.startsWith('/execution') || pathname.startsWith('/research') || pathname.startsWith('/system')
       || pathname.startsWith('/ignition') || pathname.startsWith('/retoc2') || pathname.startsWith('/pattern')
-      || (pathname.startsWith('/risk') && (searchParams.get('tab') === 'overview' || !searchParams.get('tab')))) {
+      || pathname.startsWith('/risk')) {
     return null;
   }
 
