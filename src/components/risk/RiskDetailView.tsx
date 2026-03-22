@@ -27,6 +27,7 @@ type SortKey = 'score_asc' | 'score_desc' | 'cap_asc'
 const GREEN = '#4ecf7a'
 const YELLOW = '#f0b840'
 const RED = '#e74c3c'
+const BLUE = '#3498db'
 
 function scoreColor(v: number | null) {
   if (v == null) return 'var(--text-muted)'
@@ -56,6 +57,21 @@ function miniBar(v: number | null) {
   )
 }
 
+function dimBar(label: string, v: number | null) {
+  const w = Math.min(v ?? 0, 100)
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+      <span style={{ fontSize: 12, color: 'var(--text-muted)', width: 28, flexShrink: 0 }}>{label}</span>
+      <div style={{ flex: 1, height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.08)' }}>
+        <div style={{ width: `${w}%`, height: 6, borderRadius: 3, background: scoreColor(v), transition: 'width 0.3s' }} />
+      </div>
+      <span style={{ fontSize: 12, fontWeight: 600, color: scoreColor(v), width: 28, textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+        {v != null ? v.toFixed(0) : '--'}
+      </span>
+    </div>
+  )
+}
+
 function weakestDim(row: RiskRow): string {
   const dims = [
     { name: '财务', score: row.risk_score_financial },
@@ -68,13 +84,108 @@ function weakestDim(row: RiskRow): string {
   return `${dims[0].name}维度偏弱(${dims[0].score.toFixed(0)})`
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
+function sourceBadges(row: RiskRow) {
+  const badges = []
+  if (row.in_watchlist) badges.push(<span key="w" style={{ display: 'inline-block', padding: '1px 5px', borderRadius: 3, fontSize: 10, fontWeight: 600, background: `${GREEN}18`, color: GREEN, marginRight: 3 }}>池</span>)
+  if (row.in_portfolio) badges.push(<span key="p" style={{ display: 'inline-block', padding: '1px 5px', borderRadius: 3, fontSize: 10, fontWeight: 600, background: `${BLUE}18`, color: BLUE }}>仓</span>)
+  if (badges.length === 0) return <span style={{ color: 'var(--text-muted)' }}>—</span>
+  return <>{badges}</>
+}
+
+const pillStyle = (active: boolean) => ({
+  padding: '4px 12px', borderRadius: 100, fontSize: 12, fontWeight: 500 as const,
+  border: active ? '1px solid var(--text-primary)' : '1px solid var(--border-default)',
+  background: active ? 'rgba(255,255,255,0.08)' : 'transparent',
+  color: active ? 'var(--text-primary)' : 'var(--text-muted)',
+  cursor: 'pointer' as const,
+})
+
+// ─── Detail Panel ────────────────────────────────────────────────────────────
+
+function DetailPanel({ row, onClose }: { row: RiskRow; onClose: () => void }) {
+  return (
+    <div style={{
+      width: 300, flexShrink: 0, background: 'var(--bg-card)', borderRadius: 8,
+      border: '1px solid var(--border-default)', padding: 16, overflowY: 'auto',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
+        <div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>{row.name}</div>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>{row.ts_code}</div>
+        </div>
+        <button type="button" onClick={onClose} style={{
+          background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 16, padding: '0 4px',
+        }}>✕</button>
+      </div>
+
+      {/* Verdict */}
+      <div style={{ marginBottom: 14 }}>
+        <span style={{
+          display: 'inline-block', padding: '3px 10px', borderRadius: 4,
+          fontSize: 12, fontWeight: 600,
+          background: row.trade_allowed ? `${GREEN}18` : `${RED}18`,
+          color: row.trade_allowed ? GREEN : RED,
+        }}>
+          {row.trade_allowed ? '允许交易' : '已拦截'}
+        </span>
+      </div>
+
+      {/* Total Score */}
+      <div style={{ textAlign: 'center', marginBottom: 16 }}>
+        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>综合评分</div>
+        <div style={{
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          width: 56, height: 40, borderRadius: 6, fontSize: 22, fontWeight: 700,
+          background: scoreBg(row.risk_score_total), color: scoreColor(row.risk_score_total),
+        }}>
+          {row.risk_score_total != null ? row.risk_score_total.toFixed(0) : '--'}
+        </div>
+      </div>
+
+      {/* 4-Dimension Bars */}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 8 }}>四维评分</div>
+        {dimBar('财务', row.risk_score_financial)}
+        {dimBar('市场', row.risk_score_market)}
+        {dimBar('事件', row.risk_score_event)}
+        {dimBar('合规', row.risk_score_compliance)}
+      </div>
+
+      {/* Position Cap */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 8 }}>
+        <span style={{ color: 'var(--text-muted)' }}>仓位倍数</span>
+        <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+          {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
+        </span>
+      </div>
+
+      {/* Block Reason */}
+      {!row.trade_allowed && row.block_reason && (
+        <div style={{
+          marginTop: 10, padding: '8px 10px', borderRadius: 4,
+          background: `${RED}12`, fontSize: 12, color: RED, lineHeight: 1.5,
+        }}>
+          拦截原因: {row.block_reason}
+        </div>
+      )}
+
+      {/* Source */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginTop: 10, color: 'var(--text-muted)' }}>
+        <span>来源</span>
+        <span>{sourceBadges(row)}</span>
+      </div>
+    </div>
+  )
+}
+
+// ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function RiskDetailView() {
   const [rows, setRows] = useState<RiskRow[]>([])
   const [loading, setLoading] = useState(true)
   const [scope, setScope] = useState<Scope>('all')
   const [sortKey, setSortKey] = useState<SortKey>('score_desc')
+  const [selected, setSelected] = useState<RiskRow | null>(null)
 
   const load = useCallback(async (s: Scope) => {
     setLoading(true)
@@ -95,15 +206,23 @@ export default function RiskDetailView() {
 
   useEffect(() => { load(scope) }, [scope, load])
 
+  // Sort: blocked first, then by user sort
   const sorted = useMemo(() => {
     const arr = [...rows]
-    if (sortKey === 'score_desc') arr.sort((a, b) => (a.risk_score_total ?? 999) - (b.risk_score_total ?? 999))
-    else if (sortKey === 'score_asc') arr.sort((a, b) => (b.risk_score_total ?? 0) - (a.risk_score_total ?? 0))
-    else if (sortKey === 'cap_asc') arr.sort((a, b) => (a.position_cap_multiplier_final ?? 999) - (b.position_cap_multiplier_final ?? 999))
+    arr.sort((a, b) => {
+      // Blocked always first
+      if (!a.trade_allowed && b.trade_allowed) return -1
+      if (a.trade_allowed && !b.trade_allowed) return 1
+      // Then by sort key
+      if (sortKey === 'score_desc') return (a.risk_score_total ?? 999) - (b.risk_score_total ?? 999)
+      if (sortKey === 'score_asc') return (b.risk_score_total ?? 0) - (a.risk_score_total ?? 0)
+      if (sortKey === 'cap_asc') return (a.position_cap_multiplier_final ?? 999) - (b.position_cap_multiplier_final ?? 999)
+      return 0
+    })
     return arr
   }, [rows, sortKey])
 
-  // Stats for top cards
+  // Stats
   const blockedCount = rows.filter(r => !r.trade_allowed).length
   const blockedReasons: Record<string, number> = {}
   rows.filter(r => !r.trade_allowed).forEach(r => {
@@ -114,19 +233,6 @@ export default function RiskDetailView() {
   })
   const highRiskPortfolio = rows.filter(r => r.in_portfolio && (r.risk_score_total ?? 100) < 60)
   const highRiskWatchlist = rows.filter(r => r.in_watchlist && !r.in_portfolio && (r.risk_score_total ?? 100) < 60)
-
-  const scopeButtons: { key: Scope; label: string }[] = [
-    { key: 'all', label: '全部' },
-    { key: 'blocked', label: '仅被拦截' },
-    { key: 'watchlist', label: '观察池' },
-    { key: 'portfolio', label: '持仓' },
-  ]
-
-  const sortButtons: { key: SortKey; label: string }[] = [
-    { key: 'score_desc', label: '风险评分↓' },
-    { key: 'score_asc', label: '风险评分↑' },
-    { key: 'cap_asc', label: '仓位倍数↑' },
-  ]
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -143,48 +249,42 @@ export default function RiskDetailView() {
           <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 4 }}>高风险持仓</div>
           <div style={{ fontSize: 22, fontWeight: 700, color: highRiskPortfolio.length > 0 ? RED : GREEN }}>{highRiskPortfolio.length}</div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-            {highRiskPortfolio[0]?.name || '无'}
+            {highRiskPortfolio[0]?.name || '暂无持仓'}
           </div>
         </div>
         <div style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '12px 16px', border: `1px solid ${highRiskWatchlist.length > 0 ? YELLOW + '33' : 'var(--border-default)'}` }}>
           <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 4 }}>高风险观察池</div>
           <div style={{ fontSize: 22, fontWeight: 700, color: highRiskWatchlist.length > 0 ? YELLOW : GREEN }}>{highRiskWatchlist.length}</div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-            {highRiskWatchlist[0]?.name || '无'}
+            {highRiskWatchlist[0]?.name || '全部正常'}
           </div>
         </div>
       </div>
 
       {/* ── Filter bar ── */}
-      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 11, color: 'var(--text-muted)', marginRight: 4 }}>范围</span>
-        {scopeButtons.map(b => (
-          <button key={b.key} type="button" onClick={() => setScope(b.key)}
-            style={{
-              padding: '4px 12px', borderRadius: 100, fontSize: 12, fontWeight: 500,
-              border: scope === b.key ? '1px solid var(--text-primary)' : '1px solid var(--border-default)',
-              background: scope === b.key ? 'rgba(255,255,255,0.08)' : 'transparent',
-              color: scope === b.key ? 'var(--text-primary)' : 'var(--text-muted)',
-              cursor: 'pointer',
-            }}
-          >{b.label}</button>
+      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 6 }}>
+        <span style={{ fontSize: 12, color: '#7a8a9a', marginRight: 4 }}>范围:</span>
+        {([
+          { key: 'all' as Scope, label: '全部' },
+          { key: 'blocked' as Scope, label: '仅被拦截' },
+          { key: 'watchlist' as Scope, label: '观察池' },
+          { key: 'portfolio' as Scope, label: '持仓' },
+        ]).map(b => (
+          <button key={b.key} type="button" onClick={() => { setScope(b.key); setSelected(null) }} style={pillStyle(scope === b.key)}>{b.label}</button>
         ))}
-        <span style={{ fontSize: 11, color: 'var(--text-muted)', marginLeft: 12, marginRight: 4 }}>排序</span>
-        {sortButtons.map(b => (
-          <button key={b.key} type="button" onClick={() => setSortKey(b.key)}
-            style={{
-              padding: '4px 12px', borderRadius: 100, fontSize: 12, fontWeight: 500,
-              border: sortKey === b.key ? '1px solid var(--text-primary)' : '1px solid var(--border-default)',
-              background: sortKey === b.key ? 'rgba(255,255,255,0.08)' : 'transparent',
-              color: sortKey === b.key ? 'var(--text-primary)' : 'var(--text-muted)',
-              cursor: 'pointer',
-            }}
-          >{b.label}</button>
+        <span style={{ width: 1, height: 16, background: 'var(--border-default)', margin: '0 10px' }} />
+        <span style={{ fontSize: 12, color: '#7a8a9a', marginRight: 4 }}>排序:</span>
+        {([
+          { key: 'score_desc' as SortKey, label: '风险评分↓' },
+          { key: 'score_asc' as SortKey, label: '风险评分↑' },
+          { key: 'cap_asc' as SortKey, label: '仓位倍数↑' },
+        ]).map(b => (
+          <button key={b.key} type="button" onClick={() => setSortKey(b.key)} style={pillStyle(sortKey === b.key)}>{b.label}</button>
         ))}
         <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>{sorted.length} 只</span>
       </div>
 
-      {/* ── Table ── */}
+      {/* ── Table + Detail Panel ── */}
       {loading ? (
         <div className="page-banner">加载风控数据中...</div>
       ) : sorted.length === 0 ? (
@@ -192,74 +292,84 @@ export default function RiskDetailView() {
           {scope === 'blocked' ? '无被拦截标的' : '暂无风控数据'}
         </div>
       ) : (
-        <div className="table-shell data-table-shell">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>标的</th>
-                <th>交易结论</th>
-                <th>综合评分</th>
-                <th>财务</th>
-                <th>市场</th>
-                <th>事件</th>
-                <th>合规</th>
-                <th style={{ textAlign: 'right' }}>仓位倍数</th>
-                <th>风险/拦截原因</th>
-                <th>来源</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.map(row => (
-                <tr key={row.ts_code} style={{
-                  background: !row.trade_allowed ? 'rgba(231,76,60,0.05)' : undefined,
-                }}>
-                  <td>
-                    <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-primary)' }}>{row.name}</div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>{row.ts_code}</div>
-                  </td>
-                  <td>
-                    <span style={{
-                      display: 'inline-block', padding: '2px 8px', borderRadius: 3,
-                      fontSize: 11, fontWeight: 600,
-                      background: row.trade_allowed ? `${GREEN}18` : `${RED}18`,
-                      color: row.trade_allowed ? GREEN : RED,
-                    }}>
-                      {row.trade_allowed ? '允许' : '拦截'}
-                    </span>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                        width: 32, height: 20, borderRadius: 3, fontSize: 12, fontWeight: 700,
-                        background: scoreBg(row.risk_score_total),
-                        color: scoreColor(row.risk_score_total),
-                      }}>
-                        {row.risk_score_total != null ? row.risk_score_total.toFixed(0) : '--'}
-                      </span>
-                    </div>
-                  </td>
-                  <td>{miniBar(row.risk_score_financial)}</td>
-                  <td>{miniBar(row.risk_score_market)}</td>
-                  <td>{miniBar(row.risk_score_event)}</td>
-                  <td>{miniBar(row.risk_score_compliance)}</td>
-                  <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600, fontSize: 12 }}>
-                    {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
-                  </td>
-                  <td style={{ fontSize: 12, color: !row.trade_allowed ? RED : 'var(--text-muted)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {!row.trade_allowed
-                      ? (row.block_reason || '拦截')
-                      : weakestDim(row)}
-                  </td>
-                  <td style={{ fontSize: 12 }}>
-                    {row.in_portfolio && <span title="持仓" style={{ marginRight: 4 }}>💼</span>}
-                    {row.in_watchlist && <span title="观察池">📋</span>}
-                    {!row.in_portfolio && !row.in_watchlist && <span style={{ color: 'var(--text-muted)' }}>--</span>}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div className="table-shell data-table-shell">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>标的</th>
+                    <th>交易结论</th>
+                    <th>综合评分</th>
+                    <th>财务</th>
+                    <th>市场</th>
+                    <th>事件</th>
+                    <th>合规</th>
+                    <th style={{ textAlign: 'right' }}>仓位倍数</th>
+                    <th>风险/拦截原因</th>
+                    <th>来源</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sorted.map(row => (
+                    <tr
+                      key={row.ts_code}
+                      onClick={() => setSelected(row)}
+                      style={{
+                        cursor: 'pointer',
+                        background: selected?.ts_code === row.ts_code
+                          ? 'rgba(59,130,246,0.08)'
+                          : !row.trade_allowed
+                            ? 'rgba(231,76,60,0.06)'
+                            : undefined,
+                      }}
+                    >
+                      <td>
+                        <div style={{ fontWeight: 600, fontSize: 13, color: 'var(--text-primary)' }}>{row.name}</div>
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>{row.ts_code}</div>
+                      </td>
+                      <td>
+                        <span style={{
+                          display: 'inline-block', padding: '2px 8px', borderRadius: 3,
+                          fontSize: 11, fontWeight: 600,
+                          background: row.trade_allowed ? `${GREEN}18` : `${RED}18`,
+                          color: row.trade_allowed ? GREEN : RED,
+                        }}>
+                          {row.trade_allowed ? '允许' : '拦截'}
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          width: 32, height: 20, borderRadius: 3, fontSize: 12, fontWeight: 700,
+                          background: scoreBg(row.risk_score_total),
+                          color: scoreColor(row.risk_score_total),
+                        }}>
+                          {row.risk_score_total != null ? row.risk_score_total.toFixed(0) : '--'}
+                        </span>
+                      </td>
+                      <td>{miniBar(row.risk_score_financial)}</td>
+                      <td>{miniBar(row.risk_score_market)}</td>
+                      <td>{miniBar(row.risk_score_event)}</td>
+                      <td>{miniBar(row.risk_score_compliance)}</td>
+                      <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600, fontSize: 12 }}>
+                        {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
+                      </td>
+                      <td style={{ fontSize: 12, color: !row.trade_allowed ? RED : 'var(--text-muted)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {!row.trade_allowed ? (row.block_reason || '拦截') : weakestDim(row)}
+                      </td>
+                      <td>{sourceBadges(row)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Detail Panel */}
+          {selected && (
+            <DetailPanel row={selected} onClose={() => setSelected(null)} />
+          )}
         </div>
       )}
     </div>
