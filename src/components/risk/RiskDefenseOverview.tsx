@@ -129,7 +129,7 @@ export default function RiskDefenseOverview() {
         <StatusCard
           title="组合风控"
           mainValue={rg?.buy_blocked ? '买入已拦截' : '正常'}
-          subValue={dd ? `回撤 ${(dd.drawdown * 100).toFixed(1)}% | 连亏 ${cl?.consecutive_losses ?? 0}笔` : '--'}
+          subValue={dd ? `回撤 ${(dd.drawdown != null && !isNaN(dd.drawdown) ? (dd.drawdown * 100).toFixed(1) : '0.0')}% | 连亏 ${cl?.consecutive_losses ?? 0}笔` : '--'}
           color={guardClr}
         />
         <StatusCard
@@ -140,7 +140,7 @@ export default function RiskDefenseOverview() {
         />
         <StatusCard
           title="订单审批"
-          mainValue={`通过${(ap?.auto_approved ?? 0) + (ap?.filled ?? 0)} / 待审${ap?.pending_manual ?? 0} / 拒${ap?.rejected_risk ?? 0}`}
+          mainValue={`通${(ap?.auto_approved ?? 0) + (ap?.filled ?? 0)} / 审${ap?.pending_manual ?? 0} / 拒${ap?.rejected_risk ?? 0}`}
           subValue={`今日 ${ap?.total ?? 0} 笔`}
           color={approvalClr}
         />
@@ -195,7 +195,7 @@ export default function RiskDefenseOverview() {
                 {dd?.triggered ? '🚫' : '✅'} 最大回撤
               </span>
               <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: dd?.triggered ? RED : 'var(--text-primary)' }}>
-                {dd ? `${(dd.drawdown * 100).toFixed(1)}%` : '--'} / {dd ? `${(dd.threshold * 100).toFixed(0)}%` : '8%'}
+                {dd && dd.drawdown != null && !isNaN(dd.drawdown) ? `${(dd.drawdown * 100).toFixed(1)}%` : '0.0%'} / {dd ? `${(dd.threshold * 100).toFixed(0)}%` : '8%'}
               </span>
             </div>
             {/* Consecutive Loss */}

@@ -112,6 +112,9 @@ export default function RiskPage() {
   const [feedback, setFeedbackState] = useState<{ tone: 'info' | 'warning'; text: string } | null>(null);
   const { openPanel, closePanel } = useContextPanel();
 
+  const rawTabParam = searchParams.get('tab');
+  const isOverviewTab = rawTabParam === 'overview' || (!rawTabParam && !queryState.source);
+
   const stableFetchKey = useMemo(
     () => `${selectedDate ?? ''}|${queryState.tab}|${queryState.source ?? ''}|${queryState.scope ?? ''}`,
     [selectedDate, queryState.tab, queryState.source, queryState.scope],
@@ -174,7 +177,7 @@ export default function RiskPage() {
   const activeDataSource = data?.dataSources[queryState.tab];
 
   useEffect(() => {
-    if (!activeDomain || !context) {
+    if (isOverviewTab || !activeDomain || !context) {
       closePanel();
       return;
     }
@@ -188,7 +191,7 @@ export default function RiskPage() {
       payloadVersion: 'v1',
       payload: buildRiskContextPanelPayload(activeDomain, context, activeDomain.tradeDate ?? selectedDate),
     });
-  }, [activeDomain, context, queryState.tab, openPanel, closePanel, selectedDate]);
+  }, [isOverviewTab, activeDomain, context, queryState.tab, openPanel, closePanel, selectedDate]);
 
   useEffect(() => () => closePanel(), [closePanel]);
 
@@ -243,9 +246,6 @@ export default function RiskPage() {
   };
 
   // contextActions removed — private panel deleted
-
-  const rawTabParam = searchParams.get('tab');
-  const isOverviewTab = rawTabParam === 'overview' || (!rawTabParam && !queryState.source);
 
   return (
     <div className="risk-page" data-testid="risk-page">
