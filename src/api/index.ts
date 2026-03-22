@@ -1017,4 +1017,40 @@ export async function fetchPortfolioStats(): Promise<PortfolioStatsResp> {
   return res.data as PortfolioStatsResp;
 }
 
+// ─── Approval API (L3 Decision Layer) ────────────────────────────────────────
+
+export async function fetchPendingApprovals() {
+  const res = await api.get('/api/sim/pending-approvals');
+  return res.data as {
+    orders: Array<Record<string, unknown>>;
+    config: { mode: string; rules: Record<string, unknown> };
+  };
+}
+
+export async function approveOrders(orderIds: number[], reason?: string) {
+  const res = await api.post('/api/sim/approve', {
+    order_ids: orderIds,
+    reason: reason || '手动批准',
+  });
+  return res.data as { updated: number; approved_ids: number[]; reason: string };
+}
+
+export async function rejectOrders(orderIds: number[], reason: string) {
+  const res = await api.post('/api/sim/reject', {
+    order_ids: orderIds,
+    reason,
+  });
+  return res.data as { updated: number; rejected_ids: number[]; reason: string };
+}
+
+export async function fetchSimConfig() {
+  const res = await api.get('/api/sim/config');
+  return res.data as Record<string, { value: unknown; description: string; updated_at: string | null }>;
+}
+
+export async function updateSimConfig(config: Record<string, unknown>) {
+  const res = await api.put('/api/sim/config', config);
+  return res.data as { updated: string[] };
+}
+
 export default api;
