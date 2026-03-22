@@ -728,7 +728,7 @@ export default function Dashboard() {
       {/* ═══ 第4行：板块×策略共振 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr', alignItems: 'stretch' }}>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
+          <div className="card-body dashboard-module-body" style={{ padding: '8px 16px' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {resonance.resonance_hits.map((hit, i) => (
@@ -742,7 +742,7 @@ export default function Dashboard() {
                 </div>
               ))}
               {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
-                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
+                <div style={{ padding: '8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
               )}
             </div>
           </div>
