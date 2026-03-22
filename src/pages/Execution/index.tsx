@@ -165,38 +165,24 @@ function ApprovalTab() {
           </button>
         </div>
 
-        <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
+        <div className="execution-table-shell" style={{ width: '100%', overflowX: 'auto' }}>
             <table className="data-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-              <colgroup>
-                <col style={{ width: '3%' }} />
-                <col style={{ width: '9%' }} />
-                <col style={{ width: '9%' }} />
-                <col style={{ width: '9%' }} />
-                <col style={{ width: '5%' }} />
-                <col style={{ width: '7%' }} />
-                <col style={{ width: '8%' }} />
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '7%' }} />
-                <col style={{ width: '8%' }} />
-                <col style={{ width: '15%' }} />
-              </colgroup>
               <thead>
                 <tr>
-                  <th style={{ textAlign: 'center' }}>
+                  <th style={{ width: '3%', textAlign: 'center' }}>
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} disabled={pending.length === 0} />
                   </th>
-                  <th>日期</th>
-                  <th>股票代码</th>
-                  <th>股票名称</th>
-                  <th>方向</th>
-                  <th style={{ textAlign: 'right' }}>股数</th>
-                  <th style={{ textAlign: 'right' }}>金额</th>
-                  <th>策略</th>
-                  <th>信号</th>
-                  <th style={{ textAlign: 'right' }}>风控分</th>
-                  <th>状态</th>
-                  <th style={{ textAlign: 'center' }}>操作</th>
+                  <th style={{ width: '8%' }}>日期</th>
+                  <th style={{ width: '8%' }}>股票代码</th>
+                  <th style={{ width: '9%' }}>股票名称</th>
+                  <th style={{ width: '5%' }}>方向</th>
+                  <th style={{ width: '6%', textAlign: 'right' }}>股数</th>
+                  <th style={{ width: '7%', textAlign: 'right' }}>金额</th>
+                  <th style={{ width: '9%' }}>策略</th>
+                  <th style={{ width: '9%' }}>信号</th>
+                  <th style={{ width: '6%', textAlign: 'right' }}>风控分</th>
+                  <th style={{ width: '7%' }}>状态</th>
+                  <th style={{ width: '13%', textAlign: 'center' }}>操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -521,36 +507,22 @@ function PositionsTab() {
   if (error) return <div className="page-banner warning">持仓数据加载失败：{error}</div>
 
   return (
-    <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
+    <div className="execution-table-shell" style={{ width: '100%', overflowX: 'auto' }}>
       <table className="data-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-        <colgroup>
-          <col style={{ width: '9%' }} />
-          <col style={{ width: '9%' }} />
-          <col style={{ width: '5%' }} />
-          <col style={{ width: '8%' }} />
-          <col style={{ width: '8%' }} />
-          <col style={{ width: '8%' }} />
-          <col style={{ width: '8%' }} />
-          <col style={{ width: '7%' }} />
-          <col style={{ width: '12%' }} />
-          <col style={{ width: '8%' }} />
-          <col style={{ width: '8%' }} />
-          <col style={{ width: '10%' }} />
-        </colgroup>
         <thead>
           <tr>
-            <th>股票代码</th>
-            <th>股票名称</th>
-            <th>方向</th>
-            <th style={{ textAlign: 'right' }}>股数</th>
-            <th style={{ textAlign: 'right' }}>入场价</th>
-            <th style={{ textAlign: 'right' }}>最新价</th>
-            <th style={{ textAlign: 'right' }}>浮盈%</th>
-            <th style={{ textAlign: 'right' }}>持仓天数</th>
-            <th>策略</th>
-            <th style={{ textAlign: 'right' }}>风控评分</th>
-            <th style={{ textAlign: 'right' }}>仓位系数</th>
-            <th>执行状态</th>
+            <th style={{ width: '8%' }}>股票代码</th>
+            <th style={{ width: '8%' }}>股票名称</th>
+            <th style={{ width: '5%' }}>方向</th>
+            <th style={{ width: '6%', textAlign: 'right' }}>股数</th>
+            <th style={{ width: '7%', textAlign: 'right' }}>入场价</th>
+            <th style={{ width: '7%', textAlign: 'right' }}>最新价</th>
+            <th style={{ width: '7%', textAlign: 'right' }}>浮盈%</th>
+            <th style={{ width: '6%', textAlign: 'right' }}>持仓天数</th>
+            <th style={{ width: '10%' }}>策略</th>
+            <th style={{ width: '7%', textAlign: 'right' }}>风控评分</th>
+            <th style={{ width: '7%', textAlign: 'right' }}>仓位系数</th>
+            <th style={{ width: '10%' }}>执行状态</th>
           </tr>
         </thead>
         <tbody>
@@ -631,32 +603,20 @@ function FillsTab() {
   if (error) return <div className="page-banner warning">成交数据加载失败：{error}</div>
 
   return (
-    <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
+    <div className="execution-table-shell" style={{ width: '100%', overflowX: 'auto' }}>
       <table className="data-table" style={{ tableLayout: 'fixed', width: '100%' }}>
-        <colgroup>
-          <col style={{ width: '10%' }} />
-          <col style={{ width: '10%' }} />
-          <col style={{ width: '10%' }} />
-          <col style={{ width: '6%' }} />
-          <col style={{ width: '10%' }} />
-          <col style={{ width: '10%' }} />
-          <col style={{ width: '10%' }} />
-          <col style={{ width: '12%' }} />
-          <col style={{ width: '12%' }} />
-          <col style={{ width: '10%' }} />
-        </colgroup>
         <thead>
           <tr>
-            <th>成交日期</th>
-            <th>股票代码</th>
-            <th>股票名称</th>
-            <th>方向</th>
-            <th style={{ textAlign: 'right' }}>成交价</th>
-            <th style={{ textAlign: 'right' }}>成交股数</th>
-            <th style={{ textAlign: 'right' }}>成交金额</th>
-            <th>策略</th>
-            <th>信号类型</th>
-            <th>状态</th>
+            <th style={{ width: '9%' }}>成交日期</th>
+            <th style={{ width: '9%' }}>股票代码</th>
+            <th style={{ width: '9%' }}>股票名称</th>
+            <th style={{ width: '6%' }}>方向</th>
+            <th style={{ width: '8%', textAlign: 'right' }}>成交价</th>
+            <th style={{ width: '7%', textAlign: 'right' }}>成交股数</th>
+            <th style={{ width: '8%', textAlign: 'right' }}>成交金额</th>
+            <th style={{ width: '12%' }}>策略</th>
+            <th style={{ width: '10%' }}>信号类型</th>
+            <th style={{ width: '10%' }}>状态</th>
           </tr>
         </thead>
         <tbody>
