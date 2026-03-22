@@ -166,10 +166,24 @@ function ApprovalTab() {
         </div>
 
         <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
-            <table className="data-table" style={{ width: '100%' }}>
+            <table className="data-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+              <colgroup>
+                <col style={{ width: '3%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '9%' }} />
+                <col style={{ width: '5%' }} />
+                <col style={{ width: '7%' }} />
+                <col style={{ width: '8%' }} />
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '7%' }} />
+                <col style={{ width: '8%' }} />
+                <col style={{ width: '15%' }} />
+              </colgroup>
               <thead>
                 <tr>
-                  <th style={{ width: 36, textAlign: 'center' }}>
+                  <th style={{ textAlign: 'center' }}>
                     <input type="checkbox" checked={allSelected} onChange={toggleAll} disabled={pending.length === 0} />
                   </th>
                   <th>日期</th>
@@ -181,13 +195,14 @@ function ApprovalTab() {
                   <th>策略</th>
                   <th>信号</th>
                   <th style={{ textAlign: 'right' }}>风控分</th>
+                  <th>状态</th>
                   <th style={{ textAlign: 'center' }}>操作</th>
                 </tr>
               </thead>
               <tbody>
                 {pending.length === 0 && (
                   <tr>
-                    <td colSpan={11} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+                    <td colSpan={12} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)', fontSize: 14 }}>
                       当前无待审批订单
                     </td>
                   </tr>
@@ -199,7 +214,7 @@ function ApprovalTab() {
                     </td>
                     <td className="numeric" style={{ fontSize: 12 }}>{o.order_date}</td>
                     <td className="numeric" style={{ fontSize: 12 }}>{o.ts_code}</td>
-                    <td>{o.stock_name || '--'}</td>
+                    <td style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.stock_name || '--'}</td>
                     <td>
                       <span style={{
                         fontWeight: 600,
@@ -210,10 +225,15 @@ function ApprovalTab() {
                     </td>
                     <td className="numeric" style={{ textAlign: 'right' }}>{o.order_shares?.toLocaleString()}</td>
                     <td className="numeric" style={{ textAlign: 'right' }}>{formatWan(o.order_amount)}</td>
-                    <td style={{ fontSize: 12 }}>{o.strategy || '--'}</td>
-                    <td style={{ fontSize: 12 }}>{o.signal_type || '--'}</td>
+                    <td style={{ fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.strategy || '--'}</td>
+                    <td style={{ fontSize: 12, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{o.signal_type || '--'}</td>
                     <td className="numeric" style={{ textAlign: 'right' }}>
                       {o.risk_score_total != null ? o.risk_score_total.toFixed(1) : '--'}
+                    </td>
+                    <td>
+                      <span style={STATUS_BADGE_STYLES[o.approval_status || o.status] ?? STATUS_BADGE_STYLES.pending_approval}>
+                        {STATUS_LABELS[o.approval_status || o.status] ?? o.status}
+                      </span>
                     </td>
                     <td style={{ textAlign: 'center', whiteSpace: 'nowrap' }}>
                       <button
@@ -502,7 +522,21 @@ function PositionsTab() {
 
   return (
     <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
-      <table className="data-table" style={{ width: '100%' }}>
+      <table className="data-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+        <colgroup>
+          <col style={{ width: '9%' }} />
+          <col style={{ width: '9%' }} />
+          <col style={{ width: '5%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '7%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '8%' }} />
+          <col style={{ width: '10%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>股票代码</th>
@@ -598,7 +632,19 @@ function FillsTab() {
 
   return (
     <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
-      <table className="data-table" style={{ width: '100%' }}>
+      <table className="data-table" style={{ tableLayout: 'fixed', width: '100%' }}>
+        <colgroup>
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '6%' }} />
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '10%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '12%' }} />
+          <col style={{ width: '10%' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>成交日期</th>
