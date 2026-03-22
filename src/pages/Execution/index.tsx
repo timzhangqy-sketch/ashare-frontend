@@ -165,20 +165,12 @@ function ApprovalTab() {
           </button>
         </div>
 
-        {pending.length === 0 ? (
-          <div style={{
-            textAlign: 'center', padding: '40px 0',
-            color: 'var(--text-muted)', fontSize: 14,
-          }}>
-            当前无待审批订单
-          </div>
-        ) : (
-          <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
+        <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
             <table className="data-table" style={{ width: '100%' }}>
               <thead>
                 <tr>
                   <th style={{ width: 36, textAlign: 'center' }}>
-                    <input type="checkbox" checked={allSelected} onChange={toggleAll} />
+                    <input type="checkbox" checked={allSelected} onChange={toggleAll} disabled={pending.length === 0} />
                   </th>
                   <th>日期</th>
                   <th>股票代码</th>
@@ -193,6 +185,13 @@ function ApprovalTab() {
                 </tr>
               </thead>
               <tbody>
+                {pending.length === 0 && (
+                  <tr>
+                    <td colSpan={11} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+                      当前无待审批订单
+                    </td>
+                  </tr>
+                )}
                 {pending.map(o => (
                   <tr key={o.id}>
                     <td style={{ textAlign: 'center' }}>
@@ -243,7 +242,6 @@ function ApprovalTab() {
               </tbody>
             </table>
           </div>
-        )}
 
         {/* Batch action bar */}
         {selectedIds.size > 0 && (
@@ -502,14 +500,6 @@ function PositionsTab() {
   if (loading) return <div className="page-banner">加载持仓数据中...</div>
   if (error) return <div className="page-banner warning">持仓数据加载失败：{error}</div>
 
-  if (rows.length === 0) {
-    return (
-      <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: 14 }}>
-        当前无持仓数据
-      </div>
-    )
-  }
-
   return (
     <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
       <table className="data-table" style={{ width: '100%' }}>
@@ -530,6 +520,13 @@ function PositionsTab() {
           </tr>
         </thead>
         <tbody>
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={12} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+                暂无持仓数据
+              </td>
+            </tr>
+          )}
           {rows.map((row) => {
             const pnlPct = row.unrealizedPnlPct
             const latestPrice = row.entryPrice * (1 + pnlPct / 100)
@@ -599,14 +596,6 @@ function FillsTab() {
   if (loading) return <div className="page-banner">加载成交数据中...</div>
   if (error) return <div className="page-banner warning">成交数据加载失败：{error}</div>
 
-  if (rows.length === 0) {
-    return (
-      <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: 14 }}>
-        当前无成交数据
-      </div>
-    )
-  }
-
   return (
     <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
       <table className="data-table" style={{ width: '100%' }}>
@@ -625,6 +614,13 @@ function FillsTab() {
           </tr>
         </thead>
         <tbody>
+          {rows.length === 0 && (
+            <tr>
+              <td colSpan={10} style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+                暂无成交数据
+              </td>
+            </tr>
+          )}
           {rows.map((row) => {
             const fillAmount = row.fillPrice * row.fillQty
             const strategyDisplay = row.sourceStrategy

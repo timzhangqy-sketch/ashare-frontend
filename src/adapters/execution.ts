@@ -18,9 +18,6 @@ import { STRATEGY_LABEL_MAP } from '../utils/labelMaps'
 import {
   executionConstraintsMock,
   executionMetricsMock,
-  simFillsMock,
-  simOrdersMock,
-  simPositionsMock,
 } from '../mocks/execution'
 import type {
   ExecutionConstraintRow,
@@ -757,46 +754,6 @@ function mapRiskConstraint(raw: RiskApiItem): ExecutionConstraintRow | null {
   }
 }
 
-function normalizeMockOrder(row: SimOrderRow): SimOrderRow {
-  return {
-    ...row,
-    sourceLabel: getSourceLabel(row.sourceDomain),
-    strategyLabel: getStrategyLabel(row.sourceStrategy),
-    riskLevelLabel: toRiskLevelLabel(row.riskLevel),
-    tradeAllowedLabel: toTradeAllowedLabel(row.tradeAllowed, row.constraintStatus),
-    constraintStatusLabel: toConstraintStatusLabel(row.constraintStatus),
-    orderStatusLabel: toOrderStatusLabel(row.orderStatus),
-    fillStatusLabel: toFillStatusLabel(row.fillStatus),
-    positionCapText: toPositionCapText(row.positionCapMultiplier, row.tradeAllowed),
-  }
-}
-
-function normalizeMockPosition(row: SimPositionRow): SimPositionRow {
-  return {
-    ...row,
-    sourceLabel: getSourceLabel(row.sourceDomain),
-    strategyLabel: getStrategyLabel(row.sourceStrategy),
-    riskLevelLabel: toRiskLevelLabel(row.riskLevel),
-    tradeAllowedLabel: toTradeAllowedLabel(row.tradeAllowed, row.constraintStatus),
-    constraintStatusLabel: toConstraintStatusLabel(row.constraintStatus),
-    positionCapText: toPositionCapText(row.positionCapMultiplier, row.tradeAllowed),
-  }
-}
-
-function normalizeMockFill(row: SimFillRow): SimFillRow {
-  return {
-    ...row,
-    sourceLabel: getSourceLabel(row.sourceDomain),
-    strategyLabel: getStrategyLabel(row.sourceStrategy),
-    riskLevelLabel: toRiskLevelLabel(row.riskLevel),
-    tradeAllowedLabel: toTradeAllowedLabel(row.tradeAllowed, row.constraintStatus),
-    constraintStatusLabel: toConstraintStatusLabel(row.constraintStatus),
-    orderStatusLabel: toOrderStatusLabel(row.orderStatus),
-    fillStatusLabel: toFillStatusLabel(row.fillStatus),
-    positionCapText: toPositionCapText(row.positionCapMultiplier, row.tradeAllowed),
-  }
-}
-
 function normalizeMockConstraint(row: ExecutionConstraintRow): ExecutionConstraintRow {
   return {
     ...row,
@@ -868,56 +825,42 @@ export async function loadExecutionWorkspace(searchParams: URLSearchParams): Pro
     )),
   ])
 
-  let orders = simOrdersMock.map(normalizeMockOrder)
-  let ordersDataSource = buildExecutionDataSource(
-    'fallback',
-    'Execution orders',
-    '委托单真实接口当前无结果，已退回兼容结果承接展示。',
-    orders.length,
-  )
-  let ordersState = buildTabState('fallback', '当前未接到订单接口，先展示兼容订单视图。')
+  let orders: SimOrderRow[] = []
+  let ordersDataSource = buildExecutionDataSource('real_observing', 'Execution orders', '委托单数据。', 0)
+  let ordersState = buildTabState('real', '当前标签使用真实订单数据。')
 
   if (simOrdersResp.ok && simOrdersResp.data.length > 0) {
     const mapped = simOrdersResp.data.map(mapSimOrder).filter(Boolean) as SimOrderRow[]
     if (mapped.length > 0) {
       orders = mapped
-      ordersDataSource = buildExecutionDataSource(
-        'real_observing',
-        'Execution orders',
-        '委托单真实接口已接通，但当前仍处观察期，先按真实样本谨慎展示。',
-        mapped.length,
-      )
-      ordersState = buildTabState('real', '当前标签使用真实订单数据。')
+      ordersDataSource = buildExecutionDataSource('real_observing', 'Execution orders', '委托单真实数据。', mapped.length)
     }
   }
 
-  let positions = simPositionsMock.map(normalizeMockPosition)
-  let positionsDataSource = buildExecutionDataSource('fallback', 'Execution positions', '持仓真实接口未返回结果，先使用兼容持仓行保持执行链路可读。', positions.length)
-  let positionsState = buildTabState('fallback', '当前未接到模拟持仓接口，先展示兼容持仓视图。')
+  let positions: SimPositionRow[] = []
+  let positionsDataSource = buildExecutionDataSource('real_observing', 'Execution positions', '持仓数据。', 0)
+  let positionsState = buildTabState('real', '当前标签使用真实持仓数据。')
 
   if (simPositionsResp.ok && simPositionsResp.data.length > 0) {
     const mapped = simPositionsResp.data.map(mapSimPosition).filter(Boolean) as SimPositionRow[]
     if (mapped.length > 0) {
       positions = mapped
-      positionsDataSource = buildExecutionDataSource('real_observing', 'Execution positions', '持仓真实接口已接通，但当前样本仍偏少，先按观察期展示。', mapped.length)
-      positionsState = buildTabState('real', '当前标签使用真实持仓数据。')
+      positionsDataSource = buildExecutionDataSource('real_observing', 'Execution positions', '持仓真实数据。', mapped.length)
     }
   } else if (portfolioOpenResp.ok && portfolioOpenResp.data.data.length > 0) {
     positions = portfolioOpenResp.data.data.map(mapPortfolioPosition)
-    positionsDataSource = buildExecutionDataSource('fallback', 'Execution positions', '持仓真实接口当前空表，已回退到持仓中心兼容结果。', positions.length)
-    positionsState = buildTabState('fallback', '当前标签由持仓中心数据兼容承接。')
+    positionsDataSource = buildExecutionDataSource('real_observing', 'Execution positions', '持仓数据（来自持仓中心）。', positions.length)
   }
 
-  let fills = simFillsMock.map(normalizeMockFill)
-  let fillsDataSource = buildExecutionDataSource('fallback', 'Execution fills', '成交真实接口未返回结果，先使用兼容成交行保持执行链路可读。', fills.length)
-  let fillsState = buildTabState('fallback', '当前未接到模拟成交接口，先展示兼容成交视图。')
+  let fills: SimFillRow[] = []
+  let fillsDataSource = buildExecutionDataSource('real_observing', 'Execution fills', '成交数据。', 0)
+  let fillsState = buildTabState('real', '当前标签使用真实成交数据。')
 
   if (simFillsResp.ok && simFillsResp.data.length > 0) {
     const mapped = simFillsResp.data.map(mapSimFill).filter(Boolean) as SimFillRow[]
     if (mapped.length > 0) {
       fills = mapped
-      fillsDataSource = buildExecutionDataSource('real_observing', 'Execution fills', '成交真实接口已接通，但当前样本仍偏少，先按观察期展示。', mapped.length)
-      fillsState = buildTabState('real', '当前标签使用真实成交数据。')
+      fillsDataSource = buildExecutionDataSource('real_observing', 'Execution fills', '成交真实数据。', mapped.length)
     }
   } else if (portfolioOpenResp.ok && portfolioOpenResp.data.data.length > 0) {
     const txTargets = toTransactionTargets(portfolioOpenResp.data.data)
@@ -934,8 +877,7 @@ export async function loadExecutionWorkspace(searchParams: URLSearchParams): Pro
     const transactionRows = txEntries.flat()
     if (transactionRows.length > 0) {
       fills = transactionRows
-      fillsDataSource = buildExecutionDataSource('fallback', 'Execution fills', '成交真实接口当前空表，已回退到持仓交易流水兼容结果。', fills.length)
-      fillsState = buildTabState('fallback', '当前标签由交易流水数据兼容承接。')
+      fillsDataSource = buildExecutionDataSource('real_observing', 'Execution fills', '成交数据（来自交易流水）。', fills.length)
     }
   }
 
