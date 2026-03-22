@@ -195,7 +195,7 @@ export default function RiskDefenseOverview() {
                 {dd?.triggered ? '🚫' : '✅'} 最大回撤
               </span>
               <span style={{ fontSize: 13, fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: dd?.triggered ? RED : 'var(--text-primary)' }}>
-                {dd && dd.drawdown != null && !isNaN(dd.drawdown) ? `${(dd.drawdown * 100).toFixed(1)}%` : '0.0%'} / {dd ? `${(dd.threshold * 100).toFixed(0)}%` : '8%'}
+                {dd && dd.drawdown != null && !isNaN(dd.drawdown) ? `${(dd.drawdown * 100).toFixed(1)}%` : '0.0%'} / {dd?.threshold != null ? `${(dd.threshold * 100).toFixed(0)}%` : '8%'}
               </span>
             </div>
             {/* Consecutive Loss */}
