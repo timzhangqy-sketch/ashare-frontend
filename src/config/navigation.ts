@@ -89,8 +89,8 @@ export const appRouteDefinitions: AppRouteDefinition[] = [
   {
     key: 'execution',
     path: '/execution',
-    label: '模拟执行',
-    title: '模拟执行',
+    label: '审批中心',
+    title: '审批中心',
     description: '',
     showInMainNav: true,
     isLegacy: false,

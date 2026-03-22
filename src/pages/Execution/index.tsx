@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { loadExecutionWorkspace } from '../../adapters/execution'
-import SourceStrip from '../../components/SourceStrip'
-import { useContextPanel } from '../../context/useContextPanel'
 import { useApiData } from '../../hooks/useApiData'
 import {
   fetchPendingApprovals,
@@ -12,14 +10,9 @@ import {
   fetchSimConfig,
   updateSimConfig,
 } from '../../api'
-import type { StockContextPanelPayload } from '../../types/contextPanel'
 import { getStrategyDisplayName } from '../../utils/displayNames'
 import type {
-  ExecutionConstraintRow,
-  ExecutionRow,
-  ExecutionTab as LegacyTab,
   SimFillRow,
-  SimOrderRow,
   SimPositionRow,
 } from '../../types/execution'
 
@@ -46,138 +39,11 @@ interface ApprovalOrder {
   approved_at?: string | null
 }
 
-// ─── Legacy helpers (preserved for positions/fills tabs) ─────────────────────
-
-const LEGACY_TAB_TITLES: Record<LegacyTab, string> = {
-  orders: '模拟订单',
-  positions: '模拟持仓',
-  fills: '模拟成交',
-  constraints: '执行约束',
-}
-
-const BADGE_BASE: CSSProperties = {
-  display: 'inline-flex', padding: '2px 8px', borderRadius: 3,
-  fontSize: 11, fontWeight: 600, marginRight: 6,
-}
-const BADGE_BLUE = { ...BADGE_BASE, background: 'rgba(59,130,246,0.15)', color: '#3B82F6' }
-const BADGE_RED = { ...BADGE_BASE, background: 'rgba(220,38,38,0.15)', color: '#DC2626' }
-const BADGE_GREEN = { ...BADGE_BASE, background: 'rgba(34,197,94,0.15)', color: '#22C55E' }
-const BADGE_ORANGE = { ...BADGE_BASE, background: 'rgba(245,158,11,0.15)', color: '#F59E0B' }
-const BADGE_GRAY = { ...BADGE_BASE, background: 'rgba(107,114,128,0.15)', color: '#8B9AB5' }
-
-function getExecutionBadgeStyle(
-  label: string,
-  kind: 'source' | 'strategy' | 'allow' | 'risk' | 'cap',
-): CSSProperties {
-  if (kind === 'allow') {
-    if (label === '禁止下单') return BADGE_RED
-    if (label === '允许下单') return BADGE_BLUE
-    if (label.includes('需控制仓位')) return BADGE_ORANGE
-    return BADGE_GRAY
-  }
-  if (kind === 'risk') {
-    if (label === '低风险') return BADGE_GREEN
-    if (label === '中风险') return BADGE_ORANGE
-    if (label === '高风险') return BADGE_RED
-    return BADGE_GRAY
-  }
-  if (kind === 'cap') {
-    if (label.includes('建议按') && label.includes('仓位系数执行')) return BADGE_GRAY
-    if (label === '当前未给出明确仓位上限') return BADGE_GRAY
-    if (label.includes('当前不建议建立执行仓位')) return BADGE_RED
-    return BADGE_GRAY
-  }
-  if (kind === 'source') {
-    if (label === '直接进入') return BADGE_BLUE
-    return BADGE_GRAY
-  }
-  return BADGE_GRAY
-}
+// ─── Shared helpers ──────────────────────────────────────────────────────────
 
 function formatNumber(value: number, digits = 2) {
   return value.toFixed(digits)
 }
-
-const OBSERVING_START_DATE = '2026-03-05'
-const OBSERVING_START_MS = new Date(`${OBSERVING_START_DATE}T00:00:00`).getTime()
-
-function calculateObservingDays(tradeDate: string) {
-  return Math.max(0, Math.floor((new Date(`${tradeDate}T00:00:00`).getTime() - OBSERVING_START_MS) / 86_400_000))
-}
-
-function buildExecutionContextPanelPayload(row: ExecutionRow): StockContextPanelPayload {
-  const strategyLabel = row.sourceStrategy ? (getStrategyDisplayName(row.sourceStrategy) ?? row.sourceStrategy) : row.strategyLabel
-  return {
-    title: row.name, name: row.name, tsCode: row.tsCode,
-    sourceStrategy: row.sourceStrategy, subtitle: row.statusLabel, summary: row.summary,
-    tags: [
-      { label: row.sourceLabel, tone: 'source' },
-      { label: strategyLabel, tone: 'strategy' },
-      { label: row.tradeAllowedLabel, tone: 'state' },
-      { label: row.riskLevelLabel, tone: 'risk' },
-    ],
-    summaryItems: [
-      { label: '对象', value: LEGACY_TAB_TITLES[row.objectType === 'order' ? 'orders' : row.objectType === 'position' ? 'positions' : row.objectType === 'fill' ? 'fills' : 'constraints'] },
-      { label: '来源', value: row.sourceLabel },
-      { label: '策略', value: strategyLabel },
-      { label: '交易结论', value: row.tradeAllowedLabel },
-      { label: '风控等级', value: row.riskLevelLabel },
-      { label: '仓位倍率', value: row.positionCapText },
-      { label: '拦截原因', value: row.blockReason ?? '--' },
-    ],
-    actions: [
-      { label: '查看风控中心', href: `/risk?tab=breakdown&source=execution&focus=${encodeURIComponent(row.tsCode)}&scope=portfolio`, note: '查看当前标的的风控拆解和约束来源。' },
-      { label: '查看持仓中心', href: `/portfolio?source=execution&focus=${encodeURIComponent(row.tsCode)}`, note: '查看当前标的在持仓中心的承接结果。' },
-      { label: '查看研究中心', href: `/research?source=execution&focus=${encodeURIComponent(row.tsCode)}${row.sourceStrategy ? `&strategy=${encodeURIComponent(row.sourceStrategy)}` : ''}`, note: '查看当前标的的研究承接与策略背景。' },
-      { label: '查看运行中心', href: '/system?source=execution&tab=api', note: '查看执行相关的接口和运行状态。' },
-    ],
-  }
-}
-
-function renderRowSummary(row: ExecutionRow) {
-  if (row.objectType === 'order') {
-    const order = row as SimOrderRow
-    return (
-      <>
-        <span className="execution-inline-meta">{order.side === 'buy' ? '买入订单' : '卖出订单'}</span>
-        <span className="execution-inline-meta numeric">{order.qty} 股</span>
-        <span className="execution-inline-meta numeric">{formatNumber(order.price)}</span>
-        <span className="execution-inline-meta">{order.orderStatusLabel}</span>
-      </>
-    )
-  }
-  if (row.objectType === 'position') {
-    const position = row as SimPositionRow
-    return (
-      <>
-        <span className="execution-inline-meta numeric">{position.shares} 股</span>
-        <span className="execution-inline-meta numeric">入场 {formatNumber(position.entryPrice)}</span>
-        <span className="execution-inline-meta numeric">浮盈 {formatNumber(position.unrealizedPnlPct)}%</span>
-      </>
-    )
-  }
-  if (row.objectType === 'fill') {
-    const fill = row as SimFillRow
-    return (
-      <>
-        <span className="execution-inline-meta">{fill.side === 'buy' ? '买入成交' : '卖出成交'}</span>
-        <span className="execution-inline-meta numeric">{fill.fillQty} 股</span>
-        <span className="execution-inline-meta numeric">{formatNumber(fill.fillPrice)}</span>
-        <span className="execution-inline-meta">{fill.fillStatusLabel}</span>
-      </>
-    )
-  }
-  const constraint = row as ExecutionConstraintRow
-  return (
-    <>
-      <span className="execution-inline-meta">{constraint.constraintStatusLabel}</span>
-      <span className="execution-inline-meta">{constraint.positionCapText}</span>
-      <span className="execution-inline-meta">{constraint.actionHint}</span>
-    </>
-  )
-}
-
-// ─── Approval Tab ────────────────────────────────────────────────────────────
 
 function formatWan(v: number | null | undefined) {
   if (v == null || v === 0) return '--'
@@ -197,6 +63,8 @@ const STATUS_LABELS: Record<string, string> = {
   rejected_manual: '已拒绝',
   pending_approval: '待审批',
 }
+
+// ─── Approval Tab ────────────────────────────────────────────────────────────
 
 function ApprovalTab() {
   const [orders, setOrders] = useState<ApprovalOrder[]>([])
@@ -612,117 +480,189 @@ function ConfigTab() {
   )
 }
 
-// ─── Legacy Workspace Content (positions / fills tabs) ───────────────────────
+// ─── Positions Tab (table layout) ────────────────────────────────────────────
 
-function LegacyWorkspaceTab({ legacyTab }: { legacyTab: 'positions' | 'fills' }) {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { openPanel, closePanel } = useContextPanel()
+function PositionsTab() {
+  const [searchParams] = useSearchParams()
 
   const stableFetchKey = useMemo(
-    () => `${legacyTab}|${searchParams.get('source') ?? ''}|${searchParams.get('strategy') ?? ''}`,
-    [legacyTab, searchParams],
+    () => `positions|${searchParams.get('source') ?? ''}|${searchParams.get('strategy') ?? ''}`,
+    [searchParams],
   )
 
   const paramsCopy = useMemo(() => {
     const p = new URLSearchParams(searchParams)
-    p.set('tab', legacyTab)
+    p.set('tab', 'positions')
     return p
-  }, [searchParams, legacyTab])
+  }, [searchParams])
 
   const { data, loading, error } = useApiData(() => loadExecutionWorkspace(paramsCopy), [stableFetchKey])
+  const rows = (data?.positions ?? []) as SimPositionRow[]
 
-  const rows = !data ? [] : legacyTab === 'positions' ? data.positions : data.fills
+  if (loading) return <div className="page-banner">加载持仓数据中...</div>
+  if (error) return <div className="page-banner warning">持仓数据加载失败：{error}</div>
 
-  const activeRow =
-    rows.find((row) => row.id === data?.selectedId) ??
-    rows.find((row) => row.tsCode === data?.query.focus || row.focusKey === data?.query.focus) ??
-    null
-
-  const focusMissNote =
-    data?.query.focus && !activeRow ? `未定位到 ${data.query.focus}，当前展示该标签下的默认结果。` : null
-  const daysSinceStart = calculateObservingDays(activeRow?.tradeDate ?? OBSERVING_START_DATE)
-
-  const listRef = useRef<HTMLDivElement>(null)
-  const scrollPosRef = useRef(0)
-
-  function setFocus(row: ExecutionRow) {
-    if (listRef.current) scrollPosRef.current = listRef.current.scrollTop
-    const next = new URLSearchParams(searchParams)
-    next.set('focus', row.focusKey)
-    setSearchParams(next)
+  if (rows.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+        当前无持仓数据
+      </div>
+    )
   }
 
-  useEffect(() => {
-    if (listRef.current && scrollPosRef.current > 0) {
-      listRef.current.scrollTop = scrollPosRef.current
-    }
-  }, [data, activeRow])
+  return (
+    <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
+      <table className="data-table" style={{ width: '100%' }}>
+        <thead>
+          <tr>
+            <th>股票代码</th>
+            <th>股票名称</th>
+            <th>方向</th>
+            <th style={{ textAlign: 'right' }}>股数</th>
+            <th style={{ textAlign: 'right' }}>入场价</th>
+            <th style={{ textAlign: 'right' }}>最新价</th>
+            <th style={{ textAlign: 'right' }}>浮盈%</th>
+            <th style={{ textAlign: 'right' }}>持仓天数</th>
+            <th>策略</th>
+            <th style={{ textAlign: 'right' }}>风控评分</th>
+            <th style={{ textAlign: 'right' }}>仓位系数</th>
+            <th>执行状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => {
+            const pnlPct = row.unrealizedPnlPct
+            const latestPrice = row.entryPrice * (1 + pnlPct / 100)
+            const strategyDisplay = row.sourceStrategy
+              ? (getStrategyDisplayName(row.sourceStrategy) ?? row.sourceStrategy)
+              : row.strategyLabel
+            return (
+              <tr key={row.id}>
+                <td className="numeric" style={{ fontSize: 12 }}>{row.tsCode}</td>
+                <td>{row.name}</td>
+                <td>
+                  <span style={{ fontWeight: 600, color: 'var(--up)' }}>持仓</span>
+                </td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{row.shares.toLocaleString()}</td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{formatNumber(row.entryPrice)}</td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{formatNumber(latestPrice)}</td>
+                <td className="numeric" style={{
+                  textAlign: 'right', fontWeight: 600,
+                  color: pnlPct > 0 ? 'var(--up)' : pnlPct < 0 ? 'var(--down)' : 'var(--text-secondary)',
+                }}>
+                  {pnlPct > 0 ? '+' : ''}{formatNumber(pnlPct)}%
+                </td>
+                <td className="numeric" style={{ textAlign: 'right' }}>
+                  {row.observingDay != null ? row.observingDay : '--'}
+                </td>
+                <td style={{ fontSize: 12 }}>{strategyDisplay}</td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{row.riskLevelLabel}</td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{row.positionCapText}</td>
+                <td>
+                  <span style={{
+                    display: 'inline-block', padding: '2px 8px', borderRadius: 3,
+                    fontSize: 11, fontWeight: 600,
+                    background: row.constraintStatus === 'allow' ? 'rgba(34,197,94,0.15)' : row.constraintStatus === 'warn' ? 'rgba(245,158,11,0.15)' : 'rgba(220,38,38,0.15)',
+                    color: row.constraintStatus === 'allow' ? '#22C55E' : row.constraintStatus === 'warn' ? '#F59E0B' : '#DC2626',
+                  }}>
+                    {row.constraintStatusLabel}
+                  </span>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
+  )
+}
 
-  useEffect(() => {
-    if (!activeRow) { closePanel(); return }
-    openPanel({
-      entityType: 'stock', entityKey: activeRow.tsCode, sourcePage: 'execution',
-      focus: activeRow.tsCode, activeTab: legacyTab, payloadVersion: 'v1',
-      payload: buildExecutionContextPanelPayload(activeRow),
-    })
-  }, [activeRow, legacyTab, openPanel, closePanel])
+// ─── Fills Tab (table layout) ────────────────────────────────────────────────
 
-  useEffect(() => () => closePanel(), [closePanel])
+function FillsTab() {
+  const [searchParams] = useSearchParams()
+
+  const stableFetchKey = useMemo(
+    () => `fills|${searchParams.get('source') ?? ''}|${searchParams.get('strategy') ?? ''}`,
+    [searchParams],
+  )
+
+  const paramsCopy = useMemo(() => {
+    const p = new URLSearchParams(searchParams)
+    p.set('tab', 'fills')
+    return p
+  }, [searchParams])
+
+  const { data, loading, error } = useApiData(() => loadExecutionWorkspace(paramsCopy), [stableFetchKey])
+  const rows = (data?.fills ?? []) as SimFillRow[]
+
+  if (loading) return <div className="page-banner">加载成交数据中...</div>
+  if (error) return <div className="page-banner warning">成交数据加载失败：{error}</div>
+
+  if (rows.length === 0) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)', fontSize: 14 }}>
+        当前无成交数据
+      </div>
+    )
+  }
 
   return (
-    <>
-      <SourceStrip type="observing" message={`模拟盘观察期 · 第 ${daysSinceStart} 天 · 数据自 2026-03-05 起累积，样本量尚不具统计意义。`} />
-      {loading ? <div className="page-banner">加载模拟执行数据中...</div> : null}
-      {error ? <div className="page-banner warning">模拟执行数据加载失败：{error}</div> : null}
-      {focusMissNote ? <div className="page-banner warning">{focusMissNote}</div> : null}
-
-      <section className="execution-workspace">
-        <div className="execution-main card">
-          <div className="card-body">
-            {rows.length === 0 ? (
-              <div className="empty-state execution-empty-state">
-                <h3>当前暂无可展示的执行对象</h3>
-                <p>{data?.noFocus.description ?? '执行样本会在这里展示。'}</p>
-              </div>
-            ) : (
-              <div ref={listRef} className="execution-list-container">
-                <div className="execution-list">
-                  {rows.map((row) => (
-                    <button
-                      key={row.id}
-                      type="button"
-                      className={row.id === data?.selectedId ? 'execution-row selected' : 'execution-row'}
-                      onClick={() => setFocus(row)}
-                    >
-                      <div className="execution-row-top">
-                        <div className="execution-row-copy">
-                          <strong className="execution-row-title">
-                            <span className="execution-row-name">{row.name}</span>
-                            <span className="execution-row-code numeric">{row.tsCode}</span>
-                          </strong>
-                          <p>{renderRowSummary(row)}</p>
-                        </div>
-                        <div className={`execution-status-pill execution-status-${row.constraintStatus}`}>{row.constraintStatusLabel}</div>
-                      </div>
-                      <div className="execution-row-summary">{row.summary}</div>
-                      <div className="execution-row-bottom">
-                        <span style={getExecutionBadgeStyle(row.sourceLabel, 'source')}>{row.sourceLabel}</span>
-                        <span style={getExecutionBadgeStyle(row.strategyLabel, 'strategy')}>
-                          {row.sourceStrategy ? (getStrategyDisplayName(row.sourceStrategy) ?? row.sourceStrategy) : row.strategyLabel}
-                        </span>
-                        <span style={getExecutionBadgeStyle(row.tradeAllowedLabel, 'allow')}>{row.tradeAllowedLabel}</span>
-                        <span style={getExecutionBadgeStyle(row.riskLevelLabel, 'risk')}>{row.riskLevelLabel}</span>
-                        <span style={getExecutionBadgeStyle(row.positionCapText, 'cap')}>{row.positionCapText}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-    </>
+    <div className="execution-table-shell" style={{ overflowX: 'auto' }}>
+      <table className="data-table" style={{ width: '100%' }}>
+        <thead>
+          <tr>
+            <th>成交日期</th>
+            <th>股票代码</th>
+            <th>股票名称</th>
+            <th>方向</th>
+            <th style={{ textAlign: 'right' }}>成交价</th>
+            <th style={{ textAlign: 'right' }}>成交股数</th>
+            <th style={{ textAlign: 'right' }}>成交金额</th>
+            <th>策略</th>
+            <th>信号类型</th>
+            <th>状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => {
+            const fillAmount = row.fillPrice * row.fillQty
+            const strategyDisplay = row.sourceStrategy
+              ? (getStrategyDisplayName(row.sourceStrategy) ?? row.sourceStrategy)
+              : row.strategyLabel
+            return (
+              <tr key={row.id}>
+                <td className="numeric" style={{ fontSize: 12 }}>{row.tradeDate}</td>
+                <td className="numeric" style={{ fontSize: 12 }}>{row.tsCode}</td>
+                <td>{row.name}</td>
+                <td>
+                  <span style={{
+                    fontWeight: 600,
+                    color: row.side === 'buy' ? 'var(--up)' : 'var(--down)',
+                  }}>
+                    {row.side === 'buy' ? '买入' : '卖出'}
+                  </span>
+                </td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{formatNumber(row.fillPrice)}</td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{row.fillQty.toLocaleString()}</td>
+                <td className="numeric" style={{ textAlign: 'right' }}>{formatWan(fillAmount)}</td>
+                <td style={{ fontSize: 12 }}>{strategyDisplay}</td>
+                <td style={{ fontSize: 12 }}>{row.fillStatusLabel}</td>
+                <td>
+                  <span style={{
+                    display: 'inline-block', padding: '2px 8px', borderRadius: 3,
+                    fontSize: 11, fontWeight: 600,
+                    background: 'rgba(59,130,246,0.15)', color: '#3B82F6',
+                  }}>
+                    {row.orderStatusLabel}
+                  </span>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
@@ -730,8 +670,8 @@ function LegacyWorkspaceTab({ legacyTab }: { legacyTab: 'positions' | 'fills' })
 
 const TAB_DEFS: { key: PageTab; label: string }[] = [
   { key: 'approval', label: '订单审批' },
-  { key: 'positions', label: '模拟持仓' },
-  { key: 'fills', label: '模拟成交' },
+  { key: 'positions', label: '当前持仓' },
+  { key: 'fills', label: '成交数据' },
   { key: 'config', label: '执行配置' },
 ]
 
@@ -770,13 +710,12 @@ export default function ExecutionPage() {
         <div className="execution-main card">
           <div className="card-body">
             {activeTab === 'approval' && <ApprovalTab />}
+            {activeTab === 'positions' && <PositionsTab />}
+            {activeTab === 'fills' && <FillsTab />}
             {activeTab === 'config' && <ConfigTab />}
           </div>
         </div>
       </section>
-
-      {activeTab === 'positions' && <LegacyWorkspaceTab legacyTab="positions" />}
-      {activeTab === 'fills' && <LegacyWorkspaceTab legacyTab="fills" />}
     </div>
   )
 }
