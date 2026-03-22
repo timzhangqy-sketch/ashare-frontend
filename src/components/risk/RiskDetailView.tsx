@@ -33,6 +33,20 @@ const YELLOW = '#f0b840'
 const RED = '#e74c3c'
 const BLUE = '#3498db'
 
+const BLOCK_REASON_MAP: Record<string, string> = {
+  'ST': 'ST股', 'audit_negative': '审计异常', 'low_liquidity': '流动性不足',
+  'high_pledge_vol': '高质押+波动', 'limit_down': '连续跌停', 'investigation': '立案调查',
+  'restatement': '财报重述', 'event_block': '事件风控',
+}
+
+function translateBlockReason(reason: string | null): string {
+  if (!reason) return ''
+  return reason.split(',').map(r => {
+    const t = r.trim()
+    return BLOCK_REASON_MAP[t] || t
+  }).join('、')
+}
+
 function scoreColor(v: number | null) {
   if (v == null) return 'var(--text-muted)'
   if (v >= 80) return GREEN
@@ -107,6 +121,7 @@ const pillStyle = (active: boolean) => ({
 // ─── Detail Panel ────────────────────────────────────────────────────────────
 
 function DetailPanel({ row, onClose }: { row: RiskRow; onClose: () => void }) {
+  const hasScores = row.risk_score_financial != null || row.risk_score_market != null || row.risk_score_event != null || row.risk_score_compliance != null
   const capRows = [
     { label: '财务', value: row.cap_financial },
     { label: '市场', value: row.cap_market },
@@ -153,21 +168,27 @@ function DetailPanel({ row, onClose }: { row: RiskRow; onClose: () => void }) {
         </div>
       </div>
 
-      {/* 4-Dimension Bars */}
-      <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 8 }}>四维评分</div>
-        {dimBar('财务', row.risk_score_financial)}
-        {dimBar('市场', row.risk_score_market)}
-        {dimBar('事件', row.risk_score_event)}
-        {dimBar('合规', row.risk_score_compliance)}
-      </div>
+      {/* 4-Dimension Bars or Gate block notice */}
+      {hasScores ? (
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 8 }}>四维评分</div>
+          {dimBar('财务', row.risk_score_financial)}
+          {dimBar('市场', row.risk_score_market)}
+          {dimBar('事件', row.risk_score_event)}
+          {dimBar('合规', row.risk_score_compliance)}
+        </div>
+      ) : (
+        <div style={{ marginBottom: 14, padding: '10px', borderRadius: 4, background: 'rgba(255,255,255,0.03)', fontSize: 12, color: 'var(--text-muted)' }}>
+          该股票被Gate层拦截，未进行四维评分
+        </div>
+      )}
 
       {/* Risk Detail */}
       <div style={{ marginBottom: 14 }}>
         {!row.trade_allowed ? (
           <div style={{ padding: '8px 10px', borderRadius: 4, background: `${RED}12`, fontSize: 12, color: RED, lineHeight: 1.5 }}>
             <div style={{ fontWeight: 600, marginBottom: 4 }}>拦截原因</div>
-            <div>{row.block_reason || '风控拦截'}</div>
+            <div>{translateBlockReason(row.block_reason) || '风控拦截'}</div>
             <div style={{ marginTop: 4, fontSize: 11, opacity: 0.8 }}>该股票已被风控系统拦截，无法生成买入订单</div>
           </div>
         ) : (
@@ -184,23 +205,31 @@ function DetailPanel({ row, onClose }: { row: RiskRow; onClose: () => void }) {
       </div>
 
       {/* Cap Breakdown */}
-      <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 8 }}>仓位倍数拆解</div>
-        {capRows.map(c => (
-          <div key={c.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '3px 0', color: 'var(--text-secondary)' }}>
-            <span>{c.label}倍数</span>
-            <span style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: c.value != null && c.value < 0.8 ? YELLOW : 'var(--text-primary)' }}>
-              {c.value != null ? `${c.value.toFixed(2)}x` : '--'}
+      {hasScores && (
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 8 }}>仓位倍数拆解</div>
+          {capRows.map(c => (
+            <div key={c.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '3px 0', color: 'var(--text-secondary)' }}>
+              <span>{c.label}倍数</span>
+              <span style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', color: c.value != null && c.value < 0.8 ? YELLOW : 'var(--text-primary)' }}>
+                {c.value != null ? `${c.value.toFixed(2)}x` : '--'}
+              </span>
+            </div>
+          ))}
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '5px 0 0', borderTop: '1px solid var(--border-default)', marginTop: 4, color: 'var(--text-primary)', fontWeight: 600 }}>
+            <span>最终倍数</span>
+            <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+              {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
             </span>
           </div>
-        ))}
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '5px 0 0', borderTop: '1px solid var(--border-default)', marginTop: 4, color: 'var(--text-primary)', fontWeight: 600 }}>
-          <span>最终倍数</span>
-          <span style={{ fontVariantNumeric: 'tabular-nums' }}>
-            {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
-          </span>
         </div>
-      </div>
+      )}
+      {!hasScores && (
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 14, color: 'var(--text-muted)' }}>
+          <span>仓位倍数</span>
+          <span style={{ fontWeight: 600, color: RED }}>{row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '0.00x'}</span>
+        </div>
+      )}
 
       {/* Navigation Links */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -288,7 +317,7 @@ export default function RiskDetailView() {
           <div style={{ fontSize: 11, color: '#7a8a9a', fontWeight: 600, letterSpacing: '1px', marginBottom: 4 }}>GATE 拦截</div>
           <div style={{ fontSize: 22, fontWeight: 700, color: blockedCount > 0 ? RED : GREEN }}>{blockedCount}</div>
           <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-            {Object.entries(blockedReasons).slice(0, 3).map(([k, v]) => `${k}:${v}`).join(' ') || '无拦截'}
+            {Object.entries(blockedReasons).slice(0, 3).map(([k, v]) => `${BLOCK_REASON_MAP[k] || k}:${v}`).join(' ') || '无拦截'}
           </div>
         </div>
         <div style={{ background: 'var(--bg-card)', borderRadius: 8, padding: '12px 16px', border: `1px solid ${highRiskPortfolio.length > 0 ? RED + '33' : 'var(--border-default)'}` }}>
@@ -327,7 +356,7 @@ export default function RiskDetailView() {
         ]).map(b => (
           <button key={b.key} type="button" onClick={() => setSortKey(b.key)} style={pillStyle(sortKey === b.key)}>{b.label}</button>
         ))}
-        <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--text-muted)' }}>{sorted.length} 只</span>
+        <span style={{ marginLeft: 'auto', fontSize: 13, color: '#7a8a9a' }}>共 {sorted.length} 只</span>
       </div>
 
       {/* ── Table + Detail Panel ── */}
@@ -402,7 +431,7 @@ export default function RiskDetailView() {
                         {row.position_cap_multiplier_final != null ? `${row.position_cap_multiplier_final.toFixed(2)}x` : '--'}
                       </td>
                       <td style={{ fontSize: 12, color: !row.trade_allowed ? RED : 'var(--text-muted)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {!row.trade_allowed ? (row.block_reason || '拦截') : weakestDim(row)}
+                        {!row.trade_allowed ? (translateBlockReason(row.block_reason) || '拦截') : weakestDim(row)}
                       </td>
                       <td>{sourceBadges(row)}</td>
                     </tr>
