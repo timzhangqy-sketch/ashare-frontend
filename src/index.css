@@ -9209,3 +9209,20 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   width: 100% !important;
   overflow-x: auto;
 }
+
+.execution-table-shell .data-table th {
+  padding: 8px 8px !important;
+  font-size: 12px !important;
+}
+
+.execution-table-shell .data-table td {
+  padding: 8px 8px !important;
+  font-size: 13px !important;
+}
+
+/* ═══ Execution tabs grid layout ═══ */
+.execution-tabs.page-tabs {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 10px !important;
+}
