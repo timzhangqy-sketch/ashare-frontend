@@ -1017,6 +1017,13 @@ export async function fetchPortfolioStats(): Promise<PortfolioStatsResp> {
   return res.data as PortfolioStatsResp;
 }
 
+// ─── Risk Overview API ───────────────────────────────────────────────────────
+
+export async function fetchRiskOverview(tradeDate?: string) {
+  const res = await api.get('/api/risk/overview', { params: { trade_date: tradeDate } });
+  return res.data as Record<string, unknown>;
+}
+
 // ─── Approval API (L3 Decision Layer) ────────────────────────────────────────
 
 export async function fetchPendingApprovals() {

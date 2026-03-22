@@ -9,6 +9,7 @@ import {
 } from '../../adapters/risk';
 import SourceBadge from '../../components/data-source/SourceBadge';
 import RiskBreakdownPanel from '../../components/risk/RiskBreakdownPanel';
+import RiskDefenseOverview from '../../components/risk/RiskDefenseOverview';
 // RiskContextPanel removed — using GlobalContextPanel
 import RiskEventFlowPanel from '../../components/risk/RiskEventFlowPanel';
 import GateBlockPanel from '../../components/risk/GateBlockPanel';
@@ -243,8 +244,31 @@ export default function RiskPage() {
 
   // contextActions removed — private panel deleted
 
+  const rawTabParam = searchParams.get('tab');
+  const isOverviewTab = rawTabParam === 'overview' || (!rawTabParam && !queryState.source);
+
   return (
     <div className="risk-page" data-testid="risk-page">
+      {/* Overview tab selector */}
+      <div style={{ display: 'flex', gap: 0, marginBottom: 12 }}>
+        <button
+          type="button"
+          className={`page-tab-btn${isOverviewTab ? ' active' : ''}`}
+          onClick={() => syncParams((p) => { p.set('tab', 'overview'); p.delete('focus'); p.delete('source'); })}
+          style={{ fontSize: 13, padding: '8px 16px' }}
+        >风控总览</button>
+        <button
+          type="button"
+          className={`page-tab-btn${!isOverviewTab ? ' active' : ''}`}
+          onClick={() => syncParams((p) => { p.delete('tab'); p.delete('source'); })}
+          style={{ fontSize: 13, padding: '8px 16px' }}
+        >风控明细</button>
+      </div>
+
+      {isOverviewTab ? (
+        <RiskDefenseOverview />
+      ) : (
+      <>
       <RiskOverviewStrip metrics={data?.metrics ?? []} />
 
       {data ? <RiskTabs activeTab={queryState.tab} tabs={data.tabs} onChange={handleTabChange} /> : null}
@@ -324,6 +348,8 @@ export default function RiskPage() {
 
         {/* Private RiskContextPanel removed — GlobalContextPanel handles detail */}
       </div>
+      </>
+      )}
     </div>
   );
 }
