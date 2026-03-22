@@ -169,27 +169,93 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      {/* ═══ 第1行：市场综述 + 行动清单 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+      {/* ═══ 第1行：市场综述（独占整行）═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场综述<InfoTip data={DASHBOARD_META.market_summary} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
-              <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left' }}>
-                <ReactMarkdown
-                  components={{
-                    p: ({children}) => <p style={{ margin: '0 0 8px 0' }}>{children}</p>,
-                    strong: ({children}) => <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{children}</strong>,
-                    ul: ({children}) => <ul style={{ margin: '4px 0', paddingLeft: '16px' }}>{children}</ul>,
-                    li: ({children}) => <li style={{ margin: '2px 0' }}>{children}</li>,
-                  }}
-                >
-                  {viewModel?.marketSummary || '暂无综述数据'}
-                </ReactMarkdown>
-              </div>
-            </div>
+            {(() => {
+              const summaryText = viewModel?.marketSummary || '';
+              if (!summaryText) {
+                return <div style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>暂无综述数据</div>;
+              }
+              const lines = summaryText.split('\n');
+              const qualLine = lines.find(l => l.includes('市场定性')) || lines[0] || '';
+              const restContent = lines.filter(l => l !== qualLine).join('\n');
+              const splitIdx = restContent.indexOf('**操作建议**');
+              const coreFindings = splitIdx > -1 ? restContent.substring(0, splitIdx).trim() : restContent;
+              const actionAdvice = splitIdx > -1 ? restContent.substring(splitIdx).trim() : '';
+
+              // Strip headers from body content
+              const stripHeader = (text: string, header: string) => {
+                const re = new RegExp(`\\*\\*${header}\\*\\*[：:]?\\s*`, 'g');
+                return text.replace(re, '').trim();
+              };
+              const coreFindingsBody = stripHeader(coreFindings, '核心发现');
+              const actionAdviceBody = stripHeader(actionAdvice, '操作建议');
+              const qualBody = qualLine.replace(/\*\*市场定性\*\*[：:]?\s*/, '').trim();
+
+              // Sentiment detection
+              const isBearish = /退潮|下跌|普跌|缩量|恐慌|弱势|分化.*加[速剧]|调整|冰点/.test(qualBody);
+              const isBullish = /反弹|回暖|强势|放量上涨|普涨|做多|突破/.test(qualBody);
+              const sentimentConfig = isBearish
+                ? { icon: '▼', color: '#4ecf7a' }
+                : isBullish
+                  ? { icon: '▲', color: '#e74c3c' }
+                  : { icon: '■', color: '#f0b840' };
+
+              const mdComponents = {
+                p: ({children}: any) => <p style={{ margin: '0 0 8px 0' }}>{children}</p>,
+                strong: ({children}: any) => <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{children}</strong>,
+                ul: ({children}: any) => <ul style={{ margin: '4px 0', paddingLeft: '16px', display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>{children}</ul>,
+                li: ({children}: any) => <li style={{ margin: 0 }}>{children}</li>,
+              };
+
+              const sectionHeaderStyle = {
+                fontSize: '13px', color: '#7a8a9a', fontWeight: 600 as const, letterSpacing: '2px',
+                display: 'block' as const, marginBottom: '12px',
+              };
+
+              return (
+                <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
+                  {/* 市场定性 */}
+                  <div style={{
+                    display: 'flex', alignItems: 'flex-start', gap: '12px',
+                    padding: '12px 16px', background: 'rgba(255,255,255,0.03)',
+                    borderRadius: '6px', marginBottom: 16,
+                  }}>
+                    <span style={{ fontSize: '18px', color: sentimentConfig.color, lineHeight: '1.5', flexShrink: 0 }}>
+                      {sentimentConfig.icon}
+                    </span>
+                    <div style={{ flex: 1, fontSize: '15px', color: 'var(--text-primary)', lineHeight: 1.6, fontWeight: 600 }}>
+                      <ReactMarkdown components={mdComponents}>{qualBody}</ReactMarkdown>
+                    </div>
+                  </div>
+                  {actionAdviceBody ? (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 32px' }}>
+                      <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: '16px' }}>
+                        <div style={sectionHeaderStyle}>核心发现</div>
+                        <ReactMarkdown components={mdComponents}>{coreFindingsBody}</ReactMarkdown>
+                      </div>
+                      <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left' }}>
+                        <div style={sectionHeaderStyle}>操作建议</div>
+                        <ReactMarkdown components={mdComponents}>{actionAdviceBody}</ReactMarkdown>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left' }}>
+                      <ReactMarkdown components={mdComponents}>{coreFindings}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
+      </section>
+
+      {/* ═══ 第1.5行：行动清单 + 板块×策略共振 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
@@ -269,6 +335,26 @@ export default function Dashboard() {
               )}
               {!hasFills && !hasSell && !hasBuy && (
                 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>今日无成交与信号</span>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '8px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {resonance.resonance_hits.map((hit, i) => (
+                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{(hit.momentum_3d ?? 0).toFixed(2)}%），板块内策略触发{(hit.stocks ?? []).length}只：{(hit.stocks ?? []).map(s => s.name).join('、')}
+                </div>
+              ))}
+              {resonance.retreat_warnings.map((warn, i) => (
+                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{(warn.today_pct_chg ?? 0).toFixed(2)}%），持仓{(warn.stocks ?? []).map(s => s.name).join('、')}属该板块，注意卖点
+                </div>
+              ))}
+              {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
+                <div style={{ padding: '8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
               )}
             </div>
           </div>
@@ -730,30 +816,6 @@ export default function Dashboard() {
                   )}
                 </tbody>
               </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══ 第4行：板块×策略共振 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr', alignItems: 'stretch' }}>
-        <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '8px 16px' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {resonance.resonance_hits.map((hit, i) => (
-                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{(hit.momentum_3d ?? 0).toFixed(2)}%），板块内策略触发{(hit.stocks ?? []).length}只：{(hit.stocks ?? []).map(s => s.name).join('、')}
-                </div>
-              ))}
-              {resonance.retreat_warnings.map((warn, i) => (
-                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{(warn.today_pct_chg ?? 0).toFixed(2)}%），持仓{(warn.stocks ?? []).map(s => s.name).join('、')}属该板块，注意卖点
-                </div>
-              ))}
-              {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
-                <div style={{ padding: '8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
-              )}
             </div>
           </div>
         </div>
