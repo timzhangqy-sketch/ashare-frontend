@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { ComposedChart, BarChart, Bar, Cell, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, ReferenceLine } from 'recharts';
 import api, { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance, fetchMarketDistribution } from '../api';
 import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance, MarketDistribution } from '../types/dashboard';
@@ -174,9 +175,18 @@ export default function Dashboard() {
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场综述<InfoTip data={DASHBOARD_META.market_summary} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
-              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, margin: 0, textAlign: 'left' }}>
-                {viewModel?.marketSummary || '暂无综述数据'}
-              </p>
+              <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left' }}>
+                <ReactMarkdown
+                  components={{
+                    p: ({children}) => <p style={{ margin: '0 0 8px 0' }}>{children}</p>,
+                    strong: ({children}) => <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{children}</strong>,
+                    ul: ({children}) => <ul style={{ margin: '4px 0', paddingLeft: '16px' }}>{children}</ul>,
+                    li: ({children}) => <li style={{ margin: '2px 0' }}>{children}</li>,
+                  }}
+                >
+                  {viewModel?.marketSummary || '暂无综述数据'}
+                </ReactMarkdown>
+              </div>
             </div>
           </div>
         </div>
