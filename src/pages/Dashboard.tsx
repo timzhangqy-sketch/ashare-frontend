@@ -35,7 +35,8 @@ function OpinionCard({ opinion }: { opinion: { author: string; title: string; co
     onClick={() => setExpanded(!expanded)}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: expanded ? '8px' : 0 }}>
-        <span style={{ fontSize: '12px', color: 'var(--up)', fontWeight: 600, flexShrink: 0 }}>{opinion.author}</span>
+        <span style={{ color: 'var(--accent)', marginRight: '2px' }}>●</span>
+        <span style={{ fontSize: '12px', color: 'var(--accent)', fontWeight: 600, flexShrink: 0 }}>{opinion.author}</span>
         <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opinion.title}</span>
         <span style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}>{timeStr}</span>
         <span style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0, transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#x25BC;</span>
