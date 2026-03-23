@@ -89,7 +89,7 @@ export interface RawDashboardSummaryPayload {
     indexes?: { ts_code: string; name: string; close: number | null; pct_change: number | null; prev_close: number | null }[];
     turnover?: { sh_amount: number | null; sz_amount: number | null; total_amount: number | null; total_count: number | null };
   } | null;
-  market_summary?: string | null;
+  market_opinions?: Array<{author: string; title: string; content: string; published_at: string; source_url: string; source: string}> | null;
 }
 
 export interface RawDashboardSummaryResponse extends RawDashboardSummaryPayload {
@@ -137,7 +137,7 @@ export interface DashboardSummaryDto {
   systemHealth: SystemHealthSummaryDto;
   marketBreadth?: MarketBreadthDto | null;
   marketIndex?: MarketIndexDto | null;
-  marketSummary?: string | null;
+  marketOpinions?: Array<{author: string; title: string; content: string; publishedAt: string; sourceUrl: string; source: string}>;
   hotConcepts?: any[];
   hotStocks?: any[];
 }
@@ -382,7 +382,7 @@ export interface DashboardViewModel {
   systemHealth: SystemHealthSectionVm;
   sourceState?: DashboardFieldState;
   dataSource?: DataSourceMeta;
-  marketSummary: string;
+  marketOpinions: Array<{author: string; title: string; content: string; publishedAt: string; sourceUrl: string; source: string}>;
   hotConcepts: any[];
   hotStocks: any[];
   marketIndex: any;

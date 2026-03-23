@@ -1,8 +1,8 @@
 export const DASHBOARD_META: Record<string, { logic: string; source: string; script: string }> = {
-  market_summary: {
-    logic: 'DeepSeek V3 每日盘后生成的市场综述',
-    source: 'ashare_market_summary',
-    script: 'market_summary_gen.py',
+  market_opinions: {
+    logic: '微博财经博主观点聚合，DeepSeek生成标题，每日自动抓取',
+    source: 'ashare_market_opinions',
+    script: 'weibo_fetcher.py',
   },
   action_list: {
     logic: '今日待买入/待卖出/新关注信号',

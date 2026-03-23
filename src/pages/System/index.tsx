@@ -19,7 +19,7 @@ const TABLE_CN: Record<string, string> = {
   ashare_pledge_stat: '质押统计', ashare_risk_score: '风险评分', ashare_market_breadth: '市场宽度',
   ashare_ths_concept: '概念定义', ashare_ths_concept_member: '概念成分股', ashare_ths_hot_stock: '热股榜',
   ashare_ths_hot_concept: '概念热度', ashare_concept_daily_stats: '板块日度统计', ashare_market_distribution: '涨跌分布',
-  ashare_market_turnover: '成交额汇总', ashare_market_summary: 'AI综述', ashare_watchlist: '交易标的池',
+  ashare_market_turnover: '成交额汇总', ashare_market_opinions: '市场观点', ashare_watchlist: '交易标的池',
   ashare_vol_surge_pool: '放量蓄势池', ashare_portfolio: '持仓', ashare_sim_orders: '模拟订单',
 }
 
@@ -45,7 +45,7 @@ const STEP_LABEL: Record<string, string> = {
   SYNC_LEGACY: '同步兼容', FACTOR_IC: '因子IC', PERF_ANALYZE: '绩效分析',
   DATA_AUDIT: '数据审计', strategy_snapshot: '策略快照', index_turnover: '指数成交额',
   ths_hot_daily: '热度采集', concept_drift_fix: '概念修正', concept_daily_stats: '板块统计',
-  market_summary_gen: 'AI综述', mailer: '邮件通知', dq_gate: '数据质量',
+  weibo_fetcher: '微博爬虫', mailer: '邮件通知', dq_gate: '数据质量',
   healthcheck: '健康检查', pool_export: '榜单导出', SIGNAL_GEN: '信号生成',
 }
 

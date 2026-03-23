@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { ComposedChart, BarChart, Bar, Cell, Area, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList, ReferenceLine } from 'recharts';
 import api, { getDashboardSummary, fetchConceptMomentum, fetchConceptSurge, fetchConceptRetreat, fetchConceptResonance, fetchMarketDistribution } from '../api';
 import type { ConceptMomentum, ConceptSurge, ConceptRetreat, ConceptResonance, MarketDistribution } from '../types/dashboard';
@@ -21,6 +20,49 @@ import type { DashboardViewModel } from '../types/dashboard';
 import type { StockDetail } from '../types/stock';
 import InfoTip from '../components/InfoTip';
 import { DASHBOARD_META } from '../config/dashboardMeta';
+
+function OpinionCard({ opinion }: { opinion: { author: string; title: string; content: string; publishedAt: string; sourceUrl: string; source: string } }) {
+  const [expanded, setExpanded] = useState(false);
+  const timeStr = opinion.publishedAt ? new Date(opinion.publishedAt).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+  return (
+    <div style={{
+      background: 'var(--bg-card, rgba(255,255,255,0.03))',
+      borderRadius: '6px',
+      padding: '10px 14px',
+      cursor: 'pointer',
+      transition: 'background 0.15s',
+    }}
+    onClick={() => setExpanded(!expanded)}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: expanded ? '8px' : 0 }}>
+        <span style={{ fontSize: '12px', color: 'var(--up)', fontWeight: 600, flexShrink: 0 }}>{opinion.author}</span>
+        <span style={{ fontSize: '13px', color: 'var(--text-primary)', fontWeight: 600, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opinion.title}</span>
+        <span style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}>{timeStr}</span>
+        <span style={{ fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0, transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#x25BC;</span>
+      </div>
+      {expanded && (
+        <div style={{
+          fontSize: '13px',
+          color: 'var(--text-secondary)',
+          lineHeight: 1.8,
+          whiteSpace: 'pre-wrap',
+          padding: '8px 0 4px 0',
+          borderTop: '1px solid rgba(255,255,255,0.06)',
+        }}>
+          {opinion.content}
+          {opinion.sourceUrl && (
+            <a href={opinion.sourceUrl} target="_blank" rel="noopener noreferrer"
+              style={{ display: 'inline-block', marginTop: '6px', fontSize: '11px', color: 'var(--accent)' }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              查看原文 →
+            </a>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const { selectedDate } = useDate();
@@ -169,84 +211,21 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      {/* ═══ 第1行：市场综述（独占整行）═══ */}
+      {/* ═══ 第1行：市场观点（独占整行）═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场综述<InfoTip data={DASHBOARD_META.market_summary} /></h3>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场观点<InfoTip data={DASHBOARD_META.market_opinions} /></h3>
             {(() => {
-              const summaryText = viewModel?.marketSummary || '';
-              if (!summaryText) {
-                return <div style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>暂无综述数据</div>;
+              const opinions = viewModel?.marketOpinions || [];
+              if (opinions.length === 0) {
+                return <div style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>暂无观点数据</div>;
               }
-              const lines = summaryText.split('\n');
-              const qualLine = lines.find(l => l.includes('市场定性')) || lines[0] || '';
-              const restContent = lines.filter(l => l !== qualLine).join('\n');
-              const splitIdx = restContent.indexOf('**操作建议**');
-              const coreFindings = splitIdx > -1 ? restContent.substring(0, splitIdx).trim() : restContent;
-              const actionAdvice = splitIdx > -1 ? restContent.substring(splitIdx).trim() : '';
-
-              // Strip headers from body content
-              const stripHeader = (text: string, header: string) => {
-                const re = new RegExp(`\\*\\*${header}\\*\\*[：:]?\\s*`, 'g');
-                return text.replace(re, '').trim();
-              };
-              const coreFindingsBody = stripHeader(coreFindings, '核心发现');
-              const actionAdviceBody = stripHeader(actionAdvice, '操作建议');
-              const qualBody = qualLine.replace(/\*\*市场定性\*\*[：:]?\s*/, '').trim();
-
-              // Sentiment detection
-              const isBearish = /退潮|下跌|普跌|缩量|恐慌|弱势|分化.*加[速剧]|调整|冰点/.test(qualBody);
-              const isBullish = /反弹|回暖|强势|放量上涨|普涨|做多|突破/.test(qualBody);
-              const sentimentConfig = isBearish
-                ? { icon: '▼', color: '#4ecf7a' }
-                : isBullish
-                  ? { icon: '▲', color: '#e74c3c' }
-                  : { icon: '■', color: '#f0b840' };
-
-              const mdComponents = {
-                p: ({children}: any) => <p style={{ margin: '0 0 8px 0' }}>{children}</p>,
-                strong: ({children}: any) => <strong style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{children}</strong>,
-                ul: ({children}: any) => <ul style={{ margin: '4px 0', paddingLeft: '16px', display: 'flex', flexDirection: 'column' as const, gap: '10px' }}>{children}</ul>,
-                li: ({children}: any) => <li style={{ margin: 0 }}>{children}</li>,
-              };
-
-              const sectionHeaderStyle = {
-                fontSize: '13px', color: '#7a8a9a', fontWeight: 600 as const, letterSpacing: '2px',
-                display: 'block' as const, marginBottom: '12px',
-              };
-
               return (
-                <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '12px', flex: 1 }}>
-                  {/* 市场定性 */}
-                  <div style={{
-                    display: 'flex', alignItems: 'flex-start', gap: '12px',
-                    padding: '12px 16px', background: 'rgba(255,255,255,0.03)',
-                    borderRadius: '6px', marginBottom: 16,
-                  }}>
-                    <span style={{ fontSize: '18px', color: sentimentConfig.color, lineHeight: '1.5', flexShrink: 0 }}>
-                      {sentimentConfig.icon}
-                    </span>
-                    <div style={{ flex: 1, fontSize: '15px', color: 'var(--text-primary)', lineHeight: 1.6, fontWeight: 600 }}>
-                      <ReactMarkdown components={mdComponents}>{qualBody}</ReactMarkdown>
-                    </div>
-                  </div>
-                  {actionAdviceBody ? (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 32px' }}>
-                      <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: '16px' }}>
-                        <div style={sectionHeaderStyle}>核心发现</div>
-                        <ReactMarkdown components={mdComponents}>{coreFindingsBody}</ReactMarkdown>
-                      </div>
-                      <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left' }}>
-                        <div style={sectionHeaderStyle}>操作建议</div>
-                        <ReactMarkdown components={mdComponents}>{actionAdviceBody}</ReactMarkdown>
-                      </div>
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.8, textAlign: 'left' }}>
-                      <ReactMarkdown components={mdComponents}>{coreFindings}</ReactMarkdown>
-                    </div>
-                  )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {opinions.map((op, idx) => (
+                    <OpinionCard key={idx} opinion={op} />
+                  ))}
                 </div>
               );
             })()}

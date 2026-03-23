@@ -251,7 +251,7 @@ export function mapRawDashboardResponseToDto(raw: RawDashboardSummaryResponse): 
             avgPctChg: (payload.market_breadth as any)?.avg_pct_chg ?? null,
         }
       : null,
-    marketSummary: payload.market_summary ?? '',
+    marketOpinions: (payload.market_opinions || []).map((o: any) => ({author: o.author, title: o.title, content: o.content, publishedAt: o.published_at, sourceUrl: o.source_url, source: o.source})),
     hotConcepts: (payload as any).hot_concepts ?? [],
     hotStocks: (payload as any).hot_stocks ?? [],
   };
@@ -621,7 +621,7 @@ export function mapDashboardSummaryToViewModel(dto: DashboardSummaryDto): Dashbo
     systemHealth,
     sourceState: fieldState(dto.generatedAt),
     dataSource: dashboardMeta,
-    marketSummary: dto.marketSummary ?? '',
+    marketOpinions: dto.marketOpinions || [],
     hotConcepts: (dto as any).hotConcepts ?? [],
     hotStocks: (dto as any).hotStocks ?? [],
     marketIndex: (dto as any).marketIndex ?? null,
