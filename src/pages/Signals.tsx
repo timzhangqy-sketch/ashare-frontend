@@ -93,10 +93,10 @@ function formatSigned(value: number | null | undefined, suffix = '', digits = 2)
 }
 
 function pnlColor(value: number | null | undefined): string | undefined {
-  if (value == null) return undefined;
+  if (value == null) return 'var(--text-muted)';
   if (value > 0) return 'var(--up)';
   if (value < 0) return 'var(--down)';
-  return undefined;
+  return 'var(--text-muted)';
 }
 
 function displayStrategyName(value: string | null | undefined): string {
@@ -619,7 +619,9 @@ function renderTableRows(
             <td>
               <div className="signals-status-stack">
                 <span className={`signals-mini-pill${(row as SignalsBuyRowVm).inWatchlist ? ' active' : ''}`}>交易标的池</span>
-                <span className={`signals-mini-pill${(row as SignalsBuyRowVm).inPortfolio ? ' active' : ''}`}>持仓</span>
+                {(row as SignalsBuyRowVm).inPortfolio
+                  ? <span className="signals-mini-pill active" style={{ color: 'var(--up)' }}>持仓</span>
+                  : <span className="signals-mini-pill">观察</span>}
               </div>
             </td>
             <td>
