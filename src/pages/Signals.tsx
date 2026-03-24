@@ -550,7 +550,7 @@ function getTableColumns(activeTab: SignalsTabKey, opts?: { hasPrice?: boolean; 
   }
   if (activeTab === 'sell') return ['标的', '主概念', '策略', '动作信号', '持仓天数', '最新价', '日内涨跌', '浮盈亏', '原因', '来源', '动作'];
   if (activeTab === 'resonance') return ['标的', '主概念', '策略组合', '策略数', '最新信号', '价格', '涨跌', '状态', '来源', '动作'];
-  return ['时间', '事件', '策略', '标的', '信号', '跟进动作', '动作'];
+  return ['时间', '事件', '策略', '标的', '代码', '信号', '跟进动作', '来源', '动作'];
 }
 
 function renderTableRows(
@@ -705,13 +705,11 @@ function renderTableRows(
             <td className="numeric">{(row as SignalsFlowRowVm).timeLabel}</td>
             <td>{(row as SignalsFlowRowVm).eventType}</td>
             <td>{displayStrategyName((row as SignalsFlowRowVm).strategySource)}</td>
-            <td>
-              <div className="signals-cell-title">{row.name}</div>
-              <div className="signals-inline-meta numeric-muted">{row.tsCode}</div>
-            </td>
+            <td>{row.name}</td>
+            <td className="numeric-muted">{row.tsCode}</td>
             <td>{displaySignalLabel((row as SignalsFlowRowVm).signalLabel)}</td>
+            <td>{(row as SignalsFlowRowVm).followAction}</td>
             <td>
-              <div>{(row as SignalsFlowRowVm).followAction}</div>
               <div className={`signals-origin-badge ${originClassName((row as SignalsFlowRowVm).origin)}`}>
                 {displaySourceLabel((row as SignalsFlowRowVm).sourceLabel)}
               </div>
@@ -996,9 +994,13 @@ export default function Signals() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      {getTableColumns(activeTab, tableColumnOpts).map((column) => (
-                        <th key={column}>{column}</th>
-                      ))}
+                      {getTableColumns(activeTab, tableColumnOpts).map((column) => {
+                        const isRight = ['价格', '涨跌', '换手', '最新价', '日内涨跌', '浮盈亏'].includes(column);
+                        const isCenter = ['共振', '策略数', '持仓天数'].includes(column);
+                        return (
+                          <th key={column} style={isRight ? { textAlign: 'right' } : isCenter ? { textAlign: 'center' } : undefined}>{column}</th>
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody>
