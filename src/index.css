@@ -9484,3 +9484,59 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   .sdp-panel { grid-template-columns: 1fr; }
   .srm-cols { grid-template-columns: 1fr; }
 }
+
+/* ═══ Signals Tab InfoTip ═══ */
+.sig-tab-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.sig-tab-tip-icon {
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: help;
+  line-height: 1;
+}
+.sig-tab-tip:hover .sig-tab-tip-icon { color: var(--accent); }
+.sig-tab-tip-tooltip {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  max-width: 280px;
+  width: max-content;
+  white-space: pre-line;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  text-align: left;
+}
+.sig-tab-tip-tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--border-default);
+}
+.sig-tab-tip-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-bottom-color: var(--bg-surface);
+}
+.sig-tab-tip:hover .sig-tab-tip-tooltip { display: block; }

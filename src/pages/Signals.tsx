@@ -34,6 +34,13 @@ import SignalDistributionPanel from '../components/SignalDistributionPanel';
 import { buildResearchHref } from '../utils/researchHandoff';
 import { getMockDetail } from '../utils/score';
 
+const SIGNALS_TAB_TIPS: Record<string, string> = {
+  buy: '来源：交易标的池(active) + 4策略当日触发合并去重\n展示所有在池候选和当日新触发的标的\n信号列：触发了买点信号(BREAKOUT/VOL_CONFIRM/PULLBACK/REHEAT)的标的会显示具体信号类型，未触发的显示"观察中"',
+  sell: '来源：持仓中心(open) 中触发了卖出信号的标的\n7类卖点按优先级：硬止损(浮亏≥10%) > 跟踪止损(回撤≥15%) > 环境恶化(bearish/weak+盈<3%) > 板块退潮(板块3日跌>1.5%) > 量能萎缩(VR3<0.4) > 趋势破位(3日<MA20) > 时间衰减(≥30天±5%)',
+  resonance: '来源：同一只股票被2个及以上策略同时选中\n共振标的通常具有更高的胜率和期望收益\n策略组合：VOL_SURGE/RETOC2/T2UP9/WEAK_BUY',
+  flow: '来源：买点+卖点+共振信号按时间合并\n以时间线方式展示当日所有信号触发事件的完整流程',
+};
+
 type SignalsRowVm =
   | SignalsBuyRowVm
   | SignalsSellRowVm
@@ -941,6 +948,12 @@ export default function Signals() {
               onClick={() => handleTabChange(tab)}
             >
               {workspace?.tabs[tab].label ?? tab}
+              {SIGNALS_TAB_TIPS[tab] && (
+                <span className="sig-tab-tip" onClick={e => e.stopPropagation()}>
+                  <span className="sig-tab-tip-icon">ⓘ</span>
+                  <span className="sig-tab-tip-tooltip">{SIGNALS_TAB_TIPS[tab]}</span>
+                </span>
+              )}
             </button>
           ))}
         </div>
