@@ -47,8 +47,8 @@ export default function RiskPage() {
 
       {isOverviewTab ? (
         <>
-          <RiskFlowChart />
           <RiskDefenseOverview />
+          <RiskFlowChart />
         </>
       ) : <RiskDetailView />}
     </div>
