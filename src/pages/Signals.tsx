@@ -99,6 +99,11 @@ function pnlColor(value: number | null | undefined): string | undefined {
   return 'var(--text-muted)';
 }
 
+function pnlClass(value: number | null | undefined): string {
+  if (value == null || value === 0) return 'c-muted';
+  return value > 0 ? 'c-up' : 'c-down';
+}
+
 function displayStrategyName(value: string | null | undefined): string {
   if (!value) return '--';
   const mapped = displayStrategyLabel(value);
@@ -603,7 +608,7 @@ function renderTableRows(
             {hasPriceData ? (
               <td className="right numeric">
                 <div>{formatNumber((row as SignalsBuyRowVm).close)}</div>
-                <div className="signals-inline-meta" style={{ color: pnlColor((row as SignalsBuyRowVm).pctChg) }}>{formatSigned((row as SignalsBuyRowVm).pctChg, '%')}</div>
+                <div className={`signals-pnl-value ${pnlClass((row as SignalsBuyRowVm).pctChg)}`} style={{ fontSize: '11px' }}>{formatSigned((row as SignalsBuyRowVm).pctChg, '%')}</div>
               </td>
             ) : null}
             {hasTurnoverData ? (

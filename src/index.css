@@ -9540,3 +9540,8 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   border-bottom-color: var(--bg-surface);
 }
 .sig-tab-tip:hover .sig-tab-tip-tooltip { display: block; }
+
+/* ═══ Signals PnL value — override !important muted color ═══ */
+.signals-pnl-value.c-up   { color: var(--color-up) !important; }
+.signals-pnl-value.c-down { color: var(--color-down) !important; }
+.signals-pnl-value.c-muted { color: var(--text-muted) !important; }
