@@ -36,9 +36,10 @@ interface CardProps {
   counts: Record<string, number>;
   details: any[];
   detailCols: { key: string; label: string; render?: (v: any) => string }[];
+  conditionMap: Record<string, string>;
 }
 
-function SignalCard({ title, total, color, types, counts, details, detailCols }: CardProps) {
+function SignalCard({ title, total, color, types, counts, details, detailCols, conditionMap }: CardProps) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
@@ -59,7 +60,15 @@ function SignalCard({ title, total, color, types, counts, details, detailCols }:
                 onClick={() => hasData && setExpanded(isExpanded ? null : t.key)}
                 style={{ cursor: hasData ? 'pointer' : 'default' }}
               >
-                <span className="sdp-row-name">{t.name}</span>
+                <span className="sdp-row-name">
+                  {t.name}
+                  {conditionMap[t.key] && (
+                    <span className="sdp-info-tip">
+                      <span className="sdp-info-icon">ⓘ</span>
+                      <span className="sdp-info-tooltip">{conditionMap[t.key]}</span>
+                    </span>
+                  )}
+                </span>
                 <span className="sdp-row-cnt" style={{ color: hasData ? color : 'var(--text-muted)' }}>
                   {cnt}只
                 </span>
@@ -103,6 +112,16 @@ export default function SignalDistributionPanel() {
 
   if (!data) return null;
 
+  const rules = data.rules || {};
+  const buildCondMap = (arr: { signal: string; condition: string }[] | undefined) => {
+    const m: Record<string, string> = {};
+    (arr || []).forEach(r => { m[r.signal] = r.condition; });
+    return m;
+  };
+  const buyCondMap = buildCondMap(rules.buy);
+  const warnCondMap = buildCondMap(rules.warn);
+  const sellCondMap = buildCondMap(rules.sell);
+
   return (
     <div className="sdp-panel">
       <SignalCard
@@ -112,6 +131,7 @@ export default function SignalDistributionPanel() {
         types={BUY_TYPES}
         counts={data.buy_signals || {}}
         details={data.buy_details || []}
+        conditionMap={buyCondMap}
         detailCols={[
           { key: 'ts_code', label: '代码' },
           { key: 'name', label: '名称' },
@@ -127,6 +147,7 @@ export default function SignalDistributionPanel() {
         types={WARN_TYPES}
         counts={data.watchlist_warns || {}}
         details={data.warn_details || []}
+        conditionMap={warnCondMap}
         detailCols={[
           { key: 'ts_code', label: '代码' },
           { key: 'name', label: '名称' },
@@ -142,6 +163,7 @@ export default function SignalDistributionPanel() {
         types={SELL_TYPES}
         counts={data.sell_signals || {}}
         details={data.sell_details || []}
+        conditionMap={sellCondMap}
         detailCols={[
           { key: 'ts_code', label: '代码' },
           { key: 'name', label: '名称' },
