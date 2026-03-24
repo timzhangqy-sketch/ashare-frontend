@@ -23,6 +23,14 @@ const SELL_TYPES = [
   { key: 'TIME_DECAY', name: '时间衰减' },
 ];
 
+const STRATEGY_CN: Record<string, string> = {
+  VOL_SURGE: '能量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹',
+};
+function strategyName(v: string | null | undefined) {
+  if (!v) return '-';
+  return STRATEGY_CN[v] ?? v;
+}
+
 function fmt(v: number | null | undefined, suffix = '') {
   if (v == null) return '-';
   return (v >= 0 ? '+' : '') + (v * 100).toFixed(1) + '%' + suffix;
@@ -83,7 +91,6 @@ function SignalCard({ title, total, color, types, counts, details, detailCols, c
                       const sig = d.buy_signal || d.sell_signal || d.action_signal || '';
                       return sig === t.key;
                     })
-                    .slice(0, 10)
                     .map((d, i) => (
                       <div key={i} className="sdp-expand-row">
                         {detailCols.map(c => (
@@ -135,7 +142,7 @@ export default function SignalDistributionPanel() {
         detailCols={[
           { key: 'ts_code', label: '代码' },
           { key: 'name', label: '名称' },
-          { key: 'strategy', label: '策略' },
+          { key: 'strategy', label: '策略', render: v => strategyName(v) },
           { key: 'gain_since_entry', label: '涨幅', render: v => fmt(v) },
           { key: 'vr_today', label: 'VR', render: v => v != null ? Number(v).toFixed(2) : '-' },
         ]}
@@ -151,7 +158,7 @@ export default function SignalDistributionPanel() {
         detailCols={[
           { key: 'ts_code', label: '代码' },
           { key: 'name', label: '名称' },
-          { key: 'strategy', label: '策略' },
+          { key: 'strategy', label: '策略', render: v => strategyName(v) },
           { key: 'gain_since_entry', label: '涨幅', render: v => fmt(v) },
           { key: 'drawdown_from_peak', label: '回撤', render: v => v != null ? (Number(v) * 100).toFixed(1) + '%' : '-' },
         ]}
@@ -167,7 +174,7 @@ export default function SignalDistributionPanel() {
         detailCols={[
           { key: 'ts_code', label: '代码' },
           { key: 'name', label: '名称' },
-          { key: 'source_strategy', label: '策略' },
+          { key: 'source_strategy', label: '策略', render: v => strategyName(v) },
           { key: 'unrealized_pnl_pct', label: '浮盈', render: v => fmt(v) },
           { key: 'drawdown_from_peak', label: '回撤', render: v => v != null ? (Number(v) * 100).toFixed(1) + '%' : '-' },
           { key: 'hold_days', label: '天数' },
