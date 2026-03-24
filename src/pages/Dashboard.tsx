@@ -13,6 +13,7 @@ import type { ActionListResponse } from '../api';
 import { getStrategyDisplayName } from '../utils/displayNames';
 import StatusState from '../components/Dashboard/StatusState';
 import SourceSummaryBar from '../components/data-source/SourceSummaryBar';
+import SignalSummaryBar from '../components/SignalSummaryBar';
 import StockDrawer from '../components/Drawer/StockDrawer';
 import { useDashboardRuntime } from '../context/useDashboardRuntime';
 import { useDate } from '../context/useDate';
@@ -197,6 +198,7 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page" data-testid="dashboard-page">
       <SourceSummaryBar meta={viewModel?.dataSource} className="dashboard-source-summary" />
+      <SignalSummaryBar />
 
       {status === 'error' ? (
         <section className="card">

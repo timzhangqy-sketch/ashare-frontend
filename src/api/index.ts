@@ -1060,4 +1060,11 @@ export async function updateSimConfig(config: Record<string, unknown>) {
   return res.data as { updated: string[] };
 }
 
+// ── Signal Summary ──────────────────────────────────────────────────────────
+
+export async function fetchSignalSummary() {
+  const res = await api.get('/api/signals/summary');
+  return res.data;
+}
+
 export default api;

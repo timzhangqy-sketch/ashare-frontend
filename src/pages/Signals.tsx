@@ -30,6 +30,7 @@ import {
   displayStrategyLabel,
 } from '../utils/labelMaps';
 import { formatSignalReason } from '../utils/formatters';
+import SignalDistributionPanel from '../components/SignalDistributionPanel';
 import { buildResearchHref } from '../utils/researchHandoff';
 import { getMockDetail } from '../utils/score';
 
@@ -927,6 +928,8 @@ export default function Signals() {
           {focusMissNote}
         </section>
       ) : null}
+
+      <SignalDistributionPanel />
 
       <div className="page-tabs signals-tabs signals-tabs-with-count">
         <div className="signals-tabs-buttons">
