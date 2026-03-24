@@ -92,13 +92,6 @@ function formatSigned(value: number | null | undefined, suffix = '', digits = 2)
   return value == null ? '--' : `${value > 0 ? '+' : ''}${value.toFixed(digits)}${suffix}`;
 }
 
-function pnlColor(value: number | null | undefined): string | undefined {
-  if (value == null) return 'var(--text-muted)';
-  if (value > 0) return 'var(--up)';
-  if (value < 0) return 'var(--down)';
-  return 'var(--text-muted)';
-}
-
 function pnlClass(value: number | null | undefined): string {
   if (value == null || value === 0) return 'c-muted';
   return value > 0 ? 'c-up' : 'c-down';
@@ -550,13 +543,13 @@ function RowActionGroup({ actions, detailOpenTestId }: { actions: SignalsActionV
 function getTableColumns(activeTab: SignalsTabKey, opts?: { hasPrice?: boolean; hasTurnover?: boolean }): string[] {
   if (activeTab === 'buy') {
     const cols = ['标的', '主概念', '策略', '信号'];
-    if (opts?.hasPrice !== false) cols.push('价格 / 涨跌');
-    if (opts?.hasTurnover !== false) cols.push('换手 / 共振');
+    if (opts?.hasPrice !== false) cols.push('价格', '涨跌');
+    if (opts?.hasTurnover !== false) cols.push('换手', '共振');
     cols.push('状态', '来源', '动作');
     return cols;
   }
-  if (activeTab === 'sell') return ['标的', '主概念', '策略', '动作信号', '持有天数 / 最新价', '日内 / 浮盈亏', '原因', '来源', '动作'];
-  if (activeTab === 'resonance') return ['标的', '主概念', '策略组合', '策略数', '最新信号', '价格 / 涨跌', '状态', '来源', '动作'];
+  if (activeTab === 'sell') return ['标的', '主概念', '策略', '动作信号', '持仓天数', '最新价', '日内涨跌', '浮盈亏', '原因', '来源', '动作'];
+  if (activeTab === 'resonance') return ['标的', '主概念', '策略组合', '策略数', '最新信号', '价格', '涨跌', '状态', '来源', '动作'];
   return ['时间', '事件', '策略', '标的', '信号', '跟进动作', '动作'];
 }
 
@@ -606,20 +599,20 @@ function renderTableRows(
               <div>{displaySignalLabel((row as SignalsBuyRowVm).signalType)}</div>
             </td>
             {hasPriceData ? (
-              <td className="right numeric">
-                <div>{formatNumber((row as SignalsBuyRowVm).close)}</div>
-                <div className={`signals-pnl-value ${pnlClass((row as SignalsBuyRowVm).pctChg)}`} style={{ fontSize: '11px' }}>{formatSigned((row as SignalsBuyRowVm).pctChg, '%')}</div>
-              </td>
+              <>
+                <td className="right numeric">{formatNumber((row as SignalsBuyRowVm).close)}</td>
+                <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsBuyRowVm).pctChg)}`}>{formatSigned((row as SignalsBuyRowVm).pctChg, '%')}</td>
+              </>
             ) : null}
             {hasTurnoverData ? (
-              <td className="right numeric">
-                <div>
+              <>
+                <td className="right numeric">
                   {(row as SignalsBuyRowVm).turnoverRate != null
                     ? `${formatNumber((row as SignalsBuyRowVm).turnoverRate)}%`
                     : '--'}
-                </div>
-                <div className="signals-inline-meta">共振 {(row as SignalsBuyRowVm).crossStrategyCount}</div>
-              </td>
+                </td>
+                <td className="center numeric">{(row as SignalsBuyRowVm).crossStrategyCount}</td>
+              </>
             ) : null}
             <td>
               <div className="signals-status-stack">
@@ -655,14 +648,10 @@ function renderTableRows(
             </td>
             <td>{displayStrategyName((row as SignalsSellRowVm).sourceStrategy)}</td>
             <td>{displayActionSignal((row as SignalsSellRowVm).actionSignal)}</td>
-            <td className="right numeric">
-              <div>{(row as SignalsSellRowVm).holdDays != null ? `${(row as SignalsSellRowVm).holdDays} 天` : '--'}</div>
-              <div className="signals-inline-meta">{formatNumber((row as SignalsSellRowVm).latestClose)}</div>
-            </td>
-            <td className="right numeric">
-              <div style={{ color: pnlColor((row as SignalsSellRowVm).todayPnl) }}>{formatSigned((row as SignalsSellRowVm).todayPnl)}</div>
-              <div className="signals-inline-meta" style={{ color: pnlColor((row as SignalsSellRowVm).unrealizedPnl) }}>{formatSigned((row as SignalsSellRowVm).unrealizedPnl)}</div>
-            </td>
+            <td className="right numeric">{(row as SignalsSellRowVm).holdDays != null ? `${(row as SignalsSellRowVm).holdDays} 天` : '--'}</td>
+            <td className="right numeric">{formatNumber((row as SignalsSellRowVm).latestClose)}</td>
+            <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsSellRowVm).todayPnl)}`}>{formatSigned((row as SignalsSellRowVm).todayPnl, '%')}</td>
+            <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsSellRowVm).unrealizedPnl)}`}>{formatSigned((row as SignalsSellRowVm).unrealizedPnl, '%')}</td>
             <td className="signals-cell-wrap">{formatSignalReason((row as SignalsSellRowVm).signalReason)}</td>
             <td>
               <div className={`signals-origin-badge ${originClassName((row as SignalsSellRowVm).origin)}`}>
@@ -693,14 +682,14 @@ function renderTableRows(
             </td>
             <td className="center numeric">{(row as SignalsResonanceRowVm).strategyCount}</td>
             <td>{displaySignalLabel((row as SignalsResonanceRowVm).latestSignal)}</td>
-            <td className="right numeric">
-              <div>{formatNumber((row as SignalsResonanceRowVm).close)}</div>
-              <div className="signals-inline-meta" style={{ color: pnlColor((row as SignalsResonanceRowVm).pctChg) }}>{formatSigned((row as SignalsResonanceRowVm).pctChg, '%')}</div>
-            </td>
+            <td className="right numeric">{formatNumber((row as SignalsResonanceRowVm).close)}</td>
+            <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsResonanceRowVm).pctChg)}`}>{formatSigned((row as SignalsResonanceRowVm).pctChg, '%')}</td>
             <td>
               <div className="signals-status-stack">
                 <span className={`signals-mini-pill${(row as SignalsResonanceRowVm).inWatchlist ? ' active' : ''}`}>交易标的池</span>
-                <span className={`signals-mini-pill${(row as SignalsResonanceRowVm).inPortfolio ? ' active' : ''}`}>持仓</span>
+                {(row as SignalsResonanceRowVm).inPortfolio
+                  ? <span className="signals-mini-pill active" style={{ color: 'var(--up)' }}>持仓</span>
+                  : <span className="signals-mini-pill">观察</span>}
               </div>
             </td>
             <td>
