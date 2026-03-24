@@ -9545,3 +9545,86 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .signals-pnl-value.c-up   { color: var(--color-up) !important; }
 .signals-pnl-value.c-down { color: var(--color-down) !important; }
 .signals-pnl-value.c-muted { color: var(--text-muted) !important; }
+
+/* ═══ Risk Flow Chart ═══ */
+.rfc-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.rfc-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 14px 0;
+}
+.rfc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.rfc-row-reverse {
+  flex-direction: row-reverse;
+}
+.rfc-turn {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 17px;
+  padding: 4px 0;
+  line-height: 1;
+}
+.rfc-node {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  padding: 10px 14px;
+  min-width: 0;
+  flex-shrink: 1;
+}
+.rfc-node-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.rfc-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 100px;
+  background: #22C55E;
+  flex-shrink: 0;
+}
+.rfc-node-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.rfc-node-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.rfc-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-bg, rgba(6,182,212,0.12));
+  border-radius: 3px;
+  padding: 1px 5px;
+  line-height: 1.3;
+}
+.rfc-arrow {
+  color: var(--text-muted);
+  font-size: 17px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+@media (max-width: 1200px) {
+  .rfc-row { flex-wrap: wrap; justify-content: center; }
+  .rfc-row-reverse { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+}

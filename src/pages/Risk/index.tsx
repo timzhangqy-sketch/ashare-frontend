@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import RiskDefenseOverview from '../../components/risk/RiskDefenseOverview';
 import RiskDetailView from '../../components/risk/RiskDetailView';
+import RiskFlowChart from '../../components/risk/RiskFlowChart';
 import { useContextPanel } from '../../context/useContextPanel';
 
 export default function RiskPage() {
@@ -44,7 +45,12 @@ export default function RiskPage() {
         >风控明细</button>
       </div>
 
-      {isOverviewTab ? <RiskDefenseOverview /> : <RiskDetailView />}
+      {isOverviewTab ? (
+        <>
+          <RiskFlowChart />
+          <RiskDefenseOverview />
+        </>
+      ) : <RiskDetailView />}
     </div>
   );
 }
