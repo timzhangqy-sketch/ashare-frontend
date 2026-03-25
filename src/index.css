@@ -9696,3 +9696,18 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* ── Dashboard Opinions Grid ───────────────────────────────────────────── */
+.opinions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.opinions-grid > :only-child {
+  grid-column: 1 / -1;
+}
+@media (max-width: 768px) {
+  .opinions-grid {
+    grid-template-columns: 1fr;
+  }
+}

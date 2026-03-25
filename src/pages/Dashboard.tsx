@@ -225,7 +225,7 @@ export default function Dashboard() {
                 return <div style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>暂无观点数据</div>;
               }
               return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div className="opinions-grid">
                   {opinions.map((op, idx) => (
                     <OpinionCard key={idx} opinion={op} />
                   ))}
