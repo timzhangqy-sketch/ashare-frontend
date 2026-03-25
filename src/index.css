@@ -10374,50 +10374,104 @@ label {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Sapphire Theme — Step 7: Color Calibration to match Stitch
+   Sapphire Theme — Step 7: Exact Stitch Color Calibration
    ═══════════════════════════════════════════════════════════════ */
 
-/* --- 侧边栏提亮 --- */
+/* --- 全局背景层级校准 --- */
+body {
+  background-color: #10131b !important;
+  color: #e0e2ed !important;
+}
+
+:root,
+[data-theme="dark"] {
+  --bg-base: #10131b !important;
+  --bg-surface: #181c23 !important;
+  --bg-card: #181c23 !important;
+  --bg-elevated: #1c2027 !important;
+  --bg-hover: #363942 !important;
+  --border-default: rgba(66, 71, 84, 0.3) !important;
+  --border-subtle: rgba(66, 71, 84, 0.15) !important;
+  --text-primary: #e0e2ed !important;
+  --text-secondary: #c2c6d6 !important;
+  --text-muted: #8c909f !important;
+}
+
+/* --- 侧边栏 --- */
 .sidebar,
 [class*="sidebar"] {
   background: #181c23 !important;
+  border-right-color: rgba(66, 71, 84, 0.15) !important;
 }
 
-/* --- TopBar 提亮 --- */
+/* --- TopBar --- */
 .topbar {
-  background: rgba(24, 28, 35, 0.85) !important;
+  background: #181c23 !important;
+  border-bottom-color: rgba(66, 71, 84, 0.15) !important;
 }
 
-/* --- 卡片背景和边框校准 --- */
+/* --- 状态栏 --- */
+.status-bar {
+  background: #1c2027 !important;
+  border-top-color: rgba(66, 71, 84, 0.15) !important;
+}
+
+/* --- Dashboard 所有卡片 --- */
 .dashboard-page .card {
-  background: rgba(28, 32, 39, 0.7) !important;
-  border: 1px solid rgba(140, 144, 159, 0.1) !important;
+  background: #181c23 !important;
+  border: 1px solid rgba(66, 71, 84, 0.15) !important;
 }
 
-/* --- 表头背景校准 --- */
+.dashboard-page .card:hover {
+  border-color: rgba(66, 71, 84, 0.3) !important;
+}
+
+/* --- 卡片标题 --- */
+.dashboard-page .card-title {
+  color: #c2c6d6 !important;
+  border-bottom-color: rgba(66, 71, 84, 0.15) !important;
+}
+
+/* --- 所有表格表头行 --- */
 .dashboard-page table thead tr {
   background: #262a32 !important;
+  border-bottom: none !important;
 }
 
-/* --- 表头文字提亮 --- */
+/* --- 表头文字 --- */
 .dashboard-page table thead th {
   color: #8c909f !important;
+  border-bottom: none !important;
 }
 
-/* --- 表格序号列提亮 --- */
+/* --- 表格行 --- */
+.dashboard-page table tbody tr {
+  border-bottom: 1px solid rgba(66, 71, 84, 0.1) !important;
+  background: transparent !important;
+}
+
+.dashboard-page table tbody tr:hover {
+  background: rgba(54, 57, 66, 0.3) !important;
+}
+
+/* --- 表格序号 --- */
 .dashboard-page table tbody td:first-child {
   color: #8c909f !important;
 }
 
-/* --- 卡片标题提亮 --- */
-.dashboard-page .card-title {
-  color: #c2c6d6 !important;
-  border-bottom-color: rgba(140, 144, 159, 0.1) !important;
+/* --- 表格内嵌背景容器（概念热度/热股外包div）--- */
+.dashboard-page .card-body > div[style*="background"] {
+  background: transparent !important;
 }
 
-/* --- 侧边栏活动项背景 --- */
+/* --- 侧边栏活动项 --- */
 .sidebar-icon-active,
 .sidebar-icon-item.active,
 .sidebar-icon-item[class*="active"] {
   background: rgba(77, 142, 255, 0.1) !important;
+  border-left-color: #adc6ff !important;
+}
+
+.sidebar-icon-item:hover {
+  background: #1c2027 !important;
 }
