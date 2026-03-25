@@ -196,8 +196,8 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page" data-testid="dashboard-page">
-      <SourceSummaryBar meta={viewModel?.dataSource} className="dashboard-source-summary" />
-      <SignalSummaryBar />
+      {false && <SourceSummaryBar meta={viewModel?.dataSource} className="dashboard-source-summary" />}
+      {false && <SignalSummaryBar />}
 
       {status === 'error' ? (
         <section className="card">
