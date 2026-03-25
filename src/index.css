@@ -9659,3 +9659,40 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   font-size: 11px;
   color: var(--text-muted);
 }
+
+/* ── Factor IC Group Filter Bar ────────────────────────────────────────── */
+.ic-group-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.ic-group-filter-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ic-group-tag {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ic-group-tag:hover {
+  background: var(--bg-card);
+}
+.ic-group-tag.active {
+  background: var(--accent);
+  color: #fff;
+}
+.ic-group-filter-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}

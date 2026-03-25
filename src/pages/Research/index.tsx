@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { buildResearchQuery, loadResearchWorkspace } from '../../adapters/research'
 import { buildResearchDetailHref } from '../../adapters/researchDetail'
@@ -159,10 +159,13 @@ function resolveTable(viewModel: ResearchWorkspaceViewModel, tab: ResearchTab) {
   }
 }
 
+const IC_GROUPS = ['全部', '动量', '波动率', 'K线', '均线', '极值', '成交量', '量价'] as const
+
 export default function ResearchPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const navigate = useNavigate()
   const { closePanel } = useContextPanel()
+  const [icGroupFilter, setIcGroupFilter] = useState<string>('全部')
   const query = useMemo(() => buildResearchQuery(searchParams), [searchParams])
   const stableFetchKey = useMemo(
     () =>
@@ -187,7 +190,11 @@ export default function ResearchPage() {
   const activeTab = data?.tabs[query.tab] ?? data?.tabs.summary
   const activeState = data?.tabStates[query.tab] ?? data?.tabStates.summary
   const activeDataSource = activeState?.dataSource ?? data?.dataSources[query.tab]
-  const tableModel = data ? resolveTable(data, query.tab) : null
+  const tableModelRaw = data ? resolveTable(data, query.tab) : null
+  const tableModel = useMemo(() => {
+    if (!tableModelRaw || query.tab !== 'ic' || icGroupFilter === '全部') return tableModelRaw
+    return { ...tableModelRaw, rows: tableModelRaw.rows.filter(r => r.cells.group === icGroupFilter) }
+  }, [tableModelRaw, query.tab, icGroupFilter])
   const emptyTitle = getSourcePanelTitle(activeDataSource) ?? activeTab?.emptyTitle ?? tableModel?.emptyTitle ?? '当前暂无研究数据'
   const emptyText = getSourcePanelText(activeDataSource) ?? activeTab?.emptyText ?? tableModel?.emptyText ?? '相关研究结果会在这里展示。'
 
@@ -241,6 +248,24 @@ export default function ResearchPage() {
             </div>
             <SourceBadge meta={activeDataSource} showWhenReal />
           </div>
+
+          {query.tab === 'ic' && !loading && !error ? (
+            <div className="ic-group-filter-bar">
+              <div className="ic-group-filter-tags">
+                {IC_GROUPS.map((g) => (
+                  <button
+                    key={g}
+                    type="button"
+                    className={`ic-group-tag${icGroupFilter === g ? ' active' : ''}`}
+                    onClick={() => setIcGroupFilter(g)}
+                  >
+                    {g}
+                  </button>
+                ))}
+              </div>
+              <span className="ic-group-filter-count">共 {tableModel?.rows.length ?? 0} 条</span>
+            </div>
+          ) : null}
 
           {loading ? (
             <div className="page-loading">
