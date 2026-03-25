@@ -10372,3 +10372,52 @@ label {
 .status-bar {
   background: #1c2027 !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 7: Color Calibration to match Stitch
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 侧边栏提亮 --- */
+.sidebar,
+[class*="sidebar"] {
+  background: #181c23 !important;
+}
+
+/* --- TopBar 提亮 --- */
+.topbar {
+  background: rgba(24, 28, 35, 0.85) !important;
+}
+
+/* --- 卡片背景和边框校准 --- */
+.dashboard-page .card {
+  background: rgba(28, 32, 39, 0.7) !important;
+  border: 1px solid rgba(140, 144, 159, 0.1) !important;
+}
+
+/* --- 表头背景校准 --- */
+.dashboard-page table thead tr {
+  background: #262a32 !important;
+}
+
+/* --- 表头文字提亮 --- */
+.dashboard-page table thead th {
+  color: #8c909f !important;
+}
+
+/* --- 表格序号列提亮 --- */
+.dashboard-page table tbody td:first-child {
+  color: #8c909f !important;
+}
+
+/* --- 卡片标题提亮 --- */
+.dashboard-page .card-title {
+  color: #c2c6d6 !important;
+  border-bottom-color: rgba(140, 144, 159, 0.1) !important;
+}
+
+/* --- 侧边栏活动项背景 --- */
+.sidebar-icon-active,
+.sidebar-icon-item.active,
+.sidebar-icon-item[class*="active"] {
+  background: rgba(77, 142, 255, 0.1) !important;
+}
