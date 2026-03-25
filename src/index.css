@@ -9711,3 +9711,90 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme Override — Step 1: 圆角 + 底色 + 阴影
+   2026-03-25 追加，覆盖所有前面的同名变量
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 深色模式令牌覆盖 --- */
+:root,
+[data-theme="dark"] {
+  --bg-base: #05080F !important;
+  --radius-xs: 2px !important;
+  --radius-sm: 2px !important;
+  --radius-md: 2px !important;
+  --radius-lg: 2px !important;
+  --radius-pill: 2px !important;
+  --shadow-card: none !important;
+  --shadow-elevated: 0 4px 24px rgba(0,0,0,0.6) !important;
+}
+
+/* --- 浅色模式也同步 --- */
+[data-theme="light"] {
+  --radius-xs: 2px !important;
+  --radius-sm: 2px !important;
+  --radius-md: 2px !important;
+  --radius-lg: 2px !important;
+  --radius-pill: 2px !important;
+  --shadow-card: none !important;
+}
+
+/* --- body底色强制覆盖 --- */
+body {
+  background-color: #05080F !important;
+}
+
+/* --- 所有卡片强制方角+无阴影 --- */
+.stat-card,
+.portfolio-summary-card,
+.execution-metric-card,
+.system-metric-card,
+.research-summary-card,
+.signals-summary-card {
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+
+/* --- 数据表格方角 --- */
+.data-table,
+.data-table th:first-child,
+.data-table th:last-child,
+.data-table tr:last-child td:first-child,
+.data-table tr:last-child td:last-child {
+  border-radius: 0 !important;
+}
+
+/* --- 通用卡片容器方角 --- */
+[class*="card"],
+[class*="panel"],
+[class*="module"],
+[class*="section"] {
+  border-radius: 2px !important;
+}
+
+/* --- badge / tag 保持小圆角但缩小 --- */
+[class*="badge"],
+[class*="tag"],
+[class*="chip"] {
+  border-radius: 2px !important;
+}
+
+/* --- 按钮方角 --- */
+button,
+.btn,
+[class*="button"] {
+  border-radius: 2px !important;
+}
+
+/* --- 输入框方角 --- */
+input,
+select,
+textarea {
+  border-radius: 2px !important;
+}
+
+/* --- Tab 方角 --- */
+[class*="tab"] {
+  border-radius: 0 !important;
+}
