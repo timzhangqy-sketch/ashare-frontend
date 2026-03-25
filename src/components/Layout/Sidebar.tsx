@@ -127,15 +127,14 @@ const ICONS: Record<NavIconKey, () => React.JSX.Element> = {
 };
 
 function NavItemLink({ item }: { item: AppRouteDefinition }) {
+  if (item.key === 'holdings' || item.key === 'backtest') return null;
   const Icon = ICONS[item.icon ?? 'legacy'];
-  const isLegacyHidden = item.key === 'holdings' || item.key === 'backtest';
 
   return (
     <NavLink
       to={item.path}
       className={({ isActive }) => `sidebar-icon-item${isActive ? ' sidebar-icon-active' : ''}`}
       title={item.label}
-      style={isLegacyHidden ? { display: 'none' } : undefined}
     >
       <Icon />
     </NavLink>
