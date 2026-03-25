@@ -9646,8 +9646,16 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   font-size: 12px;
 }
 .ic-formula {
-  font-family: var(--font-mono);
+  font-family: 'Consolas', 'Monaco', monospace;
   font-size: 11px;
   color: var(--text-muted);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+  display: inline-block;
+}
+.ic-note {
+  font-size: 11px;
+  color: var(--text-muted);
 }

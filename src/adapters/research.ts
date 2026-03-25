@@ -295,6 +295,7 @@ function mapIcRow(raw: FactorIcRaw, meta?: FactorMetaItem): FactorIcSummaryRow {
     group: meta?.group ?? '',
     formula: meta?.formula ?? '',
     applied: meta?.applied ?? false,
+    note: meta?.note ?? '',
     horizon: raw.horizon,
     ic: raw.ic,
     icir: raw.icir,
@@ -502,8 +503,9 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
       : buildResearchDataSource('real_empty', 'Factor IC API', '真实接口已接通，当前暂无数据。', 0, '暂无数据')
     : buildResearchDataSource('fallback', 'Factor IC API', '当前使用兼容回退数据。', researchFactorIcMock.length);
   const icSource: ResearchDataStatus = toUiStatus(icDataSource);
-  const icRaw = (icSource === 'real' ? icRealRows.map(toIcRawFromApi) : researchFactorIcMock)
-    .filter(row => row.horizon === filterState.horizon || query.tab !== 'ic');
+  const allIcRawData = icSource === 'real' ? icRealRows.map(toIcRawFromApi) : researchFactorIcMock;
+  const allIcMapped = allIcRawData.map(r => mapIcRow(r, factorMeta[r.factor_name]));
+  const icRaw = allIcRawData.filter(row => row.horizon === filterState.horizon || query.tab !== 'ic');
   const icSummaryRows = icRaw.map(r => mapIcRow(r, factorMeta[r.factor_name])).sort((a, b) => Math.abs(b.ic) - Math.abs(a.ic));
 
   const bucketRows = (['T1', 'T3', 'T5', 'T10', 'T20'] as ResearchHorizon[]).flatMap(horizon =>
@@ -602,12 +604,16 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
         dataSource: resonanceDataSource,
       },
     },
-    metrics: query.tab === 'ic' ? [
-      { label: '研究因子数', value: String(new Set(icSummaryRows.map(r => r.factorName)).size), helper: '去重后的唯一因子数' },
-      { label: '有效因子', value: String(icSummaryRows.filter(r => Math.abs(r.ic) >= 0.03 && Math.abs(r.icir) >= 0.5).length), helper: '|IC|>=0.03 且 |ICIR|>=0.5' },
-      { label: '已应用', value: String(new Set(icSummaryRows.filter(r => r.applied).map(r => r.factorName)).size), helper: '已用于订单排序的因子数' },
-      { label: '最强因子', value: icSummaryRows.length > 0 ? icSummaryRows[0].factorCn : '--', helper: 'IC绝对值最大的因子' },
-    ] : [
+    metrics: query.tab === 'ic' ? (() => {
+      const t5Rows = allIcMapped.filter(r => r.horizon === 'T5').sort((a, b) => Math.abs(b.ic) - Math.abs(a.ic));
+      const effectiveT5 = t5Rows.filter(r => Math.abs(r.ic) >= 0.03 && Math.abs(r.icir) >= 0.5);
+      return [
+        { label: '研究因子数', value: String(new Set(allIcMapped.map(r => r.factorName)).size), helper: '去重后的唯一因子数' },
+        { label: '有效因子', value: String(effectiveT5.length), helper: 'T+5 |IC|>=0.03 且 |ICIR|>=0.5' },
+        { label: '已应用', value: String(new Set(allIcMapped.filter(r => r.applied).map(r => r.factorName)).size), helper: '已用于订单排序的因子数' },
+        { label: '最强因子', value: t5Rows.length > 0 ? t5Rows[0].factorCn : '--', helper: 'T+5 IC绝对值最大的因子' },
+      ];
+    })() : [
       { label: '研究策略数', value: String(summaryRows.length), helper: '当前研究范围内可比较的策略数量' },
       { label: '研究周期', value: filterState.horizon, helper: '当前页面默认使用的收益周期' },
       { label: '聚焦策略', value: query.strategy ?? '全部策略', helper: '来自 handoff 或当前研究选择' },

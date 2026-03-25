@@ -160,6 +160,7 @@ export interface FactorIcSummaryRow {
   group: string;
   formula: string;
   applied: boolean;
+  note: string;
   horizon: ResearchHorizon;
   ic: number;
   icir: number;

@@ -84,6 +84,7 @@ function resolveTable(viewModel: ResearchWorkspaceViewModel, tab: ResearchTab) {
         { key: 'icir', label: 'ICIR', align: 'right' as const },
         { key: 'applied', label: '应用状态', align: 'center' as const },
         { key: 'formula', label: '公式' },
+        { key: 'note', label: '说明' },
       ],
       rows: viewModel.icSummaryRows.map<TableRowVm>((row) => ({
         id: row.id,
@@ -96,6 +97,7 @@ function resolveTable(viewModel: ResearchWorkspaceViewModel, tab: ResearchTab) {
           icir: formatNumber(row.icir, 4),
           applied: row.applied ? '✓ 排序中' : '—',
           formula: row.formula || '--',
+          note: row.note || '—',
         },
         numericKeys: ['ic', 'icir'],
         valueForTone: { ic: row.ic, icir: row.icir },
@@ -298,6 +300,7 @@ export default function ResearchPage() {
                             const isFactorNameWithEn = column.key === 'factorName' && row._factorEnName != null
                             const isAppliedCol = column.key === 'applied'
                             const isFormulaCol = column.key === 'formula'
+                            const isNoteCol = column.key === 'note'
                             return (
                               <td
                                 key={`${row.id}-${column.key}`}
@@ -317,6 +320,8 @@ export default function ResearchPage() {
                                   <span className={row._applied ? 'ic-applied-active' : 'ic-applied-inactive'}>{row.cells[column.key]}</span>
                                 ) : isFormulaCol ? (
                                   <span className="ic-formula">{row.cells[column.key]}</span>
+                                ) : isNoteCol ? (
+                                  <span className="ic-note">{row.cells[column.key]}</span>
                                 ) : (
                                   <span className={spanClass}>{row.cells[column.key]}</span>
                                 )}
