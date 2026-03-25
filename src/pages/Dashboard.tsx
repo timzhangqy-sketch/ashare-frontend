@@ -213,8 +213,9 @@ export default function Dashboard() {
         </section>
       ) : null}
 
-      {/* ═══ 第1行：市场观点（独占整行）═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr', alignItems: 'stretch' }}>
+
+      {/* ═══ 第1行：市场观点 + 行动清单 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '2fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场观点<InfoTip data={DASHBOARD_META.market_opinions} /></h3>
@@ -233,10 +234,6 @@ export default function Dashboard() {
             })()}
           </div>
         </div>
-      </section>
-
-      {/* ═══ 第1.5行：行动清单 + 板块×策略共振 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
@@ -320,102 +317,9 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '8px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {resonance.resonance_hits.map((hit, i) => (
-                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{(hit.momentum_3d ?? 0).toFixed(2)}%），板块内策略触发{(hit.stocks ?? []).length}只：{(hit.stocks ?? []).map(s => s.name).join('、')}
-                </div>
-              ))}
-              {resonance.retreat_warnings.map((warn, i) => (
-                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{(warn.today_pct_chg ?? 0).toFixed(2)}%），持仓{(warn.stocks ?? []).map(s => s.name).join('、')}属该板块，注意卖点
-                </div>
-              ))}
-              {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
-                <div style={{ padding: '8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
-              )}
-            </div>
-          </div>
-        </div>
       </section>
-
-      {/* ═══ 第2行：概念热度 + 成交额 + 热门个股 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1.2fr 1fr', alignItems: 'stretch' }}>
-        <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '28px', fontSize: '11px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px', fontSize: '11px' }}>涨跌幅</th>
-                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px', fontSize: '11px' }}>热度</th>
-                    <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>连续</th>
-                    <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>3日涨幅</th>
-                    <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>龙头</th>
-                    <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>涨停</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {((viewModel as any)?.hotConcepts || []).slice(0, 10).map((c: any, i: number) => (
-                    <tr
-                      key={`hc-${i}`}
-                      onMouseEnter={() => setHoveredConceptRow(i)}
-                      onMouseLeave={() => setHoveredConceptRow(null)}
-                      style={{
-                        borderBottom: '1px solid rgba(255,255,255,0.04)',
-                        background: hoveredConceptRow === i ? 'rgba(255,255,255,0.03)' : 'transparent',
-                      }}
-                    >
-                      <td style={{ padding: '6px 8px', color: 'var(--text-muted)', width: '28px', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.rank ?? i + 1}
-                      </td>
-                      <td style={{ padding: '6px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
-                        {c.name}
-                      </td>
-                      <td
-                        style={{
-                          padding: '6px 8px',
-                          textAlign: 'right',
-                          color: (c.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)',
-                          fontWeight: 500,
-                          fontVariantNumeric: 'tabular-nums',
-                        }}
-                      >
-                        {c.pct_change != null ? `${c.pct_change >= 0 ? '+' : ''}${c.pct_change.toFixed(2)}%` : '—'}
-                      </td>
-                      <td style={{ padding: '6px 8px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.hot != null ? Math.round(c.hot).toLocaleString() : '—'}
-                      </td>
-                      <td style={{ padding: '6px 4px', textAlign: 'center', fontSize: '11px' }}>
-                        {(c.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span> : (c.heat_persistence ?? 0) === 2 ? '2天' : <span style={{ color: 'var(--text-muted)' }}>首日</span>}
-                      </td>
-                      <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.momentum_3d != null ? `${c.momentum_3d >= 0 ? '+' : ''}${(c.momentum_3d ?? 0).toFixed(2)}%` : '—'}
-                      </td>
-                      <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
-                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '-'}
-                      </td>
-                      <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.limit_up_count ?? 0) > 0 ? 'var(--text-secondary)' : 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
-                        {c.limit_up_count ?? 0}
-                      </td>
-                    </tr>
-                  ))}
-                  {((viewModel as any)?.hotConcepts || []).length === 0 && (
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td colSpan={8} style={{ padding: '6px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+      {/* ═══ 第2行：成交额图 + 板块×策略共振 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '7fr 5fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）<InfoTip data={DASHBOARD_META.turnover_chart} /></h3>
@@ -607,6 +511,101 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '8px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {resonance.resonance_hits.map((hit, i) => (
+                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{(hit.momentum_3d ?? 0).toFixed(2)}%），板块内策略触发{(hit.stocks ?? []).length}只：{(hit.stocks ?? []).map(s => s.name).join('、')}
+                </div>
+              ))}
+              {resonance.retreat_warnings.map((warn, i) => (
+                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{(warn.today_pct_chg ?? 0).toFixed(2)}%），持仓{(warn.stocks ?? []).map(s => s.name).join('、')}属该板块，注意卖点
+                </div>
+              ))}
+              {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
+                <div style={{ padding: '8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* ═══ 第3行：概念热度 + 热门个股 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '2fr 1fr', alignItems: 'stretch' }}>
+        <div className="card">
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '28px', fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px', fontSize: '11px' }}>涨跌幅</th>
+                    <th style={{ textAlign: 'right', padding: '6px 8px', color: 'var(--text-muted)', fontWeight: 500, width: '80px', fontSize: '11px' }}>热度</th>
+                    <th style={{ textAlign: 'center', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>连续</th>
+                    <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>3日涨幅</th>
+                    <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>龙头</th>
+                    <th style={{ textAlign: 'right', padding: '6px 4px', color: 'var(--text-muted)', fontWeight: 500, fontSize: '11px' }}>涨停</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {((viewModel as any)?.hotConcepts || []).slice(0, 10).map((c: any, i: number) => (
+                    <tr
+                      key={`hc-${i}`}
+                      onMouseEnter={() => setHoveredConceptRow(i)}
+                      onMouseLeave={() => setHoveredConceptRow(null)}
+                      style={{
+                        borderBottom: '1px solid rgba(255,255,255,0.04)',
+                        background: hoveredConceptRow === i ? 'rgba(255,255,255,0.03)' : 'transparent',
+                      }}
+                    >
+                      <td style={{ padding: '6px 8px', color: 'var(--text-muted)', width: '28px', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.rank ?? i + 1}
+                      </td>
+                      <td style={{ padding: '6px 8px', color: 'var(--text-primary)', fontWeight: 500 }}>
+                        {c.name}
+                      </td>
+                      <td
+                        style={{
+                          padding: '6px 8px',
+                          textAlign: 'right',
+                          color: (c.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)',
+                          fontWeight: 500,
+                          fontVariantNumeric: 'tabular-nums',
+                        }}
+                      >
+                        {c.pct_change != null ? `${c.pct_change >= 0 ? '+' : ''}${c.pct_change.toFixed(2)}%` : '—'}
+                      </td>
+                      <td style={{ padding: '6px 8px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.hot != null ? Math.round(c.hot).toLocaleString() : '—'}
+                      </td>
+                      <td style={{ padding: '6px 4px', textAlign: 'center', fontSize: '11px' }}>
+                        {(c.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span> : (c.heat_persistence ?? 0) === 2 ? '2天' : <span style={{ color: 'var(--text-muted)' }}>首日</span>}
+                      </td>
+                      <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.momentum_3d != null ? `${c.momentum_3d >= 0 ? '+' : ''}${(c.momentum_3d ?? 0).toFixed(2)}%` : '—'}
+                      </td>
+                      <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '-'}
+                      </td>
+                      <td style={{ padding: '6px 4px', textAlign: 'right', color: (c.limit_up_count ?? 0) > 0 ? 'var(--text-secondary)' : 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
+                        {c.limit_up_count ?? 0}
+                      </td>
+                    </tr>
+                  ))}
+                  {((viewModel as any)?.hotConcepts || []).length === 0 && (
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                      <td colSpan={8} style={{ padding: '6px 8px', color: 'var(--text-muted)', textAlign: 'center' }}>暂无数据</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>热门个股 Top10<InfoTip data={DASHBOARD_META.hot_stocks} /></h3>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -663,9 +662,8 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-
-      {/* ═══ 第3行：板块轮动三栏 ═══ */}
-      <section className="dashboard-section-grid dashboard-sector-row" style={{ gridTemplateColumns: '3fr 2fr 2fr', alignItems: 'stretch' }}>
+      {/* ═══ 第4行：板块轮动三栏 ═══ */}
+      <section className="dashboard-section-grid dashboard-sector-row" style={{ gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'stretch' }}>
         {/* 左栏：强势板块 Top10 */}
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -800,8 +798,7 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-
-      {/* ═══ 第5行：机会 + 风控 ═══ */}
+      {/* ═══ 第5行：机会 + 风控 + 组合 + 系统 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
@@ -887,10 +884,6 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* ═══ 第6行：组合 + 系统 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -985,6 +978,7 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
+
 
       <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} />
     </div>
