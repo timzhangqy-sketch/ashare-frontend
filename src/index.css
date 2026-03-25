@@ -10196,3 +10196,77 @@ main {
   grid-template-columns: 1fr !important;
   gap: 8px !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 5c: Concept & Hot Stocks Table Refinement
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 概念热度 + 热门个股 表格统一 --- */
+.dashboard-page .data-table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+.dashboard-page .data-table thead tr {
+  background: rgba(30, 41, 59, 0.5) !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1) !important;
+}
+
+.dashboard-page .data-table thead th {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: #64748B !important;
+  padding: 6px 12px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  background: transparent !important;
+  border-bottom: none !important;
+  white-space: nowrap !important;
+}
+
+.dashboard-page .data-table tbody tr {
+  height: 32px !important;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.06) !important;
+  transition: background-color 150ms ease !important;
+}
+
+.dashboard-page .data-table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.05) !important;
+}
+
+.dashboard-page .data-table tbody td {
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+  border-bottom: none !important;
+  vertical-align: middle !important;
+}
+
+/* --- 序号列 --- */
+.dashboard-page .data-table tbody td:first-child {
+  font-family: 'JetBrains Mono', monospace !important;
+  color: #475569 !important;
+  font-size: 11px !important;
+}
+
+/* --- 数值列等宽字体 --- */
+.dashboard-page .data-table tbody td .c-up,
+.dashboard-page .data-table tbody td .c-down,
+.dashboard-page .data-table .c-up,
+.dashboard-page .data-table .c-down {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  font-size: 12px !important;
+}
+
+/* --- 概念名/股票名加粗 --- */
+.dashboard-page .data-table tbody td:nth-child(2) {
+  font-weight: 500 !important;
+  color: #E2E8F0 !important;
+}
+
+/* --- 热度数值 --- */
+.dashboard-page .data-table tbody td:nth-child(4) {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+  color: #94A3B8 !important;
+}

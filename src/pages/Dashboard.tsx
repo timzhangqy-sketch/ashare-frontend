@@ -602,7 +602,7 @@ export default function Dashboard() {
         </div>
       </section>
       {/* ═══ 第3行：概念热度 + 热门个股 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '2fr 1fr', alignItems: 'stretch' }}>
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
