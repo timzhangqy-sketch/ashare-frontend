@@ -75,7 +75,8 @@ export default function Dashboard() {
   const [momentum, setMomentum] = useState<ConceptMomentum[]>([]);
   const [surge, setSurge] = useState<ConceptSurge[]>([]);
   const [retreat, setRetreat] = useState<ConceptRetreat[]>([]);
-  const [resonance, setResonance] = useState<ConceptResonance>({ resonance_hits: [], retreat_warnings: [] });
+  const [resonance, setResonance] = useState<ConceptResonance>({ resonance_hits: [], retreat_warnings: [] }); // kept for hidden card
+  void resonance;
   const [distribution, setDistribution] = useState<MarketDistribution | null>(null);
   const [drawerStock, setDrawerStock] = useState<StockDetail | null>(null);
   const [portfolioRaw, setPortfolioRaw] = useState<any>(null);
@@ -318,7 +319,7 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-      {/* ═══ 第2行：成交额图 + 板块×策略共振 ═══ */}
+      {/* ═══ 第2行：成交额图 + 组合概览&今日机会 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '7fr 5fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -511,21 +512,90 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '8px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {resonance.resonance_hits.map((hit, i) => (
-                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{(hit.momentum_3d ?? 0).toFixed(2)}%），板块内策略触发{(hit.stocks ?? []).length}只：{(hit.stocks ?? []).map(s => s.name).join('、')}
+          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合概览<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
+              <a href="/portfolio" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>组合 →</a>
+            </div>
+            {portfolioRaw ? (() => {
+              const snap = portfolioRaw.snapshot ?? {};
+              const nav = snap.total_nav ?? 0;
+              const initCap = portfolioRaw.initial_capital ?? 1000000;
+              const cumPct = (snap.cumulative_pnl_pct ?? 0) * 100;
+              const startDate = portfolioRaw.start_date ?? '';
+              const daysDiff = startDate ? Math.max(1, Math.floor((Date.now() - new Date(startDate).getTime()) / 86400000)) : 1;
+              const annPct = cumPct / daysDiff * 365;
+              const mv = snap.snap_market_value ?? 0;
+              const cash = snap.cash ?? 0;
+              const unrealPnl = portfolioRaw.total_unrealized_pnl ?? 0;
+              const posCnt = portfolioRaw.position_count ?? 0;
+              const cashRatio = (portfolioRaw.cash_ratio ?? 0) * 100;
+              const fmtMoney = (v: number) => v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString();
+              const fmtPct = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`;
+              const pctColor = (v: number) => v > 0 ? 'var(--up)' : v < 0 ? 'var(--down)' : 'var(--text-primary)';
+              const cells: { label: string; value: string; color?: string }[] = [
+                { label: '总资产', value: fmtMoney(nav) },
+                { label: '本金', value: fmtMoney(initCap) },
+                { label: '累计', value: fmtPct(cumPct), color: pctColor(cumPct) },
+                { label: '年化', value: fmtPct(annPct), color: pctColor(annPct) },
+                { label: '市值', value: fmtMoney(mv) },
+                { label: '现金', value: fmtMoney(cash) },
+                { label: '浮盈', value: `${unrealPnl >= 0 ? '+' : ''}${fmtMoney(unrealPnl)}`, color: pctColor(unrealPnl) },
+                { label: '持仓', value: `${posCnt}只` },
+                { label: '现金比', value: `${cashRatio.toFixed(0)}%` },
+              ];
+              return (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, background: 'rgba(255,255,255,0.03)', padding: '8px 12px' }}>
+                  {cells.map((c) => (
+                    <div key={c.label}>
+                      <div style={{ fontSize: 11, color: '#666', marginBottom: 2 }}>{c.label}</div>
+                      <div style={{ fontSize: 13, fontWeight: 400, color: c.color ?? 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>{c.value}</div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-              {resonance.retreat_warnings.map((warn, i) => (
-                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
-                  ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{(warn.today_pct_chg ?? 0).toFixed(2)}%），持仓{(warn.stocks ?? []).map(s => s.name).join('、')}属该板块，注意卖点
-                </div>
-              ))}
-              {resonance.resonance_hits.length === 0 && resonance.retreat_warnings.length === 0 && (
-                <div style={{ padding: '8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>暂无板块共振信号</div>
+              );
+            })() : (
+              <div style={{ padding: 12, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>加载中...</div>
+            )}
+
+            <div style={{ borderTop: '1px solid rgba(30, 45, 69, 0.3)', margin: '12px 0' }}></div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>今日机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
+              <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
+            </div>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
+              {(opp?.topOpportunities?.length ?? 0) > 0 ? (
+                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                  <colgroup>
+                    <col style={{ width: '30%' }} />
+                    <col style={{ width: '25%' }} />
+                    <col style={{ width: '15%' }} />
+                    <col style={{ width: '30%' }} />
+                  </colgroup>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+                      <th style={{ textAlign: 'left', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>股票</th>
+                      <th style={{ textAlign: 'left', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>策略</th>
+                      <th style={{ textAlign: 'right', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>评分</th>
+                      <th style={{ textAlign: 'right', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>状态</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {opp!.topOpportunities.map((item) => (
+                      <tr key={`r2-${item.id}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                        <td style={{ padding: '5px 0', fontSize: 12, fontWeight: 500 }}>
+                          <span style={{ color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
+                        </td>
+                        <td style={{ padding: '5px 0', fontSize: 12, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
+                        <td style={{ padding: '5px 0', fontSize: 12, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
+                        <td style={{ padding: '5px 0', fontSize: 11, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <div style={{ padding: 12, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>暂无买点信号</div>
               )}
             </div>
           </div>
@@ -798,9 +868,9 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-      {/* ═══ 第5行：机会 + 风控 + 组合 + 系统 ═══ */}
+      {/* ═══ 第5行：风控 + 系统 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
-        <div className="card">
+        {false && <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
@@ -846,7 +916,7 @@ export default function Dashboard() {
               )}
             </div>
           </div>
-        </div>
+        </div>}
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -884,7 +954,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        <div className="card">
+        {false && <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
@@ -949,7 +1019,7 @@ export default function Dashboard() {
               <div style={{ padding: 16, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>加载中...</div>
             )}
           </div>
-        </div>
+        </div>}
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
