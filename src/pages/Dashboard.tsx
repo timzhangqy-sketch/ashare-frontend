@@ -536,7 +536,7 @@ export default function Dashboard() {
                 { label: '现金比', value: `${cashRatio.toFixed(0)}%` },
               ];
               return (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, background: 'rgba(255,255,255,0.03)', padding: '8px 12px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, padding: '8px 12px' }}>
                   {cells.map((c) => (
                     <div key={c.label}>
                       <div style={{ fontSize: 11, color: '#666', marginBottom: 2 }}>{c.label}</div>

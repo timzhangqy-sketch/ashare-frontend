@@ -10282,3 +10282,12 @@ main {
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
+
+/* --- Sapphire table hover（覆盖所有 dashboard 表格）--- */
+.dashboard-page table tbody tr {
+  transition: background-color 150ms ease !important;
+}
+
+.dashboard-page table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.05) !important;
+}
