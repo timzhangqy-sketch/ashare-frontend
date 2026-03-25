@@ -9988,3 +9988,104 @@ main {
   left: 56px !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 4: TopBar Visual Refinement
+   ═══════════════════════════════════════════════════════════════ */
+
+.topbar {
+  background: rgba(10, 14, 22, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(54, 57, 66, 0.15) !important;
+}
+
+.topbar-title {
+  color: #adc6ff !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.topbar-title-hint {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+}
+
+.topbar-index-strip {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+.topbar-index-name {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.topbar-index-close {
+  color: #E8ECF1 !important;
+  font-size: 12px !important;
+}
+
+.topbar-index-pct {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.topbar-sep {
+  background: rgba(54, 57, 66, 0.3) !important;
+}
+
+.date-nav .date-input {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12px !important;
+  color: #8B9AB5 !important;
+  background: rgba(28, 32, 39, 0.6) !important;
+  border: 1px solid rgba(54, 57, 66, 0.2) !important;
+  border-radius: 2px !important;
+}
+
+.date-arrow-btn,
+.date-today-btn {
+  border-radius: 2px !important;
+  color: #5A6B85 !important;
+}
+
+.date-arrow-btn:hover,
+.date-today-btn:hover {
+  color: #adc6ff !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.date-weekday {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+}
+
+.regime-tag {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  border-radius: 2px !important;
+  padding: 1px 8px !important;
+}
+
+.theme-btn {
+  border-radius: 2px !important;
+  color: #5A6B85 !important;
+}
+
+.theme-btn:hover {
+  color: #adc6ff !important;
+}
+
+.pipeline-btn {
+  border-radius: 2px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.pipeline-popup {
+  border-radius: 2px !important;
+  background: #1c2027 !important;
+  border: 1px solid rgba(54, 57, 66, 0.3) !important;
+}
+
