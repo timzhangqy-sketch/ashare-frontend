@@ -133,13 +133,11 @@ function NavItemLink({ item }: { item: AppRouteDefinition }) {
   return (
     <NavLink
       to={item.path}
-      className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
+      className={({ isActive }) => `sidebar-icon-item${isActive ? ' sidebar-icon-active' : ''}`}
+      title={item.label}
       style={isLegacyHidden ? { display: 'none' } : undefined}
     >
-      <span className="nav-icon"><Icon /></span>
-      <span className="nav-label-wrap">
-        <span className="nav-label">{item.label}</span>
-      </span>
+      <Icon />
     </NavLink>
   );
 }
@@ -147,23 +145,18 @@ function NavItemLink({ item }: { item: AppRouteDefinition }) {
 export default function Sidebar() {
   return (
     <aside className="sidebar">
-      <div className="sidebar-logo">
-        <div className="sidebar-logo-mark">AQ</div>
-        <div className="sidebar-logo-text">A股量化终端</div>
-      </div>
+      <div className="sidebar-logo-icon" title="A股量化终端">AQ</div>
 
       <nav className="sidebar-nav">
         {mainNavigation.map((item) => (
           <NavItemLink key={item.key} item={item} />
         ))}
 
-        <div style={{borderTop:'1px solid rgba(255,255,255,0.08)', margin:'8px 12px'}} />
-        <div className="nav-section-label nav-section-label-spaced">策略专页</div>
+        <hr className="sidebar-separator" />
         {legacyNavigation.map((item) => (
           <NavItemLink key={item.key} item={item} />
         ))}
       </nav>
-
     </aside>
   );
 }

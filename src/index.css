@@ -9891,3 +9891,99 @@ textarea {
 main {
   padding-bottom: 40px !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 3: Icon-Only Sidebar (56px)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 覆盖CSS变量 --- */
+:root {
+  --sidebar-width: 56px !important;
+}
+
+/* --- 侧边栏容器 --- */
+.sidebar {
+  width: 56px !important;
+  min-width: 56px !important;
+  max-width: 56px !important;
+  background: #0A0E16 !important;
+  border-right: 1px solid rgba(54, 57, 66, 0.15) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+}
+
+/* --- Logo图标 --- */
+.sidebar-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #adc6ff;
+  letter-spacing: 1px;
+  cursor: default;
+  border-bottom: 1px solid rgba(54, 57, 66, 0.15);
+}
+
+/* --- 隐藏旧Logo --- */
+.sidebar-logo {
+  display: none !important;
+}
+
+/* --- 导航容器 --- */
+.sidebar-nav {
+  padding: 4px 0 !important;
+}
+
+/* --- 导航项（图标模式）--- */
+.sidebar-icon-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 56px !important;
+  height: 40px !important;
+  color: #5A6B85 !important;
+  transition: all 150ms ease !important;
+  text-decoration: none !important;
+  border: none !important;
+  background: transparent !important;
+  border-left: 2px solid transparent !important;
+}
+
+.sidebar-icon-item svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sidebar-icon-item:hover {
+  color: #adc6ff !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.sidebar-icon-active {
+  color: #adc6ff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-left-color: #adc6ff !important;
+}
+
+/* --- 分隔线 --- */
+.sidebar-separator {
+  margin: 6px 12px !important;
+  border: none !important;
+  border-top: 1px solid rgba(54, 57, 66, 0.3) !important;
+}
+
+/* --- 隐藏旧的文字和section label --- */
+.nav-section-label,
+.sidebar .nav-label,
+.sidebar .nav-label-wrap {
+  display: none !important;
+}
+
+/* --- TopBar左偏移修正 --- */
+.top-bar {
+  left: 56px !important;
+}
