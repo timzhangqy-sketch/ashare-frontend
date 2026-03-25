@@ -9798,3 +9798,96 @@ textarea {
 [class*="tab"] {
   border-radius: 0 !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 2: Bottom Status Bar
+   ═══════════════════════════════════════════════════════════════ */
+
+.status-bar {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 32px !important;
+  z-index: 1000 !important;
+  background: #1c2027 !important;
+  border-top: 1px solid rgba(54, 57, 66, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 16px !important;
+  font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace !important;
+  font-size: 11px !important;
+  font-variant-numeric: tabular-nums !important;
+  color: #8B9AB5 !important;
+}
+
+.status-bar-left,
+.status-bar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.status-bar-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.status-bar-label {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.status-bar-value {
+  color: #E8ECF1 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+.status-bar-up {
+  color: #EF4444 !important;
+}
+
+.status-bar-down {
+  color: #22C55E !important;
+}
+
+.status-bar-neutral {
+  color: #8B9AB5 !important;
+}
+
+.status-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+
+.status-dot-ok {
+  background: #22C55E !important;
+}
+
+.status-dot-error {
+  background: #EF4444 !important;
+}
+
+.status-dot-warn {
+  background: #F59E0B !important;
+}
+
+.status-bar-divider {
+  width: 1px !important;
+  height: 16px !important;
+  background: #363942 !important;
+}
+
+/* --- 主内容区底部留出状态栏空间 --- */
+.main-content,
+.page-container,
+main {
+  padding-bottom: 40px !important;
+}

@@ -4,6 +4,7 @@ import type { StockDetail } from '../../types/stock';
 import StockDrawer from '../Drawer/StockDrawer';
 import ContextPanelSlot from './ContextPanelSlot';
 import Sidebar from './Sidebar';
+import StatusBar from './StatusBar';
 import TopBar from './TopBar';
 
 export default function Layout() {
@@ -44,6 +45,7 @@ export default function Layout() {
         <footer className="page-footer">A股量化终端</footer>
       </div>
       <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} />
+      <StatusBar />
     </div>
   );
 }
