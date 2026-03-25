@@ -10270,3 +10270,15 @@ main {
   font-variant-numeric: tabular-nums !important;
   color: #94A3B8 !important;
 }
+
+/* --- Dashboard 表格列宽均匀分布 --- */
+.dashboard-page .data-table {
+  table-layout: fixed !important;
+}
+
+.dashboard-page .data-table th,
+.dashboard-page .data-table td {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
