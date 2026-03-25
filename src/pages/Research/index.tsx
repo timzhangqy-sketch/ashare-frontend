@@ -27,7 +27,7 @@ function formatNumber(value: number | null | undefined, digits = 2) {
   return value != null ? value.toFixed(digits) : '--'
 }
 
-const TONE_COLUMNS = ['t5', 'winRate', 'drawdown']
+const TONE_COLUMNS = ['t5', 'winRate', 'drawdown', 'ic', 'icir']
 
 function resolveTable(viewModel: ResearchWorkspaceViewModel, tab: ResearchTab) {
   type TableRowVm = {
@@ -37,6 +37,8 @@ function resolveTable(viewModel: ResearchWorkspaceViewModel, tab: ResearchTab) {
     numericKeys: string[]
     valueForTone?: Record<string, number>
     comboSubtitle?: string
+    _factorEnName?: string
+    _applied?: boolean
   }
 
   if (tab === 'summary') {
@@ -76,20 +78,29 @@ function resolveTable(viewModel: ResearchWorkspaceViewModel, tab: ResearchTab) {
       title: '因子 IC 概览',
       columns: [
         { key: 'factorName', label: '因子' },
+        { key: 'group', label: '分组' },
         { key: 'horizon', label: '周期' },
         { key: 'ic', label: 'IC', align: 'right' as const },
         { key: 'icir', label: 'ICIR', align: 'right' as const },
+        { key: 'applied', label: '应用状态', align: 'center' as const },
+        { key: 'formula', label: '公式' },
       ],
       rows: viewModel.icSummaryRows.map<TableRowVm>((row) => ({
         id: row.id,
         actionKey: null,
         cells: {
-          factorName: row.factorName,
+          factorName: row.factorCn,
+          group: row.group || '--',
           horizon: row.horizon,
-          ic: formatNumber(row.ic, 3),
-          icir: formatNumber(row.icir, 2),
+          ic: formatNumber(row.ic, 4),
+          icir: formatNumber(row.icir, 4),
+          applied: row.applied ? '✓ 排序中' : '—',
+          formula: row.formula || '--',
         },
         numericKeys: ['ic', 'icir'],
+        valueForTone: { ic: row.ic, icir: row.icir },
+        _factorEnName: row.factorName,
+        _applied: row.applied,
       })),
       emptyTitle: '真实接口已通，当前暂无数据',
       emptyText: '因子 IC 接口已接通，当前交易日暂无可展示的因子样本。',
@@ -284,6 +295,9 @@ export default function ResearchPage() {
                             const toneClass = toneValue != null ? (toneValue > 0 ? 'c-up' : toneValue < 0 ? 'c-down' : '') : ''
                             const spanClass = [isNumeric ? 'numeric' : '', toneClass].filter(Boolean).join(' ') || undefined
                             const isComboWithSubtitle = column.key === 'combo' && row.comboSubtitle != null
+                            const isFactorNameWithEn = column.key === 'factorName' && row._factorEnName != null
+                            const isAppliedCol = column.key === 'applied'
+                            const isFormulaCol = column.key === 'formula'
                             return (
                               <td
                                 key={`${row.id}-${column.key}`}
@@ -294,6 +308,15 @@ export default function ResearchPage() {
                                     <div className="research-cell-title">{row.cells[column.key]}</div>
                                     <div className="portfolio-inline-meta numeric-muted">{row.comboSubtitle}</div>
                                   </>
+                                ) : isFactorNameWithEn ? (
+                                  <>
+                                    <div className="research-cell-title">{row.cells[column.key]}</div>
+                                    <div className="ic-factor-en">{row._factorEnName}</div>
+                                  </>
+                                ) : isAppliedCol ? (
+                                  <span className={row._applied ? 'ic-applied-active' : 'ic-applied-inactive'}>{row.cells[column.key]}</span>
+                                ) : isFormulaCol ? (
+                                  <span className="ic-formula">{row.cells[column.key]}</span>
                                 ) : (
                                   <span className={spanClass}>{row.cells[column.key]}</span>
                                 )}

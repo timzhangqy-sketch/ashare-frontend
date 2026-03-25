@@ -9628,3 +9628,26 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   .rfc-row { flex-wrap: wrap; justify-content: center; }
   .rfc-row-reverse { flex-direction: row; flex-wrap: wrap; justify-content: center; }
 }
+
+/* ── Factor IC Table Enhancements ──────────────────────────────────────── */
+.ic-factor-en {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 1px;
+  font-family: var(--font-mono);
+}
+.ic-applied-active {
+  color: var(--up);
+  font-size: 12px;
+  font-weight: 600;
+}
+.ic-applied-inactive {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.ic-formula {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}

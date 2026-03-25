@@ -587,6 +587,23 @@ async function tryResearchGet<T>(paths: string[], params?: Record<string, string
   throw lastError;
 }
 
+export interface FactorMetaItem {
+  cn: string;
+  formula: string;
+  group: string;
+  applied: boolean;
+  note: string;
+}
+
+export async function fetchFactorMeta(): Promise<Record<string, FactorMetaItem>> {
+  try {
+    const res = await api.get('/api/research/factor_meta');
+    return (res.data as { factors: Record<string, FactorMetaItem> }).factors ?? {};
+  } catch {
+    return {};
+  }
+}
+
 export async function fetchResearchFactorIc(
   strategy?: string,
 ): Promise<ResearchFactorIcItem[]> {

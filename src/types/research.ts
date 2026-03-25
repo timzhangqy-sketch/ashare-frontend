@@ -156,6 +156,10 @@ export interface BacktestDetailRow {
 export interface FactorIcSummaryRow {
   id: string;
   factorName: string;
+  factorCn: string;
+  group: string;
+  formula: string;
+  applied: boolean;
   horizon: ResearchHorizon;
   ic: number;
   icir: number;
@@ -224,4 +228,5 @@ export interface ResearchWorkspaceViewModel {
   resonanceRows: ResonanceRow[];
   context: ResearchContextModel | null;
   dataSources: Record<ResearchTab, DataSourceMeta>;
+  factorMeta: Record<string, { cn: string; formula: string; group: string; applied: boolean; note: string }>;
 }

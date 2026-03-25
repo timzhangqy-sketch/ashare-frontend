@@ -1,11 +1,13 @@
 import {
   fetchBacktestDetail,
   fetchBacktestSummary,
+  fetchFactorMeta,
   fetchResearchAttribution,
   fetchResearchFactorIc,
   fetchResearchResonance,
   type BacktestDetailItem,
   type BacktestSummaryItem,
+  type FactorMetaItem,
   type ResearchAttributionItem,
   type ResearchFactorIcItem,
   type ResearchResonanceItem,
@@ -285,10 +287,14 @@ function mapDetailRow(raw: BacktestDetailRaw): BacktestDetailRow {
   };
 }
 
-function mapIcRow(raw: FactorIcRaw): FactorIcSummaryRow {
+function mapIcRow(raw: FactorIcRaw, meta?: FactorMetaItem): FactorIcSummaryRow {
   return {
     id: `ic-${raw.factor_name}-${raw.horizon}`,
     factorName: raw.factor_name,
+    factorCn: meta?.cn ?? raw.factor_name,
+    group: meta?.group ?? '',
+    formula: meta?.formula ?? '',
+    applied: meta?.applied ?? false,
     horizon: raw.horizon,
     ic: raw.ic,
     icir: raw.icir,
@@ -485,7 +491,10 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
     .filter(row => !detailStrategy || row.strategy === detailStrategy || row.ts_code === query.focus);
   const detailRows = detailRaw.map(mapDetailRow);
 
-  const icResult = await settle(fetchResearchFactorIc(query.strategy ?? undefined));
+  const [icResult, factorMeta] = await Promise.all([
+    settle(fetchResearchFactorIc(query.strategy ?? undefined)),
+    fetchFactorMeta(),
+  ]);
   const icRealRows = icResult.ok ? icResult.data : [];
   const icDataSource = icResult.ok
     ? icRealRows.length > 0
@@ -495,10 +504,10 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
   const icSource: ResearchDataStatus = toUiStatus(icDataSource);
   const icRaw = (icSource === 'real' ? icRealRows.map(toIcRawFromApi) : researchFactorIcMock)
     .filter(row => row.horizon === filterState.horizon || query.tab !== 'ic');
-  const icSummaryRows = icRaw.map(mapIcRow).sort((a, b) => b.icir - a.icir);
+  const icSummaryRows = icRaw.map(r => mapIcRow(r, factorMeta[r.factor_name])).sort((a, b) => Math.abs(b.ic) - Math.abs(a.ic));
 
   const bucketRows = (['T1', 'T3', 'T5', 'T10', 'T20'] as ResearchHorizon[]).flatMap(horizon =>
-    buildBucketRows((icSource === 'real' ? icRealRows.map(toIcRawFromApi) : researchFactorIcMock).map(mapIcRow), horizon),
+    buildBucketRows((icSource === 'real' ? icRealRows.map(toIcRawFromApi) : researchFactorIcMock).map(r => mapIcRow(r, factorMeta[r.factor_name])), horizon),
   );
 
   const attributionResult = await settle(fetchResearchAttribution(query.strategy ?? undefined));
@@ -593,7 +602,12 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
         dataSource: resonanceDataSource,
       },
     },
-    metrics: [
+    metrics: query.tab === 'ic' ? [
+      { label: '研究因子数', value: String(new Set(icSummaryRows.map(r => r.factorName)).size), helper: '去重后的唯一因子数' },
+      { label: '有效因子', value: String(icSummaryRows.filter(r => Math.abs(r.ic) >= 0.03 && Math.abs(r.icir) >= 0.5).length), helper: '|IC|>=0.03 且 |ICIR|>=0.5' },
+      { label: '已应用', value: String(new Set(icSummaryRows.filter(r => r.applied).map(r => r.factorName)).size), helper: '已用于订单排序的因子数' },
+      { label: '最强因子', value: icSummaryRows.length > 0 ? icSummaryRows[0].factorCn : '--', helper: 'IC绝对值最大的因子' },
+    ] : [
       { label: '研究策略数', value: String(summaryRows.length), helper: '当前研究范围内可比较的策略数量' },
       { label: '研究周期', value: filterState.horizon, helper: '当前页面默认使用的收益周期' },
       { label: '聚焦策略', value: query.strategy ?? '全部策略', helper: '来自 handoff 或当前研究选择' },
@@ -617,5 +631,6 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
       attribution: attributionDataSource,
       resonance: resonanceDataSource,
     },
+    factorMeta,
   };
 }
