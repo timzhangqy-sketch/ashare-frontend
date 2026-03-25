@@ -241,25 +241,16 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
-                    <colgroup>
-                      <col style={{ width: '10%' }} />
-                      <col style={{ width: '16%' }} />
-                      <col style={{ width: '12%' }} />
-                      <col style={{ width: '12%' }} />
-                      <col style={{ width: '18%' }} />
-                      <col style={{ width: '18%' }} />
-                      <col style={{ width: '14%' }} />
-                    </colgroup>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto' }}>
                     <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                        <th style={{ textAlign: 'left', padding: '6px 24px', color: '#666', fontWeight: 400, fontSize: 12 }}>方向</th>
-                        <th style={{ textAlign: 'left', padding: '6px 24px', color: '#666', fontWeight: 400, fontSize: 12 }}>股票</th>
-                        <th style={{ textAlign: 'right', padding: '6px 24px', color: '#666', fontWeight: 400, fontSize: 12 }}>价格</th>
-                        <th style={{ textAlign: 'right', padding: '6px 24px', color: '#666', fontWeight: 400, fontSize: 12 }}>数量</th>
-                        <th style={{ textAlign: 'left', padding: '6px 24px', color: '#666', fontWeight: 400, fontSize: 12 }}>策略</th>
-                        <th style={{ textAlign: 'left', padding: '6px 24px', color: '#666', fontWeight: 400, fontSize: 12 }}>信号</th>
-                        <th style={{ textAlign: 'right', padding: '6px 24px', color: '#666', fontWeight: 400, fontSize: 12 }}>盈亏</th>
+                      <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
+                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>方向</th>
+                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>股票</th>
+                        <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>价格</th>
+                        <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>数量</th>
+                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>策略</th>
+                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>信号</th>
+                        <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>盈亏</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -267,14 +258,14 @@ export default function Dashboard() {
                         const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败' };
                         const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
                         return (
-                        <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                          <td style={{ padding: '6px 24px', fontSize: 13, fontWeight: 600, color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
-                          <td style={{ padding: '6px 24px', fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
-                          <td style={{ padding: '6px 24px', fontSize: 13, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
-                          <td style={{ padding: '6px 24px', fontSize: 13, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
-                          <td style={{ padding: '6px 24px', fontSize: 13, color: 'var(--text-secondary)' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
-                          <td style={{ padding: '6px 24px', fontSize: 13, color: 'var(--text-secondary)' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
-                          <td style={{ padding: '6px 24px', fontSize: 13, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
+                        <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
+                          <td style={{ padding: '4px 12px', fontSize: 13, fontWeight: 600, color: f.direction === 'BUY' ? 'var(--up)' : 'var(--down)' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                          <td style={{ padding: '4px 12px', fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
+                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
+                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
+                          <td style={{ padding: '4px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
+                          <td style={{ padding: '4px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
+                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
                             {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
                           </td>
                         </tr>
@@ -566,30 +557,24 @@ export default function Dashboard() {
             </div>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
-                  <colgroup>
-                    <col style={{ width: '30%' }} />
-                    <col style={{ width: '25%' }} />
-                    <col style={{ width: '15%' }} />
-                    <col style={{ width: '30%' }} />
-                  </colgroup>
+                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                      <th style={{ textAlign: 'left', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>股票</th>
-                      <th style={{ textAlign: 'left', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>策略</th>
-                      <th style={{ textAlign: 'right', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>评分</th>
-                      <th style={{ textAlign: 'right', paddingBottom: 6, color: '#666', fontWeight: 400, fontSize: 11 }}>状态</th>
+                    <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
+                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>股票</th>
+                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>策略</th>
+                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>评分</th>
+                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {opp!.topOpportunities.map((item) => (
-                      <tr key={`r2-${item.id}`} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                        <td style={{ padding: '5px 0', fontSize: 12, fontWeight: 500 }}>
+                      <tr key={`r2-${item.id}`} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
+                        <td style={{ padding: '4px 12px', fontSize: 12, fontWeight: 500 }}>
                           <span style={{ color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
-                        <td style={{ padding: '5px 0', fontSize: 12, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ padding: '5px 0', fontSize: 12, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
-                        <td style={{ padding: '5px 0', fontSize: 11, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 12, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 12, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 11, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -733,34 +718,34 @@ export default function Dashboard() {
             <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '12px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, width: '16px', fontSize: '11px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>3日</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>今日</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>涨停</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>上涨比</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>龙头</th>
-                    <th style={{ textAlign: 'center', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>标记</th>
+                  <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>3日</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>今日</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>涨停</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>上涨比</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>龙头</th>
+                    <th style={{ textAlign: 'center', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>标记</th>
                   </tr>
                 </thead>
                 <tbody>
                   {momentum.length > 0 ? momentum.map((c, i) => (
-                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_up_count ?? 0}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{Math.round((c.up_ratio ?? 0) * 100)}%</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_up_count ?? 0}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{Math.round((c.up_ratio ?? 0) * 100)}%</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'center', fontSize: '11px' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontSize: '11px' }}>
                         {c.strategy_hit_count > 0 && <span style={{ color: 'var(--info)', marginRight: 3 }}>🎯{c.strategy_hit_count}</span>}
                         {c.heat_persistence > 0 && <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span>}
                       </td>
@@ -780,34 +765,34 @@ export default function Dashboard() {
             <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '12px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, width: '20px', fontSize: '11px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>量比</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>3日均额</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>今日</th>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>龙头</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>涨幅</th>
+                  <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>量比</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>3日均额</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>今日</th>
+                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>龙头</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>涨幅</th>
                   </tr>
                 </thead>
                 <tbody>
                   {surge.length > 0 ? surge.map((c, i) => (
-                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
+                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
                         {(c.concept_vr3 ?? 0).toFixed(1)}x
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
                         {(c.amount_3d_avg ?? 0).toFixed(1)}亿
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px', color: 'var(--text-secondary)', fontSize: '11px' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px', color: 'var(--text-secondary)', fontSize: '11px' }}>
                         {c.leader_top_stock || '—'}
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', fontSize: '11px', color: (c.leader_top_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', fontSize: '11px', color: (c.leader_top_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>
                         {c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${(c.leader_top_pct_chg ?? 0).toFixed(1)}%` : '—'}
                       </td>
                     </tr>
@@ -826,28 +811,28 @@ export default function Dashboard() {
             <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '12px' }}>
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, width: '20px', fontSize: '11px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>今日涨幅</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>3日累计</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>跌停</th>
-                    <th style={{ textAlign: 'right', padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontSize: '11px' }}>龙头今日</th>
+                  <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
+                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>#</th>
+                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>概念</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>今日涨幅</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>3日累计</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>跌停</th>
+                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>龙头今日</th>
                   </tr>
                 </thead>
                 <tbody>
                   {retreat.length > 0 ? retreat.map((c, i) => (
-                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.today_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_down_count ?? 0}</td>
-                      <td style={{ padding: '4px 8px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_down_count ?? 0}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
                         {c.leader_avg_pct_chg != null ? `${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                     </tr>
@@ -875,30 +860,24 @@ export default function Dashboard() {
             </div>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
-                  <colgroup>
-                    <col style={{ width: '25%' }} />
-                    <col style={{ width: '25%' }} />
-                    <col style={{ width: '15%' }} />
-                    <col style={{ width: '35%' }} />
-                  </colgroup>
+                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                      <th style={{ textAlign: 'left', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>股票</th>
-                      <th style={{ textAlign: 'left', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>策略</th>
-                      <th style={{ textAlign: 'right', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>评分</th>
-                      <th style={{ textAlign: 'right', paddingBottom: 8, color: '#666', fontWeight: 400, fontSize: 12 }}>状态</th>
+                    <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
+                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>股票</th>
+                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>策略</th>
+                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>评分</th>
+                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {opp!.topOpportunities.map((item) => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                        <td style={{ padding: '6px 0', fontSize: 13, fontWeight: 500 }}>
+                      <tr key={item.id} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
+                        <td style={{ padding: '4px 12px', fontSize: 13, fontWeight: 500 }}>
                           <span style={{ color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
-                        <td style={{ padding: '6px 0', fontSize: 13, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ padding: '6px 0', fontSize: 13, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
-                        <td style={{ padding: '6px 0', fontSize: 12, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 12, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -922,20 +901,20 @@ export default function Dashboard() {
             </div>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(risk?.events?.length ?? 0) > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, tableLayout: 'auto' }}>
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>事件</th>
-                      <th style={{ textAlign: 'left', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>详情</th>
-                      <th style={{ textAlign: 'right', padding: '5px 6px', color: 'var(--text-muted)', fontWeight: 400, fontSize: 11 }}>风险分</th>
+                    <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
+                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>事件</th>
+                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>详情</th>
+                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>风险分</th>
                     </tr>
                   </thead>
                   <tbody>
                     {risk!.events.map((ev) => (
-                      <tr key={ev.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', height: 32 }}>
-                        <td style={{ padding: '5px 6px', color: 'var(--warn)', fontWeight: 500 }}>{ev.name}</td>
-                        <td style={{ padding: '5px 6px', color: 'var(--text-secondary)' }}>{ev.helperText}</td>
-                        <td style={{ padding: '5px 6px', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{ev.scoreLabel}</td>
+                      <tr key={ev.id} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
+                        <td style={{ padding: '4px 12px', color: 'var(--warn)', fontWeight: 500 }}>{ev.name}</td>
+                        <td style={{ padding: '4px 12px', color: 'var(--text-secondary)' }}>{ev.helperText}</td>
+                        <td style={{ padding: '4px 12px', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{ev.scoreLabel}</td>
                       </tr>
                     ))}
                   </tbody>
