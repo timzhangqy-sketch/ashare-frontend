@@ -10291,3 +10291,84 @@ main {
 .dashboard-page table tbody tr:hover {
   background: rgba(59, 130, 246, 0.05) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 6: Typography + Background Upgrade
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 全局背景提亮：#05080F → #10131b --- */
+body {
+  background-color: #10131b !important;
+}
+
+:root,
+[data-theme="dark"] {
+  --bg-base: #10131b !important;
+  --bg-surface: #181c23 !important;
+  --bg-card: rgba(16, 23, 35, 0.8) !important;
+}
+
+/* --- 英文标题字体：Space Grotesk --- */
+.topbar-title,
+.card-title,
+.page-header h1,
+h1, h2, h3 {
+  font-family: 'Space Grotesk', 'Noto Sans SC', 'PingFang SC', sans-serif !important;
+}
+
+/* --- 正文/标签字体：Inter + 中文回退 --- */
+body,
+.card-body,
+td,
+span,
+p,
+label {
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+/* --- 数字/数据字体：JetBrains Mono --- */
+.tabular-nums,
+.c-up, .c-down,
+[style*="tabularNums"],
+[style*="tabular-nums"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* --- Dashboard 表头风格升级 --- */
+.dashboard-page table thead th {
+  font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: #8c909f !important;
+}
+
+/* --- Dashboard 表格数据行字体 --- */
+.dashboard-page table tbody td {
+  font-family: 'Inter', 'PingFang SC', sans-serif !important;
+  font-size: 12px !important;
+}
+
+/* --- Dashboard 卡片背景同步提亮 --- */
+.dashboard-page .card {
+  background: rgba(24, 28, 35, 0.7) !important;
+  border: 1px solid rgba(140, 144, 159, 0.1) !important;
+}
+
+/* --- 侧边栏背景同步 --- */
+.sidebar,
+[class*="sidebar"] {
+  background: #10131b !important;
+}
+
+/* --- TopBar 背景同步 --- */
+.topbar {
+  background: rgba(24, 28, 35, 0.75) !important;
+}
+
+/* --- 状态栏背景微调 --- */
+.status-bar {
+  background: #1c2027 !important;
+}
