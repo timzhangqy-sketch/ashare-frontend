@@ -10191,3 +10191,8 @@ main {
   border-radius: 2px !important;
 }
 
+/* --- 市场观点单列布局 --- */
+.dashboard-page .opinions-grid {
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+}
