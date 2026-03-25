@@ -265,7 +265,7 @@ export default function Dashboard() {
                           <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
                           <td style={{ padding: '4px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
                           <td style={{ padding: '4px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
-                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
+                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? 'var(--up)' : 'var(--down)') : 'var(--text-muted)' }}>
                             {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
                           </td>
                         </tr>
@@ -486,7 +486,7 @@ export default function Dashboard() {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 8px 2px' }}>
                                   <span style={{ fontSize: 10, color: 'var(--up)', whiteSpace: 'nowrap', minWidth: 32, textAlign: 'right' }}>{upCount}</span>
                                   <div style={{ flex: 1, display: 'flex', height: 8, overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
-                                    <div style={{ width: `${upPct}%`, background: 'var(--up, #ef4444)', borderRadius: '4px 0 0 4px', transition: 'width 0.3s' }} />
+                                    <div style={{ width: `${upPct}%`, background: 'var(--up, #ff5451)', borderRadius: '4px 0 0 4px', transition: 'width 0.3s' }} />
                                     <div style={{ width: `${downPct}%`, background: 'var(--down, #22c55e)', borderRadius: '0 4px 4px 0', transition: 'width 0.3s', marginLeft: 'auto' }} />
                                   </div>
                                   <span style={{ fontSize: 10, color: 'var(--down)', whiteSpace: 'nowrap', minWidth: 32 }}>{downCount}</span>
@@ -573,7 +573,7 @@ export default function Dashboard() {
                           <span style={{ color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
                         <td style={{ padding: '4px 12px', fontSize: 12, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ padding: '4px 12px', fontSize: 12, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 12, textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
                         <td style={{ padding: '4px 12px', fontSize: 11, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
@@ -616,25 +616,25 @@ export default function Dashboard() {
                         background: hoveredConceptRow === i ? 'rgba(59, 130, 246, 0.05)' : 'transparent',
                       }}
                     >
-                      <td style={{ padding: '4px 12px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', color: 'var(--text-muted)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {c.rank ?? i + 1}
                       </td>
                       <td style={{ padding: '4px 12px', color: 'var(--text-primary)', fontWeight: 500 }}>
                         {c.name}
                       </td>
-                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (c.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (c.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {c.pct_change != null ? `${c.pct_change >= 0 ? '+' : ''}${c.pct_change.toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ padding: '4px 12px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', textAlign: 'right', color: 'var(--text-secondary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {c.hot != null ? Math.round(c.hot).toLocaleString() : '—'}
                       </td>
                       <td style={{ padding: '4px 12px', textAlign: 'center', fontSize: '11px' }}>
                         {(c.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span> : (c.heat_persistence ?? 0) === 2 ? '2天' : <span style={{ color: 'var(--text-muted)' }}>首日</span>}
                       </td>
-                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {c.momentum_3d != null ? `${c.momentum_3d >= 0 ? '+' : ''}${(c.momentum_3d ?? 0).toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '-'}
                       </td>
                       <td style={{ padding: '4px 12px', textAlign: 'right', color: (c.limit_up_count ?? 0) > 0 ? 'var(--text-secondary)' : 'var(--text-muted)', fontVariantNumeric: 'tabular-nums' }}>
@@ -679,17 +679,17 @@ export default function Dashboard() {
                         background: hoveredHotStockRow === i ? 'rgba(59, 130, 246, 0.05)' : 'transparent',
                       }}
                     >
-                      <td style={{ padding: '4px 12px', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{s.rank ?? i + 1}</td>
+                      <td style={{ padding: '4px 12px', color: 'var(--text-muted)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{s.rank ?? i + 1}</td>
                       <td style={{ padding: '4px 12px', fontWeight: 500 }}>
                         <span style={{ color: 'var(--text-primary)', cursor: s.ts_code ? 'pointer' : 'default' }} onClick={() => s.ts_code && handleStockClick(s.ts_code, s.name)}>{s.name}</span>{s.is_leader && <span title="概念龙头" style={{ marginLeft: '4px', fontSize: '11px' }}>👑</span>}
                       </td>
                       <td style={{ padding: '4px 12px', color: 'var(--text-primary)', fontWeight: 500 }}>
                         {s.primary_concept ? s.primary_concept : '—'}
                       </td>
-                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (s.concept_momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums', fontSize: '11px' }}>
+                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (s.concept_momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums', fontSize: '11px' }}>
                         {s.concept_momentum_3d != null ? `${s.concept_momentum_3d >= 0 ? '+' : ''}${(s.concept_momentum_3d ?? 0).toFixed(1)}%` : '—'}
                       </td>
-                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (s.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', textAlign: 'right', color: (s.pct_change ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {s.pct_change != null ? `${s.pct_change >= 0 ? '+' : ''}${s.pct_change.toFixed(2)}%` : '—'}
                       </td>
                       <td style={{ padding: '4px 12px', textAlign: 'center', fontSize: '11px' }}>
@@ -732,17 +732,17 @@ export default function Dashboard() {
                 <tbody>
                   {momentum.length > 0 ? momentum.map((c, i) => (
                     <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_up_count ?? 0}</td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{Math.round((c.up_ratio ?? 0) * 100)}%</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontSize: '11px' }}>
@@ -778,21 +778,21 @@ export default function Dashboard() {
                 <tbody>
                   {surge.length > 0 ? surge.map((c, i) => (
                     <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : 'var(--text-primary)' }}>
                         {(c.concept_vr3 ?? 0).toFixed(1)}x
                       </td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
                         {(c.amount_3d_avg ?? 0).toFixed(1)}亿
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px', color: 'var(--text-secondary)', fontSize: '11px' }}>
                         {c.leader_top_stock || '—'}
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', fontSize: '11px', color: (c.leader_top_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', fontSize: '11px', color: (c.leader_top_pct_chg ?? 0) >= 0 ? 'var(--up)' : 'var(--down)' }}>
                         {c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${(c.leader_top_pct_chg ?? 0).toFixed(1)}%` : '—'}
                       </td>
                     </tr>
@@ -823,16 +823,16 @@ export default function Dashboard() {
                 <tbody>
                   {retreat.length > 0 ? retreat.map((c, i) => (
                     <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: 'var(--text-muted)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: 'var(--text-primary)', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.today_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
                       <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--text-secondary)', fontVariantNumeric: 'tabular-nums' }}>{c.limit_down_count ?? 0}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: 'var(--down)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
                         {c.leader_avg_pct_chg != null ? `${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                     </tr>
@@ -876,7 +876,7 @@ export default function Dashboard() {
                           <span style={{ color: 'var(--text-primary)', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
                         <td style={{ padding: '4px 12px', fontSize: 13, color: 'var(--text-secondary)' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
+                        <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{item.scoreLabel}</td>
                         <td style={{ padding: '4px 12px', fontSize: 12, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
@@ -914,7 +914,7 @@ export default function Dashboard() {
                       <tr key={ev.id} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
                         <td style={{ padding: '4px 12px', color: 'var(--warn)', fontWeight: 500 }}>{ev.name}</td>
                         <td style={{ padding: '4px 12px', color: 'var(--text-secondary)' }}>{ev.helperText}</td>
-                        <td style={{ padding: '4px 12px', textAlign: 'right', fontWeight: 500, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{ev.scoreLabel}</td>
+                        <td style={{ padding: '4px 12px', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: 'var(--text-primary)' }}>{ev.scoreLabel}</td>
                       </tr>
                     ))}
                   </tbody>
