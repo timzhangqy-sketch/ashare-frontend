@@ -28,7 +28,6 @@ function OpinionCard({ opinion }: { opinion: { author: string; title: string; co
   return (
     <div style={{
       background: 'var(--bg-card, rgba(255,255,255,0.03))',
-      borderRadius: '6px',
       padding: '10px 14px',
       cursor: 'pointer',
       transition: 'background 0.15s',
@@ -241,7 +240,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
                   <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
@@ -326,12 +325,12 @@ export default function Dashboard() {
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>板块×策略共振</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {resonance.resonance_hits.map((hit, i) => (
-                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                <div key={`rh-${i}`} style={{ background: 'rgba(82,196,26,0.1)', borderLeft: '3px solid #52c41a', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
                   🎯 <strong>{hit.concept_name}</strong>板块连续强势（3日+{(hit.momentum_3d ?? 0).toFixed(2)}%），板块内策略触发{(hit.stocks ?? []).length}只：{(hit.stocks ?? []).map(s => s.name).join('、')}
                 </div>
               ))}
               {resonance.retreat_warnings.map((warn, i) => (
-                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', borderRadius: '4px', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
+                <div key={`rw-${i}`} style={{ background: 'rgba(250,173,20,0.1)', borderLeft: '3px solid #faad14', padding: '8px 12px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 400 }}>
                   ⚠️ <strong>{warn.concept_name}</strong>板块退潮中（今日{(warn.today_pct_chg ?? 0).toFixed(2)}%），持仓{(warn.stocks ?? []).map(s => s.name).join('、')}属该板块，注意卖点
                 </div>
               ))}
@@ -348,7 +347,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
@@ -420,7 +419,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）<InfoTip data={DASHBOARD_META.turnover_chart} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               {(() => {
                 const mi = (viewModel as any)?.marketIndex;
                 const turnoverHistory: any[] = mi?.turnoverHistory ?? [];
@@ -527,8 +526,7 @@ export default function Dashboard() {
                           contentStyle={{
                             background: 'rgba(15,23,42,0.95)',
                             border: '1px solid rgba(255,255,255,0.12)',
-                            borderRadius: '8px',
-                            fontSize: '12px',
+                                                       fontSize: '12px',
                             padding: '8px 12px',
                           }}
                           labelStyle={{ color: '#94a3b8', marginBottom: '4px' }}
@@ -537,7 +535,7 @@ export default function Dashboard() {
                             const d = payload[0]?.payload;
                             if (!d) return null;
                             return (
-                              <div style={{ background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '8px', fontSize: '12px', padding: '8px 12px' }}>
+                              <div style={{ background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '2px', fontSize: '12px', padding: '8px 12px' }}>
                                 <div style={{ color: '#94a3b8', marginBottom: '4px' }}>{label}</div>
                                 <div style={{ color: '#3b82f6' }}>成交额：{Math.round(d.amount ?? 0).toLocaleString()} 亿</div>
                                 {d.breadth_score != null && <div style={{ color: '#faad14' }}>市场宽度：{d.breadth_score} 分</div>}
@@ -591,7 +589,7 @@ export default function Dashboard() {
                               return (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 8px 2px' }}>
                                   <span style={{ fontSize: 10, color: 'var(--up)', whiteSpace: 'nowrap', minWidth: 32, textAlign: 'right' }}>{upCount}</span>
-                                  <div style={{ flex: 1, display: 'flex', height: 8, borderRadius: 4, overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
+                                  <div style={{ flex: 1, display: 'flex', height: 8, overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
                                     <div style={{ width: `${upPct}%`, background: 'var(--up, #ef4444)', borderRadius: '4px 0 0 4px', transition: 'width 0.3s' }} />
                                     <div style={{ width: `${downPct}%`, background: 'var(--down, #22c55e)', borderRadius: '0 4px 4px 0', transition: 'width 0.3s', marginLeft: 'auto' }} />
                                   </div>
@@ -611,7 +609,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>热门个股 Top10<InfoTip data={DASHBOARD_META.hot_stocks} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
@@ -672,7 +670,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
-            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
+            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '12px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
@@ -719,7 +717,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
-            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
+            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '12px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
@@ -765,7 +763,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
-            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: '6px', padding: '8px 12px', flex: 1 }}>
+            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '12px' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
@@ -810,13 +808,13 @@ export default function Dashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   买点 {opp?.metrics?.find(m => m.id === 'opp-buy')?.value ?? '—'} | 共振 {opp?.metrics?.find(m => m.id === 'opp-resonance')?.value ?? '—'} | 候选 {opp?.metrics?.find(m => m.id === 'opp-watchlist')?.value ?? '—'}
                 </span>
                 <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
               </div>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '8px 12px' }}>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
                 <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                   <colgroup>
@@ -857,13 +855,13 @@ export default function Dashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>风控<InfoTip data={DASHBOARD_META.risk_alerts} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   拦截 {risk?.metrics?.find(m => m.id === 'risk-gate')?.value ?? '—'} | 最高风险 {risk?.metrics?.find(m => m.id === 'risk-highest')?.value ?? '—'}
                 </span>
                 <a href="/risk" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>风控 →</a>
               </div>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '8px 12px' }}>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(risk?.events?.length ?? 0) > 0 ? (
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
@@ -899,7 +897,7 @@ export default function Dashboard() {
               <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {portfolioRaw && (
-                  <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                  <span style={{ fontSize: 11, color: 'var(--text-muted)', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                     持仓 {portfolioRaw.position_count ?? '—'} | NAV {(() => { const v = portfolioRaw.snapshot?.total_nav; return v != null ? (v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString()) : '—'; })()}
                   </span>
                 )}
@@ -942,7 +940,7 @@ export default function Dashboard() {
               ];
 
               return (
-                <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: 6, padding: '8px 12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 12px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
                     {cells.map((c) => (
                       <div key={c.label}>
@@ -967,14 +965,14 @@ export default function Dashboard() {
                 {(() => {
                   const failed = sys?.metrics?.find(m => m.id === 'system-failed');
                   const isOk = (failed?.value ?? '0') === '0';
-                  return <span style={{ fontSize: 11, color: isOk ? '#52c41a' : '#ff4d4f', background: 'rgba(255,255,255,0.05)', borderRadius: 4, padding: '2px 6px' }}>
+                  return <span style={{ fontSize: 11, color: isOk ? '#52c41a' : '#ff4d4f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                     {isOk ? '运行正常' : `异常 ${failed?.value ?? ''}步`}
                   </span>;
                 })()}
                 <a href="/system" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>系统 →</a>
               </div>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', borderRadius: 6, padding: '10px 12px' }}>
+            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '10px 12px' }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px', fontSize: 13 }}>
                 {(sys?.metrics ?? []).map((m) => (
                   <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

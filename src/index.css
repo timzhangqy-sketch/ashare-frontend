@@ -10089,3 +10089,105 @@ main {
   border: 1px solid rgba(54, 57, 66, 0.3) !important;
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 5: Dashboard Card Refinement
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- Dashboard 页面整体 --- */
+.dashboard-page {
+  gap: 12px !important;
+}
+
+/* --- Dashboard section grid 间距 --- */
+.dashboard-section-grid {
+  gap: 12px !important;
+  margin-bottom: 0 !important;
+}
+
+/* --- Dashboard 内所有 card --- */
+.dashboard-page .card {
+  background: #0D1321 !important;
+  border: 1px solid rgba(30, 45, 69, 0.4) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  transition: border-color 150ms ease !important;
+  overflow: hidden !important;
+}
+
+.dashboard-page .card:hover {
+  border-color: rgba(45, 65, 96, 0.6) !important;
+}
+
+/* --- card-title 统一为中英双语风格 --- */
+.dashboard-page .card-title {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #E8ECF1 !important;
+  letter-spacing: 0.02em !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(30, 45, 69, 0.3) !important;
+  margin-bottom: 8px !important;
+}
+
+/* --- card-body 内边距统一 --- */
+.dashboard-page .card-body,
+.dashboard-page .dashboard-module-body {
+  padding: 12px !important;
+}
+
+/* --- KPI 摘要卡片行 --- */
+.dashboard-page > .card:first-of-type {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* --- 市场观点区域 --- */
+.dashboard-page .opinions-grid {
+  gap: 12px !important;
+}
+
+/* --- 板块表格包装 --- */
+.dashboard-page .sector-table-wrap {
+  font-size: 12px !important;
+}
+
+/* --- 板块行特殊处理 --- */
+.dashboard-sector-row .card {
+  padding: 0 !important;
+}
+
+.dashboard-sector-row .card-body {
+  padding: 8px 12px !important;
+}
+
+/* --- Dashboard 内 data-table 紧凑化 --- */
+.dashboard-page .data-table th {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #5A6B85 !important;
+  padding: 6px 8px !important;
+  background: rgba(13, 19, 33, 0.6) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  border-bottom: 1px solid rgba(30, 45, 69, 0.3) !important;
+}
+
+.dashboard-page .data-table td {
+  font-size: 12px !important;
+  padding: 5px 8px !important;
+  border-bottom: 1px solid rgba(30, 45, 69, 0.15) !important;
+}
+
+.dashboard-page .data-table tr:hover td {
+  background: rgba(28, 42, 66, 0.3) !important;
+}
+
+/* --- 来源摘要条 --- */
+.dashboard-source-summary {
+  font-size: 11px !important;
+  padding: 4px 12px !important;
+  background: rgba(13, 19, 33, 0.4) !important;
+  border: 1px solid rgba(30, 45, 69, 0.2) !important;
+  border-radius: 2px !important;
+}
+
