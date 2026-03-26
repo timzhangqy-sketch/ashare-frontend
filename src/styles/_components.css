@@ -743,7 +743,9 @@
 .data-table tbody td.s-td-name,
 .s-table tbody td.s-td-name,
 .data-table tbody td:nth-child(2),
-.s-table tbody td:nth-child(2) {
+.s-table tbody td:nth-child(2),
+.data-table tbody td:nth-child(3),
+.s-table tbody td:nth-child(3) {
   font-weight: 500 !important;
   font-size: 12px !important;
   font-family: var(--s-font-body) !important;
