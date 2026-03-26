@@ -729,3 +729,52 @@
 [class*="-page"] [class*="tab"] {
   border-radius: 0 !important;
 }
+
+/* === 全局表格字体统一（最高优先级） === */
+.data-table tbody td,
+.s-table tbody td {
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* 名称列加粗（第2列或带 s-td-name 的列） */
+.data-table tbody td.s-td-name,
+.s-table tbody td.s-td-name,
+.data-table tbody td:nth-child(2),
+.s-table tbody td:nth-child(2) {
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  font-family: var(--s-font-body) !important;
+}
+
+/* 表头统一 */
+.data-table thead th,
+.s-table thead th {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  font-family: var(--s-font-headline) !important;
+  color: var(--s-text-muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* 表头行背景统一 */
+.data-table thead tr,
+.s-table thead tr {
+  background: var(--s-bg-container-high) !important;
+}
+
+/* 行分隔线统一 */
+.data-table tbody tr,
+.s-table tbody tr {
+  border-bottom: 1px solid var(--s-border-subtle) !important;
+  height: 32px !important;
+}
+
+/* hover 统一 */
+.data-table tbody tr:hover,
+.s-table tbody tr:hover {
+  background: rgba(54, 57, 66, 0.3) !important;
+}
