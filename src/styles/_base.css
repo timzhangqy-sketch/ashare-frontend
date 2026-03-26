@@ -1,0 +1,172 @@
+/* ═══════════════════════════════════════════════════════════════
+   QuantEdge Sapphire — Base Reset & Global Overrides
+   圆角 + 底色 + 阴影 + 字体 + 背景
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme Override — Step 1: 圆角 + 底色 + 阴影
+   2026-03-25 追加，覆盖所有前面的同名变量
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 深色模式令牌覆盖 --- */
+:root,
+[data-theme="dark"] {
+  --bg-base: #05080F !important;
+  --radius-xs: 2px !important;
+  --radius-sm: 2px !important;
+  --radius-md: 2px !important;
+  --radius-lg: 2px !important;
+  --radius-pill: 2px !important;
+  --shadow-card: none !important;
+  --shadow-elevated: 0 4px 24px rgba(0,0,0,0.6) !important;
+}
+
+/* --- 浅色模式也同步 --- */
+[data-theme="light"] {
+  --radius-xs: 2px !important;
+  --radius-sm: 2px !important;
+  --radius-md: 2px !important;
+  --radius-lg: 2px !important;
+  --radius-pill: 2px !important;
+  --shadow-card: none !important;
+}
+
+/* --- body底色强制覆盖 --- */
+body {
+  background-color: #05080F !important;
+}
+
+/* --- 所有卡片强制方角+无阴影 --- */
+.stat-card,
+.portfolio-summary-card,
+.execution-metric-card,
+.system-metric-card,
+.research-summary-card,
+.signals-summary-card {
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}
+
+/* --- 数据表格方角 --- */
+.data-table,
+.data-table th:first-child,
+.data-table th:last-child,
+.data-table tr:last-child td:first-child,
+.data-table tr:last-child td:last-child {
+  border-radius: 0 !important;
+}
+
+/* --- 通用卡片容器方角 --- */
+[class*="card"],
+[class*="panel"],
+[class*="module"],
+[class*="section"] {
+  border-radius: 2px !important;
+}
+
+/* --- badge / tag 保持小圆角但缩小 --- */
+[class*="badge"],
+[class*="tag"],
+[class*="chip"] {
+  border-radius: 2px !important;
+}
+
+/* --- 按钮方角 --- */
+button,
+.btn,
+[class*="button"] {
+  border-radius: 2px !important;
+}
+
+/* --- 输入框方角 --- */
+input,
+select,
+textarea {
+  border-radius: 2px !important;
+}
+
+/* --- Tab 方角 --- */
+[class*="tab"] {
+  border-radius: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 6: Typography + Background Upgrade
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 全局背景提亮：#05080F → #10131b --- */
+body {
+  background-color: #10131b !important;
+}
+
+:root,
+[data-theme="dark"] {
+  --bg-base: #10131b !important;
+  --bg-surface: #181c23 !important;
+  --bg-card: rgba(16, 23, 35, 0.8) !important;
+}
+
+/* --- 英文标题字体：Space Grotesk --- */
+.topbar-title,
+.card-title,
+.page-header h1,
+h1, h2, h3 {
+  font-family: 'Space Grotesk', 'Noto Sans SC', 'PingFang SC', sans-serif !important;
+}
+
+/* --- 正文/标签字体：Inter + 中文回退 --- */
+body,
+.card-body,
+td,
+span,
+p,
+label {
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+/* --- 数字/数据字体：JetBrains Mono --- */
+.tabular-nums,
+.c-up, .c-down,
+[style*="tabularNums"],
+[style*="tabular-nums"] {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* --- Dashboard 表头风格升级 --- */
+.dashboard-page table thead th {
+  font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: #8c909f !important;
+}
+
+/* --- Dashboard 表格数据行字体 --- */
+.dashboard-page table tbody td {
+  font-family: 'Inter', 'PingFang SC', sans-serif !important;
+  font-size: 12px !important;
+}
+
+/* --- Dashboard 卡片背景同步提亮 --- */
+.dashboard-page .card {
+  background: rgba(24, 28, 35, 0.7) !important;
+  border: 1px solid rgba(140, 144, 159, 0.1) !important;
+}
+
+/* --- 侧边栏背景同步 --- */
+.sidebar,
+[class*="sidebar"] {
+  background: #10131b !important;
+}
+
+/* --- TopBar 背景同步 --- */
+.topbar {
+  background: rgba(24, 28, 35, 0.75) !important;
+}
+
+/* --- 状态栏背景微调 --- */
+.status-bar {
+  background: #1c2027 !important;
+}

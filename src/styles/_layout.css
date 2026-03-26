@@ -1,0 +1,294 @@
+/* ═══════════════════════════════════════════════════════════════
+   QuantEdge Sapphire — Layout Components
+   StatusBar + Sidebar + TopBar
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 2: Bottom Status Bar
+   ═══════════════════════════════════════════════════════════════ */
+
+.status-bar {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 32px !important;
+  z-index: 1000 !important;
+  background: #1c2027 !important;
+  border-top: 1px solid rgba(54, 57, 66, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 16px !important;
+  font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace !important;
+  font-size: 11px !important;
+  font-variant-numeric: tabular-nums !important;
+  color: #8B9AB5 !important;
+}
+
+.status-bar-left,
+.status-bar-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.status-bar-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.status-bar-label {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.status-bar-value {
+  color: #E8ECF1 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+.status-bar-up {
+  color: #ff5451 !important;
+}
+
+.status-bar-down {
+  color: #22C55E !important;
+}
+
+.status-bar-neutral {
+  color: #8B9AB5 !important;
+}
+
+.status-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  display: inline-block !important;
+}
+
+.status-dot-ok {
+  background: #22C55E !important;
+}
+
+.status-dot-error {
+  background: #ff5451 !important;
+}
+
+.status-dot-warn {
+  background: #F59E0B !important;
+}
+
+.status-bar-divider {
+  width: 1px !important;
+  height: 16px !important;
+  background: #363942 !important;
+}
+
+/* --- 主内容区底部留出状态栏空间 --- */
+.main-content,
+.page-container,
+main {
+  padding-bottom: 40px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 3: Icon-Only Sidebar (56px)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* --- 覆盖CSS变量 --- */
+:root {
+  --sidebar-width: 56px !important;
+}
+
+/* --- 侧边栏容器 --- */
+.sidebar {
+  width: 56px !important;
+  min-width: 56px !important;
+  max-width: 56px !important;
+  background: #0A0E16 !important;
+  border-right: 1px solid rgba(54, 57, 66, 0.15) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+}
+
+/* --- Logo图标 --- */
+.sidebar-logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #adc6ff;
+  letter-spacing: 1px;
+  cursor: default;
+  border-bottom: 1px solid rgba(54, 57, 66, 0.15);
+}
+
+/* --- 隐藏旧Logo --- */
+.sidebar-logo {
+  display: none !important;
+}
+
+/* --- 导航容器 --- */
+.sidebar-nav {
+  padding: 4px 0 !important;
+}
+
+/* --- 导航项（图标模式）--- */
+.sidebar-icon-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 56px !important;
+  height: 40px !important;
+  color: #5A6B85 !important;
+  transition: all 150ms ease !important;
+  text-decoration: none !important;
+  border: none !important;
+  background: transparent !important;
+  border-left: 2px solid transparent !important;
+}
+
+.sidebar-icon-item svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sidebar-icon-item:hover {
+  color: #adc6ff !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.sidebar-icon-active {
+  color: #adc6ff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-left-color: #adc6ff !important;
+}
+
+/* --- 分隔线 --- */
+.sidebar-separator {
+  margin: 6px 12px !important;
+  border: none !important;
+  border-top: 1px solid rgba(54, 57, 66, 0.3) !important;
+}
+
+/* --- 隐藏旧的文字和section label --- */
+.nav-section-label,
+.sidebar .nav-label,
+.sidebar .nav-label-wrap {
+  display: none !important;
+}
+
+/* --- TopBar左偏移修正 --- */
+.top-bar {
+  left: 56px !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Sapphire Theme — Step 4: TopBar Visual Refinement
+   ═══════════════════════════════════════════════════════════════ */
+
+.topbar {
+  background: rgba(10, 14, 22, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid rgba(54, 57, 66, 0.15) !important;
+}
+
+.topbar-title {
+  color: #adc6ff !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.topbar-title-hint {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+}
+
+.topbar-index-strip {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+.topbar-index-name {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif !important;
+}
+
+.topbar-index-close {
+  color: #E8ECF1 !important;
+  font-size: 12px !important;
+}
+
+.topbar-index-pct {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.topbar-sep {
+  background: rgba(54, 57, 66, 0.3) !important;
+}
+
+.date-nav .date-input {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12px !important;
+  color: #8B9AB5 !important;
+  background: rgba(28, 32, 39, 0.6) !important;
+  border: 1px solid rgba(54, 57, 66, 0.2) !important;
+  border-radius: 2px !important;
+}
+
+.date-arrow-btn,
+.date-today-btn {
+  border-radius: 2px !important;
+  color: #5A6B85 !important;
+}
+
+.date-arrow-btn:hover,
+.date-today-btn:hover {
+  color: #adc6ff !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.date-weekday {
+  color: #5A6B85 !important;
+  font-size: 11px !important;
+}
+
+.regime-tag {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  border-radius: 2px !important;
+  padding: 1px 8px !important;
+}
+
+.theme-btn {
+  border-radius: 2px !important;
+  color: #5A6B85 !important;
+}
+
+.theme-btn:hover {
+  color: #adc6ff !important;
+}
+
+.pipeline-btn {
+  border-radius: 2px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.pipeline-popup {
+  border-radius: 2px !important;
+  background: #1c2027 !important;
+  border: 1px solid rgba(54, 57, 66, 0.3) !important;
+}
