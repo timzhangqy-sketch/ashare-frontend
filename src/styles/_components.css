@@ -781,3 +781,32 @@
 .s-table tbody tr:hover {
   background: rgba(54, 57, 66, 0.3) !important;
 }
+
+/* === 涨跌色最高优先级（覆盖全局 td color）=== */
+.data-table tbody td.c-up,
+.s-table tbody td.c-up,
+td.c-up,
+.c-up {
+  color: #ff5451 !important;
+}
+
+.data-table tbody td.c-down,
+.s-table tbody td.c-down,
+td.c-down,
+.c-down {
+  color: #22C55E !important;
+}
+
+.data-table tbody td.s-up,
+.s-table tbody td.s-up,
+td.s-up,
+.s-up {
+  color: #ff5451 !important;
+}
+
+.data-table tbody td.s-down,
+.s-table tbody td.s-down,
+td.s-down,
+.s-down {
+  color: #22C55E !important;
+}
