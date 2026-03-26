@@ -731,13 +731,17 @@
 }
 
 /* === 全局表格字体统一（最高优先级） === */
+.data-table tbody,
+.s-table tbody {
+  color: #e0e2ed;
+}
+
 .data-table tbody td,
 .s-table tbody td {
   font-size: 12px !important;
   font-weight: 400 !important;
   font-family: var(--s-font-mono) !important;
   font-variant-numeric: tabular-nums !important;
-  color: var(--s-text-primary) !important;
 }
 
 /* 名称列加粗（第2列或带 s-td-name 的列） */
