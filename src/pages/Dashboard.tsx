@@ -216,8 +216,8 @@ export default function Dashboard() {
       {/* ═══ 第1行：市场观点 + 行动清单 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>市场观点<InfoTip data={DASHBOARD_META.market_opinions} /></h3>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>市场观点<InfoTip data={DASHBOARD_META.market_opinions} /></h3>
             {(() => {
               const opinions = viewModel?.marketOpinions || [];
               if (opinions.length === 0) {
@@ -234,9 +234,9 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
+            <div className="s-card-inner" style={{ overflow: 'auto' }}>
               {hasFills && (
                 <>
                   <table className="s-table">
@@ -311,9 +311,9 @@ export default function Dashboard() {
       {/* ═══ 第2行：成交额图 + 组合概览&今日机会 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '7fr 5fr', alignItems: 'stretch' }}>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>两市成交额（亿元）<InfoTip data={DASHBOARD_META.turnover_chart} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>两市成交额（亿元）<InfoTip data={DASHBOARD_META.turnover_chart} /></h3>
+            <div className="s-card-inner">
               {(() => {
                 const mi = (viewModel as any)?.marketIndex;
                 const turnoverHistory: any[] = mi?.turnoverHistory ?? [];
@@ -344,7 +344,7 @@ export default function Dashboard() {
                 return (
                   <>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 4px 4px', fontSize: '12px' }}>
-                      <span style={{ color: '#c2c6d6' }}>
+                      <span className="s-text-secondary">
                         今日 <span style={{ color: '#e0e2ed', fontWeight: 700, fontSize: '16px' }}>
                           {latest ? Math.round(latest.amount).toLocaleString() : '—'}
                         </span> 亿
@@ -357,7 +357,7 @@ export default function Dashboard() {
                       </span>
                       {breadthScore != null && (
                         <span style={{ fontSize: '12px' }}>
-                          <span style={{ color: '#c2c6d6' }}>宽度 </span>
+                          <span className="s-text-secondary">宽度 </span>
                           <span style={{ color: '#e0e2ed', fontWeight: 600 }}>{breadthScore}</span>
                           {breadthDelta != null && (
                             <span style={{ color: breadthDelta > 0 ? '#52c41a' : breadthDelta < 0 ? '#ff4d4f' : '#e0e2ed', marginLeft: '2px' }}>
@@ -369,7 +369,7 @@ export default function Dashboard() {
                       )}
                         {avgPctChg != null && (
                           <span style={{ fontSize: '12px', marginLeft: '12px' }}>
-                            <span style={{ color: '#c2c6d6' }}>等权 </span>
+                            <span className="s-text-secondary">等权 </span>
                             <span style={{ color: avgPctChg > 0 ? '#ff5451' : avgPctChg < 0 ? '#22C55E' : '#e0e2ed', fontWeight: 600 }}>
                               {avgPctChg > 0 ? '+' : ''}{avgPctChg.toFixed(2)}%
                             </span>
@@ -503,7 +503,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合概览<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
+              <h3 className="card-title s-card-title" style={{ margin: 0 }}>组合概览<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
               <a href="/portfolio" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>组合 →</a>
             </div>
             {portfolioRaw ? (() => {
@@ -550,10 +550,10 @@ export default function Dashboard() {
             <div style={{ borderTop: '1px solid rgba(30, 45, 69, 0.3)', margin: '12px 0' }}></div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>今日机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
+              <h3 className="card-title s-card-title" style={{ margin: 0 }}>今日机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
               <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
+            <div className="s-card-inner">
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
                 <table className="s-table">
                   <thead>
@@ -587,9 +587,9 @@ export default function Dashboard() {
       {/* ═══ 第3行：概念热度 + 热门个股 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
+            <div className="s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
@@ -615,7 +615,7 @@ export default function Dashboard() {
                         {c.hot != null ? Math.round(c.hot).toLocaleString() : '—'}
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        {(c.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span> : (c.heat_persistence ?? 0) === 2 ? '2天' : <span style={{ color: '#8c909f' }}>首日</span>}
+                        {(c.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span> : (c.heat_persistence ?? 0) === 2 ? '2天' : <span className="s-text-muted">首日</span>}
                       </td>
                       <td style={{ textAlign: 'right' }} className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
                         {c.momentum_3d != null ? `${c.momentum_3d >= 0 ? '+' : ''}${(c.momentum_3d ?? 0).toFixed(2)}%` : '—'}
@@ -639,9 +639,9 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>热门个股 Top10<InfoTip data={DASHBOARD_META.hot_stocks} /></h3>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>热门个股 Top10<InfoTip data={DASHBOARD_META.hot_stocks} /></h3>
+            <div className="s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
@@ -671,7 +671,7 @@ export default function Dashboard() {
                         {s.pct_change != null ? `${s.pct_change >= 0 ? '+' : ''}${s.pct_change.toFixed(2)}%` : '—'}
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        {(s.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{s.heat_persistence}天</span> : (s.heat_persistence ?? 0) === 2 ? '2天' : <span style={{ color: '#8c909f' }}>首日</span>}
+                        {(s.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{s.heat_persistence}天</span> : (s.heat_persistence ?? 0) === 2 ? '2天' : <span className="s-text-muted">首日</span>}
                       </td>
                       <td style={{ textAlign: 'center' }}>
                         {s.strategy_hit ? '🎯' : ''}
@@ -691,9 +691,9 @@ export default function Dashboard() {
       <section className="dashboard-section-grid dashboard-sector-row" style={{ gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'stretch' }}>
         {/* 左栏：强势板块 Top10 */}
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
-            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
+            <div className="sector-table-wrap s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
@@ -738,9 +738,9 @@ export default function Dashboard() {
         </div>
         {/* 中栏：异动板块 Top5 */}
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
-            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 4px 0' }}>异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
+            <div className="sector-table-wrap s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
@@ -784,9 +784,9 @@ export default function Dashboard() {
         </div>
         {/* 右栏：退潮板块 Top5 */}
         <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
-            <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title" style={{ margin: '0 0 4px 0' }}>退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
+            <div className="sector-table-wrap s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
@@ -828,7 +828,7 @@ export default function Dashboard() {
         {false && <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
+              <h3 className="card-title s-card-title" style={{ margin: 0 }}>机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   买点 {opp?.metrics?.find(m => m.id === 'opp-buy')?.value ?? '—'} | 共振 {opp?.metrics?.find(m => m.id === 'opp-resonance')?.value ?? '—'} | 候选 {opp?.metrics?.find(m => m.id === 'opp-watchlist')?.value ?? '—'}
@@ -836,7 +836,7 @@ export default function Dashboard() {
                 <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
               </div>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
+            <div className="s-card-inner">
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
                 <table className="s-table">
                   <thead>
@@ -869,7 +869,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>风控<InfoTip data={DASHBOARD_META.risk_alerts} /></h3>
+              <h3 className="card-title s-card-title" style={{ margin: 0 }}>风控<InfoTip data={DASHBOARD_META.risk_alerts} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   拦截 {risk?.metrics?.find(m => m.id === 'risk-gate')?.value ?? '—'} | 最高风险 {risk?.metrics?.find(m => m.id === 'risk-highest')?.value ?? '—'}
@@ -877,7 +877,7 @@ export default function Dashboard() {
                 <a href="/risk" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>风控 →</a>
               </div>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
+            <div className="s-card-inner">
               {(risk?.events?.length ?? 0) > 0 ? (
                 <table className="s-table">
                   <thead>
@@ -906,7 +906,7 @@ export default function Dashboard() {
         {false && <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
+              <h3 className="card-title s-card-title" style={{ margin: 0 }}>组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {portfolioRaw && (
                   <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
@@ -972,7 +972,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title" style={{ margin: 0, fontSize: '14px', fontWeight: 700 }}>系统<InfoTip data={DASHBOARD_META.system_health} /></h3>
+              <h3 className="card-title s-card-title" style={{ margin: 0 }}>系统<InfoTip data={DASHBOARD_META.system_health} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {(() => {
                   const failed = sys?.metrics?.find(m => m.id === 'system-failed');
