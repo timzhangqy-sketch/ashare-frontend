@@ -29,7 +29,7 @@ function SignalBadge({ label }: { label: string | null }) {
 function PctCell({ v, isDecimal = false }: { v: number | null | undefined; isDecimal?: boolean }) {
   if (v == null) return <td className="right numeric c-muted">--</td>;
   const n = isDecimal ? v * 100 : v;
-  const color = n > 0 ? 'var(--up)' : n < 0 ? 'var(--down)' : 'var(--text-muted)';
+  const color = n > 0 ? '#ff5451' : n < 0 ? '#22C55E' : '#8c909f';
   return (
     <td className="right numeric" style={{ color, fontWeight: 600 }}>
       {n > 0 ? '+' : ''}{n.toFixed(2)}%
@@ -97,19 +97,19 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
     <div>
       <div className="stat-grid">
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>观察池数量</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>观察池数量</div>
           <div className={`stat-value numeric c-cyan${loading ? ' loading' : ''}`}>{loading ? '--' : items.length}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>买入信号</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>买入信号</div>
           <div className={`stat-value numeric c-red${loading ? ' loading' : ''}`}>{loading ? '--' : buyCount}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>卖出信号</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>卖出信号</div>
           <div className={`stat-value numeric c-green${loading ? ' loading' : ''}`}>{loading ? '--' : sellCount}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>数据来源</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>数据来源</div>
           <div className="stat-value" style={{ fontSize: '16px', fontWeight: 700 }}>真实数据</div>
         </div>
       </div>
@@ -228,12 +228,12 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td style={{ textAlign: 'left' }}>
                             {s.primary_concept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                   {s.primary_concept}
                                 </span>
                                 {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                               </span>
-                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                            ) : <span style={{ color: '#8c909f' }}>—</span>}
                           </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <NumCell v={s.latest_close} />
@@ -257,12 +257,12 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td style={{ textAlign: 'left' }}>
                             {s.primary_concept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                   {s.primary_concept}
                                 </span>
                                 {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                               </span>
-                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                            ) : <span style={{ color: '#8c909f' }}>—</span>}
                           </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <td className="right numeric">{s.pool_day}</td>
@@ -287,12 +287,12 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td style={{ textAlign: 'left' }}>
                             {s.primary_concept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                   {s.primary_concept}
                                 </span>
                                 {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                               </span>
-                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                            ) : <span style={{ color: '#8c909f' }}>—</span>}
                           </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <PctCell v={(s as any).ret_t2} isDecimal />
@@ -316,12 +316,12 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td style={{ textAlign: 'left' }}>
                             {s.primary_concept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                   {s.primary_concept}
                                 </span>
                                 {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                               </span>
-                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                            ) : <span style={{ color: '#8c909f' }}>—</span>}
                           </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <td className="right numeric">{s.pool_day}</td>
@@ -345,12 +345,12 @@ export default function WatchlistTab({ strategy, onOpen, onBuy }: Props) {
                           <td style={{ textAlign: 'left' }}>
                             {s.primary_concept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                   {s.primary_concept}
                                 </span>
                                 {s.is_leader && <span title={s.leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                               </span>
-                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                            ) : <span style={{ color: '#8c909f' }}>—</span>}
                           </td>
                           <td className="center numeric-muted">{s.entry_date}</td>
                           <td className="right numeric">{s.pool_day}</td>

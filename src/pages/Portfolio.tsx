@@ -614,14 +614,14 @@ export default function Portfolio() {
               const subText = metric.helper ?? getSummaryMetricHelper(activeTab, metric.label);
               const valueColor =
                 metric.tone === 'up'
-                  ? 'var(--up)'
+                  ? '#ff5451'
                   : metric.tone === 'down'
-                    ? 'var(--down)'
+                    ? '#22C55E'
                     : metric.tone === 'warn'
-                      ? 'var(--warn)'
+                      ? '#F59E0B'
                       : metric.tone === 'muted'
-                        ? 'var(--text-muted)'
-                        : 'var(--text-primary)';
+                        ? '#8c909f'
+                        : '#e0e2ed';
               return (
                 <div
                   key={metric.label}
@@ -641,7 +641,7 @@ export default function Portfolio() {
                     style={{
                       fontSize: '11px',
                       fontWeight: 600,
-                      color: 'var(--text-secondary)',
+                      color: '#c2c6d6',
                       lineHeight: 1.3,
                       letterSpacing: '0.04em',
                     }}
@@ -702,7 +702,7 @@ export default function Portfolio() {
                 <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
               </tr></thead><tbody>
                 {stats.top_winners.length === 0 ? <tr><td colSpan={6} className="table-empty">暂无</td></tr> : stats.top_winners.map(r => (
-                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td style={{cursor:'pointer',color:'var(--accent)'}} onClick={() => setDrawerStock(getMockDetail(r.ts_code, r.name, [r.source_strategy], 0, 0))}>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
+                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td className="s-clickable s-accent" onClick={() => setDrawerStock(getMockDetail(r.ts_code, r.name, [r.source_strategy], 0, 0))}>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
                     <td className="right numeric">{r.hold_days}</td><td className="right numeric c-up">+{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-up">+{r.return_pct}%</td></tr>
                 ))}
               </tbody></table></div>
@@ -713,7 +713,7 @@ export default function Portfolio() {
                 <th>代码</th><th>名称</th><th>策略</th><th className="right">天数</th><th className="right">盈亏额</th><th className="right">回报率</th>
               </tr></thead><tbody>
                 {stats.top_losers.length === 0 ? <tr><td colSpan={6} className="table-empty">暂无</td></tr> : stats.top_losers.map(r => (
-                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td style={{cursor:'pointer',color:'var(--accent)'}} onClick={() => setDrawerStock(getMockDetail(r.ts_code, r.name, [r.source_strategy], 0, 0))}>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
+                  <tr key={r.ts_code}><td className="numeric">{r.ts_code}</td><td className="s-clickable s-accent" onClick={() => setDrawerStock(getMockDetail(r.ts_code, r.name, [r.source_strategy], 0, 0))}>{r.name}</td><td>{PF_STRATEGY_CN[r.source_strategy] ?? r.source_strategy}</td>
                     <td className="right numeric">{r.hold_days}</td><td className="right numeric c-down">{r.realized_pnl.toLocaleString()}</td><td className="right numeric c-down">{r.return_pct}%</td></tr>
                 ))}
               </tbody></table></div>
@@ -859,12 +859,12 @@ export default function Portfolio() {
                           <td style={{ textAlign: 'left' }}>
                             {row.primaryConcept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                   {row.primaryConcept}
                                 </span>
                                 {row.isLeader && <span title={row.leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                               </span>
-                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                            ) : <span className="s-text-muted">—</span>}
                           </td>
                           <td>
                             <div>{row.sourceStrategyLabel}</div>
@@ -886,7 +886,7 @@ export default function Portfolio() {
                               const display = row.actionLabel === 'ADD' ? '加入观察' : row.actionLabel;
                               if (!s || s === 'HOLD' || display === '持续持有' || display === '持有') {
                                 return (
-                                  <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 400 }}>
+                                  <span style={{ fontSize: 12, color: '#8c909f', fontWeight: 400 }}>
                                     持有
                                   </span>
                                 );
@@ -897,7 +897,7 @@ export default function Portfolio() {
                                     style={{
                                       fontSize: 11,
                                       fontWeight: 600,
-                                      color: 'var(--warn)',
+                                      color: '#F59E0B',
                                       background: 'rgba(245,158,11,0.08)',
                                       padding: '2px 8px',
                                       borderRadius: 3,
@@ -913,7 +913,7 @@ export default function Portfolio() {
                                     style={{
                                       fontSize: 11,
                                       fontWeight: 600,
-                                      color: 'var(--critical)',
+                                      color: '#DC2626',
                                       background: 'rgba(220,38,38,0.08)',
                                       padding: '2px 8px',
                                       borderRadius: 3,
@@ -924,7 +924,7 @@ export default function Portfolio() {
                                 );
                               }
                               return (
-                                <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                                <span className="s-text-sm s-text-secondary">
                                   {display || s || '—'}
                                 </span>
                               );
@@ -1002,12 +1002,12 @@ export default function Portfolio() {
                           <td style={{ textAlign: 'left' }}>
                             {row.primaryConcept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                                <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                   {row.primaryConcept}
                                 </span>
                                 {row.isLeader && <span title={row.leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                               </span>
-                            ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                            ) : <span className="s-text-muted">—</span>}
                           </td>
                           <td>
                             <div>{row.sourceStrategyLabel}</div>

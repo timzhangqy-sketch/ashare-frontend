@@ -537,3 +537,110 @@
   color: var(--s-text-primary) !important;
   font-size: 12px !important;
 }
+
+/* === 持仓中心（Portfolio） === */
+.portfolio-page .card,
+.portfolio-page > section.card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  box-shadow: none !important;
+}
+
+.portfolio-page .card:hover {
+  border-color: var(--s-border-strong) !important;
+}
+
+.portfolio-page .card-header {
+  background: var(--s-bg-surface) !important;
+  border-bottom: 1px solid var(--s-border) !important;
+}
+
+.portfolio-page .card-body {
+  padding: 12px 16px !important;
+}
+
+/* KPI 摘要卡片 */
+.portfolio-page .stat-card,
+.portfolio-page .portfolio-summary-card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  box-shadow: none !important;
+}
+
+.portfolio-page .stat-value,
+.portfolio-page .portfolio-summary-value {
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--s-text-primary) !important;
+}
+
+.portfolio-page .stat-label {
+  font-size: 11px !important;
+  color: var(--s-text-muted) !important;
+  font-weight: 500 !important;
+}
+
+/* 持仓表格 */
+.portfolio-page .data-table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+.portfolio-page .data-table thead tr,
+.portfolio-page .data-table thead {
+  background: var(--s-bg-container-high) !important;
+}
+
+.portfolio-page .data-table thead th {
+  font-family: var(--s-font-headline) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: var(--s-text-muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 6px 12px !important;
+  border: none !important;
+}
+
+.portfolio-page .data-table tbody tr {
+  border-bottom: 1px solid var(--s-border-subtle) !important;
+  transition: background-color 150ms ease !important;
+  height: 32px !important;
+}
+
+.portfolio-page .data-table tbody tr:hover {
+  background: rgba(54, 57, 66, 0.3) !important;
+}
+
+.portfolio-page .data-table tbody td {
+  padding: 4px 12px !important;
+  font-size: 11px !important;
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  vertical-align: middle !important;
+}
+
+/* 策略收益统计卡片 */
+.portfolio-page .portfolio-stats-card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+}
+
+/* 涨跌色 */
+.portfolio-page .portfolio-summary-tone-up,
+.portfolio-page .c-up {
+  color: #ff5451 !important;
+}
+
+.portfolio-page .portfolio-summary-tone-down,
+.portfolio-page .c-down {
+  color: #22C55E !important;
+}
+
+/* Tab 栏 */
+.portfolio-page [class*="tab"] {
+  border-radius: 0 !important;
+}
