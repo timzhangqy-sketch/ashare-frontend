@@ -437,3 +437,103 @@
 .signals-page [class*="tab"] {
   border-radius: 0 !important;
 }
+
+/* === 交易标的池（Watchlist） === */
+.watchlist-page .card,
+.watchlist-page > section.card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  box-shadow: none !important;
+}
+
+.watchlist-page .card:hover {
+  border-color: var(--s-border-strong) !important;
+}
+
+.watchlist-page .card-body {
+  padding: 12px 16px !important;
+}
+
+/* KPI 指标卡片 */
+.watchlist-page .stat-card,
+.watchlist-page .watchlist-metric-card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  box-shadow: none !important;
+}
+
+.watchlist-page .stat-value,
+.watchlist-page .watchlist-metric-value {
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--s-text-primary) !important;
+}
+
+.watchlist-page .stat-label {
+  font-size: 11px !important;
+  color: var(--s-text-muted) !important;
+  font-weight: 500 !important;
+}
+
+/* 热力卡片 */
+.watchlist-page .watchlist-heat-card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  transition: border-color 150ms ease !important;
+}
+
+.watchlist-page .watchlist-heat-card:hover {
+  border-color: var(--s-border-strong) !important;
+}
+
+.watchlist-page .heat-card-name {
+  font-family: var(--s-font-body) !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  color: var(--s-text-primary) !important;
+}
+
+.watchlist-page .heat-card-code {
+  font-family: var(--s-font-mono) !important;
+  font-size: 10px !important;
+  color: var(--s-text-muted) !important;
+}
+
+.watchlist-page .heat-card-badge {
+  border-radius: var(--s-radius) !important;
+  font-size: 10px !important;
+}
+
+.watchlist-page .heat-card-strategy {
+  font-size: 11px !important;
+  color: var(--s-text-secondary) !important;
+}
+
+.watchlist-page .heat-card-stat-label {
+  font-size: 10px !important;
+  color: var(--s-text-muted) !important;
+}
+
+.watchlist-page .heat-card-stat-value {
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  font-size: 12px !important;
+}
+
+/* Tab 栏 */
+.watchlist-page [class*="tab"] {
+  border-radius: 0 !important;
+}
+
+/* 筛选控件 */
+.watchlist-page .watchlist-controls select,
+.watchlist-page .watchlist-controls input {
+  background: var(--s-bg-container) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  color: var(--s-text-primary) !important;
+  font-size: 12px !important;
+}

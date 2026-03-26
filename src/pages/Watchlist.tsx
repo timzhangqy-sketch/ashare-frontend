@@ -39,8 +39,8 @@ const formatPct = (v: number | null | undefined): string => {
 }
 
 const pctColor = (v: number | null | undefined): string => {
-  if (v === null || v === undefined || v === 0) return 'var(--text-muted)'
-  return v > 0 ? 'var(--up)' : 'var(--down)'
+  if (v === null || v === undefined || v === 0) return '#8c909f'
+  return v > 0 ? '#ff5451' : '#22C55E'
 }
 
 const formatDay = (d: number | null | undefined): string => {
@@ -359,14 +359,14 @@ export default function Watchlist() {
                 const heatScore = computeHeat(row)
                 const heat =
                   heatScore >= 50
-                    ? { label: '高热', color: 'var(--up)', bg: 'rgba(239,68,68,0.08)' }
+                    ? { label: '高热', color: '#ff5451', bg: 'rgba(239,68,68,0.08)' }
                     : heatScore >= 25
-                      ? { label: '中热', color: 'var(--warn)', bg: 'rgba(245,158,11,0.08)' }
-                      : { label: '低热', color: 'var(--text-muted)', bg: 'transparent' }
+                      ? { label: '中热', color: '#F59E0B', bg: 'rgba(245,158,11,0.08)' }
+                      : { label: '低热', color: '#8c909f', bg: 'transparent' }
 
                 const gainVal = row.gainSinceEntry
                 const gainColor =
-                  gainVal && gainVal > 0 ? 'var(--up)' : gainVal && gainVal < 0 ? 'var(--down)' : 'var(--text-muted)'
+                  gainVal && gainVal > 0 ? '#ff5451' : gainVal && gainVal < 0 ? '#22C55E' : '#8c909f'
                 const gainText =
                   gainVal != null ? `${gainVal >= 0 ? '+' : ''}${(gainVal * 100).toFixed(2)}%` : '--'
 
@@ -435,7 +435,7 @@ export default function Watchlist() {
                         </span>
                       )}
                       {!row.buySignal && !row.sellSignal && (
-                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>无信号</span>
+                        <span style={{ fontSize: 11, color: '#8c909f' }}>无信号</span>
                       )}
                     </div>
                   </div>
@@ -487,18 +487,18 @@ export default function Watchlist() {
                       {/* 标的 */}
                       <td>
                         <div style={{ fontWeight: 500, fontSize: 13 }}>{row.name}</div>
-                        <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{row.tsCode}</div>
+                        <div style={{ fontSize: 11, color: '#8c909f' }}>{row.tsCode}</div>
                       </td>
                       {/* 主概念 */}
                       <td style={{ textAlign: 'left' }}>
                         {row.primaryConcept ? (
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                            <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                               {row.primaryConcept}
                             </span>
                             {row.isLeader && <span title={row.leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                           </span>
-                        ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                        ) : <span style={{ color: '#8c909f' }}>—</span>}
                       </td>
                       {/* 策略 */}
                       <td>
@@ -545,8 +545,8 @@ export default function Watchlist() {
                           fontVariantNumeric: 'tabular-nums',
                           color:
                             row.drawdownFromPeak == null || row.drawdownFromPeak === 0
-                              ? 'var(--text-muted)'
-                              : 'var(--down)',
+                              ? '#8c909f'
+                              : '#22C55E',
                         }}
                       >
                         {row.drawdownFromPeak != null
@@ -570,7 +570,7 @@ export default function Watchlist() {
                           </span>
                         )}
                         {!row.buySignal && !row.sellSignal && (
-                          <span style={{ color: 'var(--text-muted)' }}>—</span>
+                          <span style={{ color: '#8c909f' }}>—</span>
                         )}
                       </td>
                       {/* 动作 */}
