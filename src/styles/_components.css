@@ -1,0 +1,155 @@
+/* ═══════════════════════════════════════════════════════════════
+   QuantEdge Sapphire — Component Classes v3.0
+   可复用的组件样式类，供 JSX className 引用
+   ═══════════════════════════════════════════════════════════════ */
+
+/* === 涨跌色 === */
+.s-up { color: var(--s-up) !important; }
+.s-down { color: var(--s-down) !important; }
+.s-neutral { color: var(--s-text-muted) !important; }
+.s-warn { color: var(--s-warn) !important; }
+.s-accent { color: var(--s-accent) !important; }
+
+/* === 数字排版 === */
+.s-num {
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  font-weight: 400 !important;
+  font-size: 11px !important;
+}
+
+/* === 表格 === */
+.s-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.s-table thead tr {
+  background: var(--s-bg-container-high);
+}
+
+.s-table thead th {
+  font-family: var(--s-font-headline);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--s-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  white-space: nowrap;
+  border: none;
+}
+
+.s-table tbody tr {
+  border-bottom: 1px solid var(--s-border-subtle);
+  transition: background-color 150ms ease;
+  height: 32px;
+}
+
+.s-table tbody tr:hover {
+  background: rgba(54, 57, 66, 0.3);
+}
+
+.s-table tbody td {
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 400;
+  font-family: var(--s-font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--s-text-primary);
+  vertical-align: middle;
+}
+
+/* 序号列 */
+.s-table tbody td:first-child {
+  color: var(--s-text-muted);
+}
+
+/* 名称列（第2列）*/
+.s-td-name {
+  font-family: var(--s-font-body) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  color: var(--s-text-primary) !important;
+}
+
+/* === 卡片 === */
+.s-card {
+  background: var(--s-bg-surface);
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-radius);
+  box-shadow: none;
+  transition: border-color 150ms ease;
+}
+
+.s-card:hover {
+  border-color: var(--s-border-strong);
+}
+
+.s-card-title {
+  font-family: var(--s-font-headline);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--s-text-secondary);
+  padding-bottom: var(--s-space-2);
+  border-bottom: 1px solid var(--s-border);
+  margin-bottom: var(--s-space-2);
+}
+
+.s-card-body {
+  padding: var(--s-space-3) var(--s-space-4);
+}
+
+/* === Badge === */
+.s-badge {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--s-radius);
+}
+
+.s-badge-up {
+  background: rgba(255, 84, 81, 0.1);
+  color: var(--s-up);
+}
+
+.s-badge-down {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--s-down);
+}
+
+.s-badge-accent {
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--s-accent);
+}
+
+.s-badge-warn {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--s-warn);
+}
+
+/* === 按钮 === */
+.s-btn {
+  border-radius: var(--s-radius);
+  font-family: var(--s-font-body);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.s-btn-primary {
+  background: var(--s-accent);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 16px;
+}
+
+.s-btn-brand {
+  background: var(--s-brand);
+  color: #002e6a;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 16px;
+}

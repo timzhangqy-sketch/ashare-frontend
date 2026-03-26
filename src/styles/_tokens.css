@@ -1,0 +1,49 @@
+/* ═══════════════════════════════════════════════════════════════
+   QuantEdge Sapphire — Design Tokens v3.0
+   唯一权威设计令牌定义，所有颜色/字体/间距从此文件读取
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* --- 背景层级 --- */
+  --s-bg-base: #10131b;
+  --s-bg-surface: #181c23;
+  --s-bg-container: #1c2027;
+  --s-bg-container-high: #262a32;
+  --s-bg-container-highest: #31353d;
+  --s-bg-hover: #363942;
+
+  /* --- 边框 --- */
+  --s-border: rgba(66, 71, 84, 0.15);
+  --s-border-subtle: rgba(66, 71, 84, 0.1);
+  --s-border-strong: rgba(66, 71, 84, 0.3);
+
+  /* --- 文字 --- */
+  --s-text-primary: #e0e2ed;
+  --s-text-secondary: #c2c6d6;
+  --s-text-muted: #8c909f;
+  --s-text-dim: #424754;
+
+  /* --- 语义色（A股：红涨绿跌）--- */
+  --s-up: #ff5451;
+  --s-down: #22C55E;
+  --s-warn: #F59E0B;
+  --s-accent: #3B82F6;
+  --s-brand: #adc6ff;
+  --s-critical: #DC2626;
+  --s-purple: #A855F7;
+
+  /* --- 字体族 --- */
+  --s-font-headline: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+  --s-font-body: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --s-font-mono: 'JetBrains Mono', 'SF Mono', monospace;
+
+  /* --- 间距 --- */
+  --s-space-1: 4px;
+  --s-space-2: 8px;
+  --s-space-3: 12px;
+  --s-space-4: 16px;
+  --s-space-6: 24px;
+
+  /* --- 圆角 --- */
+  --s-radius: 2px;
+}

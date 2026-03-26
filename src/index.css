@@ -1,3 +1,6 @@
+@import './styles/_tokens.css';
+@import './styles/_components.css';
+
 /* ===== CSS Variables — Dark A-Share Theme ===== */
 :root {
   /* Backgrounds */
