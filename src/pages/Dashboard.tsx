@@ -239,16 +239,16 @@ export default function Dashboard() {
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1, overflow: 'auto' }}>
               {hasFills && (
                 <>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto' }}>
+                  <table className="s-table">
                     <thead>
-                      <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
-                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>方向</th>
-                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>股票</th>
-                        <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>价格</th>
-                        <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>数量</th>
-                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>策略</th>
-                        <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>信号</th>
-                        <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>盈亏</th>
+                      <tr>
+                        <th style={{ textAlign: 'left' }}>方向</th>
+                        <th style={{ textAlign: 'left' }}>股票</th>
+                        <th style={{ textAlign: 'right' }}>价格</th>
+                        <th style={{ textAlign: 'right' }}>数量</th>
+                        <th style={{ textAlign: 'left' }}>策略</th>
+                        <th style={{ textAlign: 'left' }}>信号</th>
+                        <th style={{ textAlign: 'right' }}>盈亏</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -256,14 +256,14 @@ export default function Dashboard() {
                         const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败' };
                         const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
                         return (
-                        <tr key={`fill-${i}`} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                          <td style={{ padding: '4px 12px', fontSize: 13, fontWeight: 600, color: f.direction === 'BUY' ? '#ff5451' : '#22C55E' }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
-                          <td style={{ padding: '4px 12px', fontSize: 13, fontWeight: 500, color: '#e0e2ed', cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
-                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: '#c2c6d6' }}>{f.fill_price?.toFixed(2) ?? '—'}</td>
-                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontVariantNumeric: 'tabular-nums', color: '#c2c6d6' }}>{f.fill_shares?.toLocaleString() ?? '—'}</td>
-                          <td style={{ padding: '4px 12px', fontSize: 13, color: '#c2c6d6' }}>{STRAT_CN[f.strategy] ?? f.strategy}</td>
-                          <td style={{ padding: '4px 12px', fontSize: 13, color: '#c2c6d6' }}>{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
-                          <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: f.pnl_pct != null ? (f.pnl_pct >= 0 ? '#ff5451' : '#22C55E') : '#8c909f' }}>
+                        <tr key={`fill-${i}`}>
+                          <td className={f.direction === 'BUY' ? 's-up' : 's-down'} style={{ fontWeight: 600 }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                          <td className="s-td-name" style={{ cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
+                          <td style={{ textAlign: 'right' }} className="s-num">{f.fill_price?.toFixed(2) ?? '—'}</td>
+                          <td style={{ textAlign: 'right' }} className="s-num">{f.fill_shares?.toLocaleString() ?? '—'}</td>
+                          <td className="s-td-name">{STRAT_CN[f.strategy] ?? f.strategy}</td>
+                          <td className="s-td-name">{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
+                          <td style={{ textAlign: 'right' }} className={f.pnl_pct != null ? (f.pnl_pct >= 0 ? 's-up s-num' : 's-down s-num') : 's-num'}>
                             {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
                           </td>
                         </tr>
@@ -555,24 +555,24 @@ export default function Dashboard() {
             </div>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto' }}>
+                <table className="s-table">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
-                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>股票</th>
-                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>策略</th>
-                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>评分</th>
-                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>状态</th>
+                    <tr>
+                      <th style={{ textAlign: 'left' }}>股票</th>
+                      <th style={{ textAlign: 'left' }}>策略</th>
+                      <th style={{ textAlign: 'right' }}>评分</th>
+                      <th style={{ textAlign: 'right' }}>状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {opp!.topOpportunities.map((item) => (
-                      <tr key={`r2-${item.id}`} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                        <td style={{ padding: '4px 12px', fontSize: 12, fontWeight: 500 }}>
-                          <span style={{ color: '#e0e2ed', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
+                      <tr key={`r2-${item.id}`}>
+                        <td className="s-td-name">
+                          <span style={{ cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
-                        <td style={{ padding: '4px 12px', fontSize: 12, color: '#c2c6d6' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ padding: '4px 12px', fontSize: 12, textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: '#e0e2ed' }}>{item.scoreLabel}</td>
-                        <td style={{ padding: '4px 12px', fontSize: 11, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                        <td className="s-td-name">{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
+                        <td style={{ textAlign: 'right' }} className="s-num">{item.scoreLabel}</td>
+                        <td style={{ textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -694,42 +694,42 @@ export default function Dashboard() {
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 700 }}>强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
             <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '11px' }}>
+              <table className="s-table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>3日</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>今日</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>涨停</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>上涨比</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>龙头</th>
-                    <th style={{ textAlign: 'center', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>标记</th>
+                  <tr>
+                    <th style={{ textAlign: 'left' }}>#</th>
+                    <th style={{ textAlign: 'left' }}>概念</th>
+                    <th style={{ textAlign: 'right' }}>3日</th>
+                    <th style={{ textAlign: 'right' }}>今日</th>
+                    <th style={{ textAlign: 'right' }}>涨停</th>
+                    <th style={{ textAlign: 'right' }}>上涨比</th>
+                    <th style={{ textAlign: 'right' }}>龙头</th>
+                    <th style={{ textAlign: 'center' }}>标记</th>
                   </tr>
                 </thead>
                 <tbody>
                   {momentum.length > 0 ? momentum.map((c, i) => (
-                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: '#8c909f', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: '#e0e2ed', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? '#ff5451' : '#22C55E', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
+                    <tr key={c.concept_code}>
+                      <td>{i + 1}</td>
+                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
+                      <td style={{ textAlign: 'right' }} className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? '#ff5451' : '#22C55E', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ textAlign: 'right' }} className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: '#c2c6d6', fontVariantNumeric: 'tabular-nums' }}>{c.limit_up_count ?? 0}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: '#c2c6d6', fontVariantNumeric: 'tabular-nums' }}>{Math.round((c.up_ratio ?? 0) * 100)}%</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.leader_avg_pct_chg ?? 0) >= 0 ? '#ff5451' : '#22C55E', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ textAlign: 'right' }} className="s-num">{c.limit_up_count ?? 0}</td>
+                      <td style={{ textAlign: 'right' }} className="s-num">{Math.round((c.up_ratio ?? 0) * 100)}%</td>
+                      <td style={{ textAlign: 'right' }} className={(c.leader_avg_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'center', fontSize: '11px' }}>
+                      <td style={{ textAlign: 'center' }}>
                         {c.strategy_hit_count > 0 && <span style={{ color: 'var(--info)', marginRight: 3 }}>🎯{c.strategy_hit_count}</span>}
                         {c.heat_persistence > 0 && <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span>}
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={8} style={{ padding: '20px', color: '#8c909f', textAlign: 'center' }}>暂无数据</td></tr>
+                    <tr><td colSpan={8} style={{ textAlign: 'center' }}>暂无数据</td></tr>
                   )}
                 </tbody>
               </table>
@@ -741,41 +741,41 @@ export default function Dashboard() {
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
             <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '11px' }}>
+              <table className="s-table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>量比</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>3日均额</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>今日</th>
-                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>龙头</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>涨幅</th>
+                  <tr>
+                    <th style={{ textAlign: 'left' }}>#</th>
+                    <th style={{ textAlign: 'left' }}>概念</th>
+                    <th style={{ textAlign: 'right' }}>量比</th>
+                    <th style={{ textAlign: 'right' }}>3日均额</th>
+                    <th style={{ textAlign: 'right' }}>今日</th>
+                    <th style={{ textAlign: 'left' }}>龙头</th>
+                    <th style={{ textAlign: 'right' }}>涨幅</th>
                   </tr>
                 </thead>
                 <tbody>
                   {surge.length > 0 ? surge.map((c, i) => (
-                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: '#8c909f', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: '#e0e2ed', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: (c.concept_vr3 ?? 0) >= 2.0 ? '#f59e0b' : '#e0e2ed' }}>
+                    <tr key={c.concept_code}>
+                      <td>{i + 1}</td>
+                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
+                      <td style={{ textAlign: 'right' }} className={(c.concept_vr3 ?? 0) >= 2.0 ? 's-warn s-num' : 's-num'}>
                         {(c.concept_vr3 ?? 0).toFixed(1)}x
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: '#c2c6d6', fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ textAlign: 'right' }} className="s-num">
                         {(c.amount_3d_avg ?? 0).toFixed(1)}亿
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.avg_pct_chg ?? 0) >= 0 ? '#ff5451' : '#22C55E', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ textAlign: 'right' }} className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px', color: '#c2c6d6', fontSize: '11px' }}>
+                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
                         {c.leader_top_stock || '—'}
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', fontSize: '11px', color: (c.leader_top_pct_chg ?? 0) >= 0 ? '#ff5451' : '#22C55E' }}>
+                      <td style={{ textAlign: 'right' }} className={(c.leader_top_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
                         {c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${(c.leader_top_pct_chg ?? 0).toFixed(1)}%` : '—'}
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={7} style={{ padding: '20px', color: '#8c909f', textAlign: 'center' }}>暂无异动板块</td></tr>
+                    <tr><td colSpan={7} style={{ textAlign: 'center' }}>暂无异动板块</td></tr>
                   )}
                 </tbody>
               </table>
@@ -787,35 +787,35 @@ export default function Dashboard() {
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h3 className="card-title" style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 700 }}>退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
             <div className="sector-table-wrap" style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px', flex: 1 }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto', fontSize: '11px' }}>
+              <table className="s-table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
-                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>#</th>
-                    <th style={{ textAlign: 'left', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>概念</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>今日涨幅</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>3日累计</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>跌停</th>
-                    <th style={{ textAlign: 'right', padding: '6px 12px', whiteSpace: 'nowrap', color: '#64748B', fontWeight: 500, fontSize: '11px' }}>龙头今日</th>
+                  <tr>
+                    <th style={{ textAlign: 'left' }}>#</th>
+                    <th style={{ textAlign: 'left' }}>概念</th>
+                    <th style={{ textAlign: 'right' }}>今日涨幅</th>
+                    <th style={{ textAlign: 'right' }}>3日累计</th>
+                    <th style={{ textAlign: 'right' }}>跌停</th>
+                    <th style={{ textAlign: 'right' }}>龙头今日</th>
                   </tr>
                 </thead>
                 <tbody>
                   {retreat.length > 0 ? retreat.map((c, i) => (
-                    <tr key={c.concept_code} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', color: '#8c909f', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>{i + 1}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px', color: '#e0e2ed', fontWeight: 500 }}>{c.concept_name}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: '#22C55E', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
+                    <tr key={c.concept_code}>
+                      <td>{i + 1}</td>
+                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
+                      <td style={{ textAlign: 'right' }} className="s-down s-num">
                         {(c.today_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: (c.momentum_3d ?? 0) >= 0 ? '#ff5451' : '#22C55E', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ textAlign: 'right' }} className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: '#c2c6d6', fontVariantNumeric: 'tabular-nums' }}>{c.limit_down_count ?? 0}</td>
-                      <td style={{ padding: '4px 12px', whiteSpace: 'nowrap', textAlign: 'right', color: '#22C55E', fontWeight: 400, fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ textAlign: 'right' }} className="s-num">{c.limit_down_count ?? 0}</td>
+                      <td style={{ textAlign: 'right' }} className="s-down s-num">
                         {c.leader_avg_pct_chg != null ? `${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={6} style={{ padding: '20px', color: '#8c909f', textAlign: 'center' }}>暂无退潮板块</td></tr>
+                    <tr><td colSpan={6} style={{ textAlign: 'center' }}>暂无退潮板块</td></tr>
                   )}
                 </tbody>
               </table>
@@ -838,24 +838,24 @@ export default function Dashboard() {
             </div>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'auto' }}>
+                <table className="s-table">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
-                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>股票</th>
-                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>策略</th>
-                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>评分</th>
-                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>状态</th>
+                    <tr>
+                      <th style={{ textAlign: 'left' }}>股票</th>
+                      <th style={{ textAlign: 'left' }}>策略</th>
+                      <th style={{ textAlign: 'right' }}>评分</th>
+                      <th style={{ textAlign: 'right' }}>状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {opp!.topOpportunities.map((item) => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                        <td style={{ padding: '4px 12px', fontSize: 13, fontWeight: 500 }}>
-                          <span style={{ color: '#e0e2ed', cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
+                      <tr key={item.id}>
+                        <td className="s-td-name">
+                          <span style={{ cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
-                        <td style={{ padding: '4px 12px', fontSize: 13, color: '#c2c6d6' }}>{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ padding: '4px 12px', fontSize: 13, textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: '#e0e2ed' }}>{item.scoreLabel}</td>
-                        <td style={{ padding: '4px 12px', fontSize: 12, textAlign: 'right', color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                        <td className="s-td-name">{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
+                        <td style={{ textAlign: 'right' }} className="s-num">{item.scoreLabel}</td>
+                        <td style={{ textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -879,20 +879,20 @@ export default function Dashboard() {
             </div>
             <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '8px 12px' }}>
               {(risk?.events?.length ?? 0) > 0 ? (
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, tableLayout: 'auto' }}>
+                <table className="s-table">
                   <thead>
-                    <tr style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.1)', background: 'rgba(30, 41, 59, 0.5)' }}>
-                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>事件</th>
-                      <th style={{ textAlign: 'left', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>详情</th>
-                      <th style={{ textAlign: 'right', padding: '6px 12px', color: '#64748B', fontWeight: 500, fontSize: '11px', whiteSpace: 'nowrap' }}>风险分</th>
+                    <tr>
+                      <th style={{ textAlign: 'left' }}>事件</th>
+                      <th style={{ textAlign: 'left' }}>详情</th>
+                      <th style={{ textAlign: 'right' }}>风险分</th>
                     </tr>
                   </thead>
                   <tbody>
                     {risk!.events.map((ev) => (
-                      <tr key={ev.id} style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.06)' }}>
-                        <td style={{ padding: '4px 12px', color: 'var(--warn)', fontWeight: 500 }}>{ev.name}</td>
-                        <td style={{ padding: '4px 12px', color: '#c2c6d6' }}>{ev.helperText}</td>
-                        <td style={{ padding: '4px 12px', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: '#e0e2ed' }}>{ev.scoreLabel}</td>
+                      <tr key={ev.id}>
+                        <td className="s-warn" style={{ fontWeight: 500 }}>{ev.name}</td>
+                        <td>{ev.helperText}</td>
+                        <td style={{ textAlign: 'right' }} className="s-num">{ev.scoreLabel}</td>
                       </tr>
                     ))}
                   </tbody>
