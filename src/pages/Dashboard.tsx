@@ -26,34 +26,20 @@ function OpinionCard({ opinion }: { opinion: { author: string; title: string; co
   const [expanded, setExpanded] = useState(false);
   const timeStr = opinion.publishedAt ? new Date(opinion.publishedAt).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
   return (
-    <div style={{
-      background: 'var(--bg-card, rgba(255,255,255,0.03))',
-      padding: '10px 14px',
-      cursor: 'pointer',
-      transition: 'background 0.15s',
-    }}
-    onClick={() => setExpanded(!expanded)}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: expanded ? '8px' : 0 }}>
-        <span style={{ color: 'var(--accent)', marginRight: '2px' }}>●</span>
-        <span style={{ fontSize: '12px', color: 'var(--accent)', fontWeight: 600, flexShrink: 0 }}>{opinion.author}</span>
-        <span style={{ fontSize: '13px', color: '#e0e2ed', fontWeight: 600, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opinion.title}</span>
-        <span style={{ fontSize: '11px', color: '#8c909f', flexShrink: 0 }}>{timeStr}</span>
-        <span style={{ fontSize: '11px', color: '#8c909f', flexShrink: 0, transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#x25BC;</span>
+    <div className="s-opinion-card" onClick={() => setExpanded(!expanded)}>
+      <div className="s-opinion-row" style={{ marginBottom: expanded ? '8px' : 0 }}>
+        <span className="s-opinion-dot">●</span>
+        <span className="s-opinion-author">{opinion.author}</span>
+        <span className="s-opinion-title">{opinion.title}</span>
+        <span className="s-opinion-time">{timeStr}</span>
+        <span className="s-opinion-time" style={{ transition: 'transform 0.2s', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>&#x25BC;</span>
       </div>
       {expanded && (
-        <div style={{
-          fontSize: '13px',
-          color: '#c2c6d6',
-          lineHeight: 1.8,
-          whiteSpace: 'pre-wrap',
-          padding: '8px 0 4px 0',
-          borderTop: '1px solid rgba(255,255,255,0.06)',
-        }}>
+        <div className="s-opinion-content" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           {opinion.content}
           {opinion.sourceUrl && (
             <a href={opinion.sourceUrl} target="_blank" rel="noopener noreferrer"
-              style={{ display: 'inline-block', marginTop: '6px', fontSize: '11px', color: 'var(--accent)' }}
+              className="s-opinion-source"
               onClick={(e) => e.stopPropagation()}
             >
               查看原文 →
@@ -221,7 +207,7 @@ export default function Dashboard() {
             {(() => {
               const opinions = viewModel?.marketOpinions || [];
               if (opinions.length === 0) {
-                return <div style={{ padding: '12px', color: '#8c909f', fontSize: '13px' }}>暂无观点数据</div>;
+                return <div className="s-empty">暂无观点数据</div>;
               }
               return (
                 <div className="opinions-grid">
@@ -257,7 +243,7 @@ export default function Dashboard() {
                         const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
                         return (
                         <tr key={`fill-${i}`}>
-                          <td className={f.direction === 'BUY' ? 's-up' : 's-down'} style={{ fontWeight: 600 }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                          <td className={f.direction === 'BUY' ? 's-up s-semi' : 's-down s-semi'}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
                           <td className="s-td-name s-clickable" onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
                           <td className="s-num s-right">{f.fill_price?.toFixed(2) ?? '—'}</td>
                           <td className="s-num s-right">{f.fill_shares?.toLocaleString() ?? '—'}</td>
@@ -275,23 +261,23 @@ export default function Dashboard() {
               )}
               {(hasSell || hasBuy) && (
                 <>
-                  <div style={{ fontSize: '11px', color: '#8c909f', marginBottom: 4, fontWeight: 500 }}>{hasFills ? '待执行信号' : '今日信号'}</div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div className="s-signal-header">{hasFills ? '待执行信号' : '今日信号'}</div>
+                  <div className="s-signal-group">
                     {hasSell && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '11px', color: '#22C55E', fontWeight: 600, minWidth: 40 }}>● 卖出</span>
+                      <div className="s-signal-row">
+                        <span className="s-signal-label s-signal-sell">● 卖出</span>
                         {actionList!.sell!.slice(0, 5).map((item: any, i: number) => (
-                          <span key={`sell-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: '#c2c6d6', cursor: 'pointer' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
-                            {item.name} <span style={{ color: (item.gain_pct ?? 0) >= 0 ? '#ff5451' : '#22C55E', fontSize: '11px' }}>{item.gain_pct != null ? `${item.gain_pct >= 0 ? '+' : ''}${(item.gain_pct * 100).toFixed(1)}%` : ''}</span>
+                          <span key={`sell-${item.ts_code ?? i}`} className="s-signal-item" onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
+                            {item.name} <span className="s-text-xs" style={{ color: (item.gain_pct ?? 0) >= 0 ? '#ff5451' : '#22C55E' }}>{item.gain_pct != null ? `${item.gain_pct >= 0 ? '+' : ''}${(item.gain_pct * 100).toFixed(1)}%` : ''}</span>
                           </span>
                         ))}
                       </div>
                     )}
                     {hasBuy && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '11px', color: '#ff5451', fontWeight: 600, minWidth: 40 }}>● 买入</span>
+                      <div className="s-signal-row">
+                        <span className="s-signal-label s-signal-buy">● 买入</span>
                         {actionList!.buy!.slice(0, 5).map((item: any, i: number) => (
-                          <span key={`buy-${item.ts_code ?? i}`} style={{ fontSize: '12px', color: '#c2c6d6', cursor: 'pointer' }} onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
+                          <span key={`buy-${item.ts_code ?? i}`} className="s-signal-item" onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
                             {item.name}
                           </span>
                         ))}
