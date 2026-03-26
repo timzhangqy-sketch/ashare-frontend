@@ -470,8 +470,8 @@ export default function Dashboard() {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 8px 2px' }}>
                                   <span style={{ fontSize: 10, color: '#ff5451', whiteSpace: 'nowrap', minWidth: 32, textAlign: 'right' }}>{upCount}</span>
                                   <div style={{ flex: 1, display: 'flex', height: 8, overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
-                                    <div style={{ width: `${upPct}%`, background: 'var(--up, #ff5451)', borderRadius: '4px 0 0 4px', transition: 'width 0.3s' }} />
-                                    <div style={{ width: `${downPct}%`, background: 'var(--down, #22c55e)', borderRadius: '0 4px 4px 0', transition: 'width 0.3s', marginLeft: 'auto' }} />
+                                    <div style={{ width: `${upPct}%`, background: '#ff5451', borderRadius: '4px 0 0 4px', transition: 'width 0.3s' }} />
+                                    <div style={{ width: `${downPct}%`, background: '#22C55E', borderRadius: '0 4px 4px 0', transition: 'width 0.3s', marginLeft: 'auto' }} />
                                   </div>
                                   <span style={{ fontSize: 10, color: '#22C55E', whiteSpace: 'nowrap', minWidth: 32 }}>{downCount}</span>
                                 </div>
@@ -490,7 +490,7 @@ export default function Dashboard() {
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title s-card-title">组合概览<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
-              <a href="/portfolio" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>组合 →</a>
+              <a href="/portfolio" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>组合 →</a>
             </div>
             {portfolioRaw ? (() => {
               const snap = portfolioRaw.snapshot ?? {};
@@ -537,7 +537,7 @@ export default function Dashboard() {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title s-card-title">今日机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
-              <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
+              <a href="/signals" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>信号 →</a>
             </div>
             <div className="s-card-inner">
               {(opp?.topOpportunities?.length ?? 0) > 0 ? (
@@ -710,7 +710,7 @@ export default function Dashboard() {
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                       <td className="s-center">
-                        {c.strategy_hit_count > 0 && <span style={{ color: 'var(--info)', marginRight: 3 }}>🎯{c.strategy_hit_count}</span>}
+                        {c.strategy_hit_count > 0 && <span style={{ color: '#3B82F6', marginRight: 3 }}>🎯{c.strategy_hit_count}</span>}
                         {c.heat_persistence > 0 && <span className="s-fire">🔥{c.heat_persistence}天</span>}
                       </td>
                     </tr>
@@ -819,7 +819,7 @@ export default function Dashboard() {
                 <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   买点 {opp?.metrics?.find(m => m.id === 'opp-buy')?.value ?? '—'} | 共振 {opp?.metrics?.find(m => m.id === 'opp-resonance')?.value ?? '—'} | 候选 {opp?.metrics?.find(m => m.id === 'opp-watchlist')?.value ?? '—'}
                 </span>
-                <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
+                <a href="/signals" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>信号 →</a>
               </div>
             </div>
             <div className="s-card-inner">
@@ -860,7 +860,7 @@ export default function Dashboard() {
                 <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   拦截 {risk?.metrics?.find(m => m.id === 'risk-gate')?.value ?? '—'} | 最高风险 {risk?.metrics?.find(m => m.id === 'risk-highest')?.value ?? '—'}
                 </span>
-                <a href="/risk" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>风控 →</a>
+                <a href="/risk" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>风控 →</a>
               </div>
             </div>
             <div className="s-card-inner">
@@ -884,7 +884,7 @@ export default function Dashboard() {
                   </tbody>
                 </table>
               ) : (
-                <div style={{ padding: 16, textAlign: 'center', color: '#52c41a', fontSize: 13 }}>风控正常，无拦截</div>
+                <div style={{ padding: 16, textAlign: 'center', color: '#3B82F6', fontSize: 13 }}>风控正常，无拦截</div>
               )}
             </div>
           </div>
@@ -899,7 +899,7 @@ export default function Dashboard() {
                     持仓 {portfolioRaw.position_count ?? '—'} | NAV {(() => { const v = portfolioRaw.snapshot?.total_nav; return v != null ? (v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString()) : '—'; })()}
                   </span>
                 )}
-                <a href="/portfolio" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>组合 →</a>
+                <a href="/portfolio" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>组合 →</a>
               </div>
             </div>
             {portfolioRaw ? (() => {
@@ -963,19 +963,19 @@ export default function Dashboard() {
                 {(() => {
                   const failed = sys?.metrics?.find(m => m.id === 'system-failed');
                   const isOk = (failed?.value ?? '0') === '0';
-                  return <span style={{ fontSize: 11, color: isOk ? '#52c41a' : '#ff4d4f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
+                  return <span style={{ fontSize: 11, color: isOk ? '#3B82F6' : '#ff4d4f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                     {isOk ? '运行正常' : `异常 ${failed?.value ?? ''}步`}
                   </span>;
                 })()}
-                <a href="/system" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>系统 →</a>
+                <a href="/system" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>系统 →</a>
               </div>
             </div>
-            <div style={{ background: 'var(--bg-card, rgba(255,255,255,0.03))', padding: '10px 12px' }}>
+            <div style={{ padding: '10px 12px' }}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px', fontSize: 13 }}>
                 {(sys?.metrics ?? []).map((m) => (
                   <div key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <span style={{ color: '#8c909f', fontSize: 12 }}>{m.label}</span>
-                    <span style={{ color: m.tone === 'positive' ? '#52c41a' : m.tone === 'danger' ? '#ff4d4f' : '#e0e2ed', fontWeight: 500 }}>{m.value}</span>
+                    <span style={{ color: m.tone === 'positive' ? '#3B82F6' : m.tone === 'danger' ? '#ff4d4f' : '#e0e2ed', fontWeight: 500 }}>{m.value}</span>
                   </div>
                 ))}
               </div>
