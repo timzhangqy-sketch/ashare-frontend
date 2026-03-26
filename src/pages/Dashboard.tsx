@@ -678,15 +678,15 @@ export default function Dashboard() {
           <div className="card-body dashboard-module-body s-card-body-flex">
             <h3 className="card-title s-card-title">板块资金异动<InfoTip data={DASHBOARD_META.fund_flow} /></h3>
             {fundFlow ? (
-              <div style={{ display: 'flex', gap: '12px' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
                 {/* 流入 */}
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '11px', color: '#c2c6d6', marginBottom: '6px' }}>放量流入</div>
-                  <table className="s-table">
+                  <div style={{ fontSize: '10px', color: '#c2c6d6', marginBottom: '4px' }}>放量流入</div>
+                  <table className="s-table" style={{ fontSize: '12px' }}>
                     <thead><tr>
                       <th className="s-center" style={{width:'24px'}}>#</th>
                       <th>板块</th>
-                      <th className="s-right">成交额</th>
+                      <th className="s-right">成交额(亿)</th>
                       <th className="s-right">环比</th>
                       <th className="s-right">涨幅</th>
                     </tr></thead>
@@ -695,9 +695,9 @@ export default function Dashboard() {
                         <tr key={i}>
                           <td className="s-center s-text-muted">{i + 1}</td>
                           <td className="s-td-name">{item.concept_name}</td>
-                          <td className="s-num s-right">{item.total_amount}亿</td>
+                          <td className="s-num s-right">{item.total_amount}</td>
                           <td className="s-num s-right s-up">{item.ratio}x</td>
-                          <td className="s-num s-right s-up">+{item.avg_pct_chg}%</td>
+                          <td className="s-num s-right s-up">{item.avg_pct_chg > 0 ? '+' : ''}{item.avg_pct_chg}%</td>
                         </tr>
                       ))}
                       {(!fundFlow.flow_in || fundFlow.flow_in.length === 0) && (
@@ -708,23 +708,23 @@ export default function Dashboard() {
                 </div>
                 {/* 流出 */}
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '11px', color: '#c2c6d6', marginBottom: '6px' }}>放量流出</div>
-                  <table className="s-table">
+                  <div style={{ fontSize: '10px', color: '#c2c6d6', marginBottom: '4px' }}>放量流出</div>
+                  <table className="s-table" style={{ fontSize: '12px' }}>
                     <thead><tr>
                       <th className="s-center" style={{width:'24px'}}>#</th>
                       <th>板块</th>
-                      <th className="s-right">成交额</th>
+                      <th className="s-right">成交额(亿)</th>
                       <th className="s-right">环比</th>
-                      <th className="s-right">跌幅</th>
+                      <th className="s-right">涨跌</th>
                     </tr></thead>
                     <tbody>
                       {(fundFlow.flow_out || []).map((item: any, i: number) => (
                         <tr key={i}>
                           <td className="s-center s-text-muted">{i + 1}</td>
                           <td className="s-td-name">{item.concept_name}</td>
-                          <td className="s-num s-right">{item.total_amount}亿</td>
-                          <td className="s-num s-right s-down">{item.ratio}x</td>
-                          <td className="s-num s-right s-down">{item.avg_pct_chg}%</td>
+                          <td className="s-num s-right">{item.total_amount}</td>
+                          <td className={`s-num s-right ${item.avg_pct_chg >= 0 ? 's-up' : 's-down'}`}>{item.ratio}x</td>
+                          <td className={`s-num s-right ${item.avg_pct_chg >= 0 ? 's-up' : 's-down'}`}>{item.avg_pct_chg > 0 ? '+' : ''}{item.avg_pct_chg}%</td>
                         </tr>
                       ))}
                       {(!fundFlow.flow_out || fundFlow.flow_out.length === 0) && (
