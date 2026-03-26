@@ -173,3 +173,18 @@
 .s-text-primary { color: var(--s-text-primary) !important; }
 .s-text-secondary { color: var(--s-text-secondary) !important; }
 .s-text-muted { color: var(--s-text-muted) !important; }
+
+/* === 对齐工具类 === */
+.s-right { text-align: right; }
+.s-left { text-align: left; }
+.s-center { text-align: center; }
+
+/* === 字号工具类 === */
+.s-text-xs { font-size: 11px !important; }
+.s-text-sm { font-size: 12px !important; }
+.s-text-base { font-size: 13px !important; }
+.s-text-lg { font-size: 16px !important; }
+
+/* === 交互 + 语义色 === */
+.s-clickable { cursor: pointer; }
+.s-fire { color: #f59e0b; }

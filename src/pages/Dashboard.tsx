@@ -217,7 +217,7 @@ export default function Dashboard() {
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>市场观点<InfoTip data={DASHBOARD_META.market_opinions} /></h3>
+            <h3 className="card-title s-card-title">市场观点<InfoTip data={DASHBOARD_META.market_opinions} /></h3>
             {(() => {
               const opinions = viewModel?.marketOpinions || [];
               if (opinions.length === 0) {
@@ -235,20 +235,20 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
+            <h3 className="card-title s-card-title">今日行动清单<InfoTip data={DASHBOARD_META.action_list} /></h3>
             <div className="s-card-inner" style={{ overflow: 'auto' }}>
               {hasFills && (
                 <>
                   <table className="s-table">
                     <thead>
                       <tr>
-                        <th style={{ textAlign: 'left' }}>方向</th>
-                        <th style={{ textAlign: 'left' }}>股票</th>
-                        <th style={{ textAlign: 'right' }}>价格</th>
-                        <th style={{ textAlign: 'right' }}>数量</th>
-                        <th style={{ textAlign: 'left' }}>策略</th>
-                        <th style={{ textAlign: 'left' }}>信号</th>
-                        <th style={{ textAlign: 'right' }}>盈亏</th>
+                        <th className="s-left">方向</th>
+                        <th className="s-left">股票</th>
+                        <th className="s-right">价格</th>
+                        <th className="s-right">数量</th>
+                        <th className="s-left">策略</th>
+                        <th className="s-left">信号</th>
+                        <th className="s-right">盈亏</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -258,12 +258,12 @@ export default function Dashboard() {
                         return (
                         <tr key={`fill-${i}`}>
                           <td className={f.direction === 'BUY' ? 's-up' : 's-down'} style={{ fontWeight: 600 }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
-                          <td className="s-td-name" style={{ cursor: 'pointer' }} onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
-                          <td style={{ textAlign: 'right' }} className="s-num">{f.fill_price?.toFixed(2) ?? '—'}</td>
-                          <td style={{ textAlign: 'right' }} className="s-num">{f.fill_shares?.toLocaleString() ?? '—'}</td>
+                          <td className="s-td-name s-clickable" onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
+                          <td className="s-num s-right">{f.fill_price?.toFixed(2) ?? '—'}</td>
+                          <td className="s-num s-right">{f.fill_shares?.toLocaleString() ?? '—'}</td>
                           <td className="s-td-name">{STRAT_CN[f.strategy] ?? f.strategy}</td>
                           <td className="s-td-name">{SIGNAL_CN[f.signal_type] ?? f.signal_type}</td>
-                          <td style={{ textAlign: 'right' }} className={f.pnl_pct != null ? (f.pnl_pct >= 0 ? 's-up s-num' : 's-down s-num') : 's-num'}>
+                          <td className={f.pnl_pct != null ? (f.pnl_pct >= 0 ? 's-up s-num s-right' : 's-down s-num s-right') : 's-num s-right'}>
                             {f.pnl_pct != null ? `${f.pnl_pct >= 0 ? '+' : ''}${f.pnl_pct.toFixed(1)}%` : '—'}
                           </td>
                         </tr>
@@ -295,14 +295,14 @@ export default function Dashboard() {
                             {item.name}
                           </span>
                         ))}
-                        {actionList!.buy!.length > 5 && <span style={{ fontSize: '11px', color: '#8c909f' }}>(+{actionList!.buy!.length - 5})</span>}
+                        {actionList!.buy!.length > 5 && <span className="s-text-xs s-text-muted">(+{actionList!.buy!.length - 5})</span>}
                       </div>
                     )}
                   </div>
                 </>
               )}
               {!hasFills && !hasSell && !hasBuy && (
-                <span style={{ fontSize: '12px', color: '#8c909f' }}>今日无成交与信号</span>
+                <span className="s-text-sm s-text-muted">今日无成交与信号</span>
               )}
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function Dashboard() {
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '7fr 5fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>两市成交额（亿元）<InfoTip data={DASHBOARD_META.turnover_chart} /></h3>
+            <h3 className="card-title s-card-title">两市成交额（亿元）<InfoTip data={DASHBOARD_META.turnover_chart} /></h3>
             <div className="s-card-inner">
               {(() => {
                 const mi = (viewModel as any)?.marketIndex;
@@ -356,7 +356,7 @@ export default function Dashboard() {
                         )}
                       </span>
                       {breadthScore != null && (
-                        <span style={{ fontSize: '12px' }}>
+                        <span className="s-text-sm">
                           <span className="s-text-secondary">宽度 </span>
                           <span style={{ color: '#e0e2ed', fontWeight: 600 }}>{breadthScore}</span>
                           {breadthDelta != null && (
@@ -503,7 +503,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title" style={{ margin: 0 }}>组合概览<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
+              <h3 className="card-title s-card-title">组合概览<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
               <a href="/portfolio" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>组合 →</a>
             </div>
             {portfolioRaw ? (() => {
@@ -550,7 +550,7 @@ export default function Dashboard() {
             <div style={{ borderTop: '1px solid rgba(30, 45, 69, 0.3)', margin: '12px 0' }}></div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title" style={{ margin: 0 }}>今日机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
+              <h3 className="card-title s-card-title">今日机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
               <a href="/signals" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none' }}>信号 →</a>
             </div>
             <div className="s-card-inner">
@@ -558,21 +558,21 @@ export default function Dashboard() {
                 <table className="s-table">
                   <thead>
                     <tr>
-                      <th style={{ textAlign: 'left' }}>股票</th>
-                      <th style={{ textAlign: 'left' }}>策略</th>
-                      <th style={{ textAlign: 'right' }}>评分</th>
-                      <th style={{ textAlign: 'right' }}>状态</th>
+                      <th className="s-left">股票</th>
+                      <th className="s-left">策略</th>
+                      <th className="s-right">评分</th>
+                      <th className="s-right">状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {opp!.topOpportunities.map((item) => (
                       <tr key={`r2-${item.id}`}>
                         <td className="s-td-name">
-                          <span style={{ cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
+                          <span className="s-clickable" onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
                         <td className="s-td-name">{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ textAlign: 'right' }} className="s-num">{item.scoreLabel}</td>
-                        <td style={{ textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                        <td className="s-num s-right">{item.scoreLabel}</td>
+                        <td className="s-right" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -588,19 +588,19 @@ export default function Dashboard() {
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
+            <h3 className="card-title s-card-title">概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
             <div className="s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>#</th>
-                    <th style={{ textAlign: 'left' }}>概念</th>
-                    <th style={{ textAlign: 'right' }}>涨跌幅</th>
-                    <th style={{ textAlign: 'right' }}>热度</th>
-                    <th style={{ textAlign: 'center' }}>连续</th>
-                    <th style={{ textAlign: 'right' }}>3日涨幅</th>
-                    <th style={{ textAlign: 'right' }}>龙头</th>
-                    <th style={{ textAlign: 'right' }}>涨停</th>
+                    <th className="s-left">#</th>
+                    <th className="s-left">概念</th>
+                    <th className="s-right">涨跌幅</th>
+                    <th className="s-right">热度</th>
+                    <th className="s-center">连续</th>
+                    <th className="s-right">3日涨幅</th>
+                    <th className="s-right">龙头</th>
+                    <th className="s-right">涨停</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -608,29 +608,29 @@ export default function Dashboard() {
                     <tr key={`hc-${i}`}>
                       <td>{c.rank ?? i + 1}</td>
                       <td className="s-td-name">{c.name}</td>
-                      <td style={{ textAlign: 'right' }} className={(c.pct_change ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.pct_change ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {c.pct_change != null ? `${c.pct_change >= 0 ? '+' : ''}${c.pct_change.toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ textAlign: 'right' }} className="s-num">
+                      <td className="s-num s-right">
                         {c.hot != null ? Math.round(c.hot).toLocaleString() : '—'}
                       </td>
-                      <td style={{ textAlign: 'center' }}>
-                        {(c.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span> : (c.heat_persistence ?? 0) === 2 ? '2天' : <span className="s-text-muted">首日</span>}
+                      <td className="s-center">
+                        {(c.heat_persistence ?? 0) >= 3 ? <span className="s-fire">🔥{c.heat_persistence}天</span> : (c.heat_persistence ?? 0) === 2 ? '2天' : <span className="s-text-muted">首日</span>}
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {c.momentum_3d != null ? `${c.momentum_3d >= 0 ? '+' : ''}${(c.momentum_3d ?? 0).toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(c.leader_avg_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.leader_avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '-'}
                       </td>
-                      <td style={{ textAlign: 'right' }} className="s-num">
+                      <td className="s-num s-right">
                         {c.limit_up_count ?? 0}
                       </td>
                     </tr>
                   ))}
                   {((viewModel as any)?.hotConcepts || []).length === 0 && (
                     <tr>
-                      <td colSpan={8} style={{ textAlign: 'center' }}>暂无数据</td>
+                      <td colSpan={8} className="s-center">暂无数据</td>
                     </tr>
                   )}
                 </tbody>
@@ -640,18 +640,18 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>热门个股 Top10<InfoTip data={DASHBOARD_META.hot_stocks} /></h3>
+            <h3 className="card-title s-card-title">热门个股 Top10<InfoTip data={DASHBOARD_META.hot_stocks} /></h3>
             <div className="s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>#</th>
-                    <th style={{ textAlign: 'left' }}>股票</th>
-                    <th style={{ textAlign: 'left' }}>主概念</th>
-                    <th style={{ textAlign: 'right' }}>板块势</th>
-                    <th style={{ textAlign: 'right' }}>涨跌幅</th>
-                    <th style={{ textAlign: 'center' }}>连续</th>
-                    <th style={{ textAlign: 'center' }}>策略</th>
+                    <th className="s-left">#</th>
+                    <th className="s-left">股票</th>
+                    <th className="s-left">主概念</th>
+                    <th className="s-right">板块势</th>
+                    <th className="s-right">涨跌幅</th>
+                    <th className="s-center">连续</th>
+                    <th className="s-center">策略</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -664,22 +664,22 @@ export default function Dashboard() {
                       <td className="s-td-name">
                         {s.primary_concept ? s.primary_concept : '—'}
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(s.concept_momentum_3d ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(s.concept_momentum_3d ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {s.concept_momentum_3d != null ? `${s.concept_momentum_3d >= 0 ? '+' : ''}${(s.concept_momentum_3d ?? 0).toFixed(1)}%` : '—'}
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(s.pct_change ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(s.pct_change ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {s.pct_change != null ? `${s.pct_change >= 0 ? '+' : ''}${s.pct_change.toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ textAlign: 'center' }}>
-                        {(s.heat_persistence ?? 0) >= 3 ? <span style={{ color: '#f59e0b' }}>🔥{s.heat_persistence}天</span> : (s.heat_persistence ?? 0) === 2 ? '2天' : <span className="s-text-muted">首日</span>}
+                      <td className="s-center">
+                        {(s.heat_persistence ?? 0) >= 3 ? <span className="s-fire">🔥{s.heat_persistence}天</span> : (s.heat_persistence ?? 0) === 2 ? '2天' : <span className="s-text-muted">首日</span>}
                       </td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td className="s-center">
                         {s.strategy_hit ? '🎯' : ''}
                       </td>
                     </tr>
                   ))}
                   {((viewModel as any)?.hotStocks || []).length === 0 && (
-                    <tr><td colSpan={7} style={{ textAlign: 'center' }}>暂无数据</td></tr>
+                    <tr><td colSpan={7} className="s-center">暂无数据</td></tr>
                   )}
                 </tbody>
               </table>
@@ -692,19 +692,19 @@ export default function Dashboard() {
         {/* 左栏：强势板块 Top10 */}
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 8px 0' }}>强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
+            <h3 className="card-title s-card-title">强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
             <div className="sector-table-wrap s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>#</th>
-                    <th style={{ textAlign: 'left' }}>概念</th>
-                    <th style={{ textAlign: 'right' }}>3日</th>
-                    <th style={{ textAlign: 'right' }}>今日</th>
-                    <th style={{ textAlign: 'right' }}>涨停</th>
-                    <th style={{ textAlign: 'right' }}>上涨比</th>
-                    <th style={{ textAlign: 'right' }}>龙头</th>
-                    <th style={{ textAlign: 'center' }}>标记</th>
+                    <th className="s-left">#</th>
+                    <th className="s-left">概念</th>
+                    <th className="s-right">3日</th>
+                    <th className="s-right">今日</th>
+                    <th className="s-right">涨停</th>
+                    <th className="s-right">上涨比</th>
+                    <th className="s-right">龙头</th>
+                    <th className="s-center">标记</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -712,24 +712,24 @@ export default function Dashboard() {
                     <tr key={c.concept_code}>
                       <td>{i + 1}</td>
                       <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
-                      <td style={{ textAlign: 'right' }} className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ textAlign: 'right' }} className="s-num">{c.limit_up_count ?? 0}</td>
-                      <td style={{ textAlign: 'right' }} className="s-num">{Math.round((c.up_ratio ?? 0) * 100)}%</td>
-                      <td style={{ textAlign: 'right' }} className={(c.leader_avg_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className="s-num s-right">{c.limit_up_count ?? 0}</td>
+                      <td className="s-num s-right">{Math.round((c.up_ratio ?? 0) * 100)}%</td>
+                      <td className={(c.leader_avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
-                      <td style={{ textAlign: 'center' }}>
+                      <td className="s-center">
                         {c.strategy_hit_count > 0 && <span style={{ color: 'var(--info)', marginRight: 3 }}>🎯{c.strategy_hit_count}</span>}
-                        {c.heat_persistence > 0 && <span style={{ color: '#f59e0b' }}>🔥{c.heat_persistence}天</span>}
+                        {c.heat_persistence > 0 && <span className="s-fire">🔥{c.heat_persistence}天</span>}
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={8} style={{ textAlign: 'center' }}>暂无数据</td></tr>
+                    <tr><td colSpan={8} className="s-center">暂无数据</td></tr>
                   )}
                 </tbody>
               </table>
@@ -739,18 +739,18 @@ export default function Dashboard() {
         {/* 中栏：异动板块 Top5 */}
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 4px 0' }}>异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
+            <h3 className="card-title s-card-title">异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
             <div className="sector-table-wrap s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>#</th>
-                    <th style={{ textAlign: 'left' }}>概念</th>
-                    <th style={{ textAlign: 'right' }}>量比</th>
-                    <th style={{ textAlign: 'right' }}>3日均额</th>
-                    <th style={{ textAlign: 'right' }}>今日</th>
-                    <th style={{ textAlign: 'left' }}>龙头</th>
-                    <th style={{ textAlign: 'right' }}>涨幅</th>
+                    <th className="s-left">#</th>
+                    <th className="s-left">概念</th>
+                    <th className="s-right">量比</th>
+                    <th className="s-right">3日均额</th>
+                    <th className="s-right">今日</th>
+                    <th className="s-left">龙头</th>
+                    <th className="s-right">涨幅</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -758,24 +758,24 @@ export default function Dashboard() {
                     <tr key={c.concept_code}>
                       <td>{i + 1}</td>
                       <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
-                      <td style={{ textAlign: 'right' }} className={(c.concept_vr3 ?? 0) >= 2.0 ? 's-warn s-num' : 's-num'}>
+                      <td className={(c.concept_vr3 ?? 0) >= 2.0 ? 's-warn s-num s-right' : 's-num s-right'}>
                         {(c.concept_vr3 ?? 0).toFixed(1)}x
                       </td>
-                      <td style={{ textAlign: 'right' }} className="s-num">
+                      <td className="s-num s-right">
                         {(c.amount_3d_avg ?? 0).toFixed(1)}亿
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
                       </td>
                       <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
                         {c.leader_top_stock || '—'}
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(c.leader_top_pct_chg ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.leader_top_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${(c.leader_top_pct_chg ?? 0).toFixed(1)}%` : '—'}
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={7} style={{ textAlign: 'center' }}>暂无异动板块</td></tr>
+                    <tr><td colSpan={7} className="s-center">暂无异动板块</td></tr>
                   )}
                 </tbody>
               </table>
@@ -785,17 +785,17 @@ export default function Dashboard() {
         {/* 右栏：退潮板块 Top5 */}
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title" style={{ margin: '0 0 4px 0' }}>退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
+            <h3 className="card-title s-card-title">退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
             <div className="sector-table-wrap s-card-inner">
               <table className="s-table">
                 <thead>
                   <tr>
-                    <th style={{ textAlign: 'left' }}>#</th>
-                    <th style={{ textAlign: 'left' }}>概念</th>
-                    <th style={{ textAlign: 'right' }}>今日涨幅</th>
-                    <th style={{ textAlign: 'right' }}>3日累计</th>
-                    <th style={{ textAlign: 'right' }}>跌停</th>
-                    <th style={{ textAlign: 'right' }}>龙头今日</th>
+                    <th className="s-left">#</th>
+                    <th className="s-left">概念</th>
+                    <th className="s-right">今日涨幅</th>
+                    <th className="s-right">3日累计</th>
+                    <th className="s-right">跌停</th>
+                    <th className="s-right">龙头今日</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -803,19 +803,19 @@ export default function Dashboard() {
                     <tr key={c.concept_code}>
                       <td>{i + 1}</td>
                       <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
-                      <td style={{ textAlign: 'right' }} className="s-down s-num">
+                      <td className="s-down s-num s-right">
                         {(c.today_pct_chg ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ textAlign: 'right' }} className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num' : 's-down s-num'}>
+                      <td className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
                         {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
                       </td>
-                      <td style={{ textAlign: 'right' }} className="s-num">{c.limit_down_count ?? 0}</td>
-                      <td style={{ textAlign: 'right' }} className="s-down s-num">
+                      <td className="s-num s-right">{c.limit_down_count ?? 0}</td>
+                      <td className="s-down s-num s-right">
                         {c.leader_avg_pct_chg != null ? `${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={6} style={{ textAlign: 'center' }}>暂无退潮板块</td></tr>
+                    <tr><td colSpan={6} className="s-center">暂无退潮板块</td></tr>
                   )}
                 </tbody>
               </table>
@@ -828,7 +828,7 @@ export default function Dashboard() {
         {false && <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title" style={{ margin: 0 }}>机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
+              <h3 className="card-title s-card-title">机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   买点 {opp?.metrics?.find(m => m.id === 'opp-buy')?.value ?? '—'} | 共振 {opp?.metrics?.find(m => m.id === 'opp-resonance')?.value ?? '—'} | 候选 {opp?.metrics?.find(m => m.id === 'opp-watchlist')?.value ?? '—'}
@@ -841,21 +841,21 @@ export default function Dashboard() {
                 <table className="s-table">
                   <thead>
                     <tr>
-                      <th style={{ textAlign: 'left' }}>股票</th>
-                      <th style={{ textAlign: 'left' }}>策略</th>
-                      <th style={{ textAlign: 'right' }}>评分</th>
-                      <th style={{ textAlign: 'right' }}>状态</th>
+                      <th className="s-left">股票</th>
+                      <th className="s-left">策略</th>
+                      <th className="s-right">评分</th>
+                      <th className="s-right">状态</th>
                     </tr>
                   </thead>
                   <tbody>
                     {opp!.topOpportunities.map((item) => (
                       <tr key={item.id}>
                         <td className="s-td-name">
-                          <span style={{ cursor: 'pointer' }} onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
+                          <span className="s-clickable" onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
                         </td>
                         <td className="s-td-name">{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td style={{ textAlign: 'right' }} className="s-num">{item.scoreLabel}</td>
-                        <td style={{ textAlign: 'right', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                        <td className="s-num s-right">{item.scoreLabel}</td>
+                        <td className="s-right" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -869,7 +869,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title" style={{ margin: 0 }}>风控<InfoTip data={DASHBOARD_META.risk_alerts} /></h3>
+              <h3 className="card-title s-card-title">风控<InfoTip data={DASHBOARD_META.risk_alerts} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
                   拦截 {risk?.metrics?.find(m => m.id === 'risk-gate')?.value ?? '—'} | 最高风险 {risk?.metrics?.find(m => m.id === 'risk-highest')?.value ?? '—'}
@@ -882,9 +882,9 @@ export default function Dashboard() {
                 <table className="s-table">
                   <thead>
                     <tr>
-                      <th style={{ textAlign: 'left' }}>事件</th>
-                      <th style={{ textAlign: 'left' }}>详情</th>
-                      <th style={{ textAlign: 'right' }}>风险分</th>
+                      <th className="s-left">事件</th>
+                      <th className="s-left">详情</th>
+                      <th className="s-right">风险分</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -892,7 +892,7 @@ export default function Dashboard() {
                       <tr key={ev.id}>
                         <td className="s-warn" style={{ fontWeight: 500 }}>{ev.name}</td>
                         <td>{ev.helperText}</td>
-                        <td style={{ textAlign: 'right' }} className="s-num">{ev.scoreLabel}</td>
+                        <td className="s-num s-right">{ev.scoreLabel}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -906,7 +906,7 @@ export default function Dashboard() {
         {false && <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title" style={{ margin: 0 }}>组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
+              <h3 className="card-title s-card-title">组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {portfolioRaw && (
                   <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
@@ -972,7 +972,7 @@ export default function Dashboard() {
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title" style={{ margin: 0 }}>系统<InfoTip data={DASHBOARD_META.system_health} /></h3>
+              <h3 className="card-title s-card-title">系统<InfoTip data={DASHBOARD_META.system_health} /></h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 {(() => {
                   const failed = sys?.metrics?.find(m => m.id === 'system-failed');
