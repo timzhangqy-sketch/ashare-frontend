@@ -6,14 +6,14 @@
 :root {
   /* --- 背景层级 --- */
   --s-bg-base: #10131b;
-  --s-bg-surface: #1c2027;
+  --s-bg-surface: #1e2330;
   --s-bg-container: #1c2027;
   --s-bg-container-high: #262a32;
   --s-bg-container-highest: #31353d;
   --s-bg-hover: #363942;
 
   /* --- 边框 --- */
-  --s-border: rgba(66, 71, 84, 0.25);
+  --s-border: rgba(66, 71, 84, 0.4);
   --s-border-subtle: rgba(66, 71, 84, 0.1);
   --s-border-strong: rgba(66, 71, 84, 0.3);
 
