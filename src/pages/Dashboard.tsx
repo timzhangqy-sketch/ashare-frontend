@@ -64,6 +64,7 @@ export default function Dashboard() {
   const [distribution, setDistribution] = useState<MarketDistribution | null>(null);
   const [drawerStock, setDrawerStock] = useState<StockDetail | null>(null);
   const [portfolioRaw, setPortfolioRaw] = useState<any>(null);
+  const [fundFlow, setFundFlow] = useState<any>(null);
   const [retrySeed, setRetrySeed] = useState(0);
   const [loadState, setLoadState] = useState<{
     key: string | null;
@@ -138,6 +139,7 @@ export default function Dashboard() {
     });
     fetchMarketDistribution(selectedDate).then(d => { if (!cancelled) setDistribution(d); });
     api.get('/api/portfolio/summary').then(r => { if (!cancelled) setPortfolioRaw(r.data ?? null); }).catch(() => {});
+    api.get('/api/concept-stats/fund-flow').then(r => { if (!cancelled) setFundFlow(r.data ?? null); }).catch(() => { if (!cancelled) setFundFlow({ flow_in: [], flow_out: [] }); });
     return () => { cancelled = true; };
   }, [selectedDate]);
 
@@ -570,8 +572,8 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-      {/* ═══ 第3行：概念热度 + 热门个股 ═══ */}
-      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+      {/* ═══ 第3行：概念热度 + 热门个股 + 资金异动 ═══ */}
+      <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
             <h3 className="card-title s-card-title">概念热度 Top10<InfoTip data={DASHBOARD_META.concept_heat} /></h3>
@@ -670,6 +672,71 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title">板块资金异动<InfoTip data={DASHBOARD_META.fund_flow} /></h3>
+            {fundFlow ? (
+              <div style={{ display: 'flex', gap: '12px' }}>
+                {/* 流入 */}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', color: '#c2c6d6', marginBottom: '6px' }}>放量流入</div>
+                  <table className="s-table">
+                    <thead><tr>
+                      <th className="s-center" style={{width:'24px'}}>#</th>
+                      <th>板块</th>
+                      <th className="s-right">成交额</th>
+                      <th className="s-right">环比</th>
+                      <th className="s-right">涨幅</th>
+                    </tr></thead>
+                    <tbody>
+                      {(fundFlow.flow_in || []).map((item: any, i: number) => (
+                        <tr key={i}>
+                          <td className="s-center s-text-muted">{i + 1}</td>
+                          <td className="s-td-name">{item.concept_name}</td>
+                          <td className="s-num s-right">{item.total_amount}亿</td>
+                          <td className="s-num s-right s-up">{item.ratio}x</td>
+                          <td className="s-num s-right s-up">+{item.avg_pct_chg}%</td>
+                        </tr>
+                      ))}
+                      {(!fundFlow.flow_in || fundFlow.flow_in.length === 0) && (
+                        <tr><td colSpan={5} className="s-center s-text-muted">暂无放量流入板块</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                {/* 流出 */}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', color: '#c2c6d6', marginBottom: '6px' }}>放量流出</div>
+                  <table className="s-table">
+                    <thead><tr>
+                      <th className="s-center" style={{width:'24px'}}>#</th>
+                      <th>板块</th>
+                      <th className="s-right">成交额</th>
+                      <th className="s-right">环比</th>
+                      <th className="s-right">跌幅</th>
+                    </tr></thead>
+                    <tbody>
+                      {(fundFlow.flow_out || []).map((item: any, i: number) => (
+                        <tr key={i}>
+                          <td className="s-center s-text-muted">{i + 1}</td>
+                          <td className="s-td-name">{item.concept_name}</td>
+                          <td className="s-num s-right">{item.total_amount}亿</td>
+                          <td className="s-num s-right s-down">{item.ratio}x</td>
+                          <td className="s-num s-right s-down">{item.avg_pct_chg}%</td>
+                        </tr>
+                      ))}
+                      {(!fundFlow.flow_out || fundFlow.flow_out.length === 0) && (
+                        <tr><td colSpan={5} className="s-center s-text-muted">暂无放量流出板块</td></tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <div className="s-center s-text-muted" style={{ padding: '20px' }}>加载中...</div>
+            )}
           </div>
         </div>
       </section>

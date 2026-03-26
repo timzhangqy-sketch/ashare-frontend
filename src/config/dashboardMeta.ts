@@ -64,4 +64,9 @@ export const DASHBOARD_META: Record<string, { logic: string; source: string; scr
     source: '/api/system/pipeline_runs + /api/health',
     script: 'daily_pipeline.sh → routers/system.py',
   },
+  fund_flow: {
+    logic: '基于板块成交额3日环比变化，放量（环比>1.2x）且上涨=资金流入，放量且下跌=资金流出。排除指数类板块和低成交板块。',
+    source: 'ashare_concept_daily_stats',
+    script: 'concept_daily_stats.py → /api/concept-stats/fund-flow',
+  },
 };
