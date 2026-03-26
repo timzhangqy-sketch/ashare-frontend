@@ -25,19 +25,19 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
     <>
       <div className="stat-grid">
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>形态样本</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>形态样本</div>
           <div className="stat-value c-red">{loading ? '--' : rows.length}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>交易标的池命中</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>交易标的池命中</div>
           <div className="stat-value c-blue">{loading ? '--' : rows.filter(row => row.in_pool).length}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>延续跟踪</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>延续跟踪</div>
           <div className="stat-value c-cyan">{loading ? '--' : rows.filter(row => row.in_continuation).length}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>T+2 平均收益</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>T+2 平均收益</div>
           <div className="stat-value c-gold">{loading ? '--' : formatPercent(rows.length ? rows.reduce((sum, row) => sum + (row.ret_2d ?? 0), 0) / rows.length : 0)}</div>
         </div>
       </div>
@@ -77,7 +77,7 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
                     const pctMaybe = (v: number | null | undefined) => v == null ? null : Math.abs(v) <= 1 ? v * 100 : v;
                     const t2Pct = pctMaybe(row.ret_t2);
                     const ret2dPct = pctMaybe(row.ret_2d);
-                    const pctStyle = (n: number | null) => ({ color: n == null ? 'var(--text-muted)' : n > 0 ? 'var(--up)' : n < 0 ? 'var(--down)' : 'var(--text-muted)', fontWeight: 600 as const });
+                    const pctStyle = (n: number | null) => ({ color: n == null ? '#8c909f' : n > 0 ? '#ff5451' : n < 0 ? '#22C55E' : '#8c909f', fontWeight: 600 as const });
                     const detail = getMockDetail(row.ts_code, row.name, ['形态策略'], 0, (row.ret_t0 ?? 0) * 100);
                     return (
                       <tr key={row.ts_code} onClick={() => onOpen(detail)}>
@@ -86,12 +86,12 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
                         <td style={{ textAlign: 'left' }}>
                           {(row as any).primary_concept ? (
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                 {(row as any).primary_concept}
                               </span>
                               {(row as any).is_leader && <span title={(row as any).leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                             </span>
-                          ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          ) : <span style={{ color: '#8c909f' }}>—</span>}
                         </td>
                         <td className="center numeric-muted">{selectedDate}</td>
                         <td className="right numeric" style={pctStyle(t2Pct)}>{t2Pct == null ? '--' : `${t2Pct > 0 ? '+' : ''}${t2Pct.toFixed(2)}%`}</td>

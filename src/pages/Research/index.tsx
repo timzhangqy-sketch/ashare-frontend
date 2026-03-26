@@ -220,7 +220,7 @@ export default function ResearchPage() {
           const isTextKpi = metric.label === '聚焦策略' || metric.label === '数据来源'
           return (
             <article key={metric.label} className="research-summary-card compact stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>{metric.label}</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>{metric.label}</div>
               <div className="stat-value numeric" style={isTextKpi ? { fontSize: '16px', fontWeight: 700 } : undefined}>{metric.value}</div>
             </article>
           )

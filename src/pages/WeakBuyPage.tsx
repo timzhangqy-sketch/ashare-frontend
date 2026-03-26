@@ -27,19 +27,19 @@ function WeakBuyTodayTable({ selectedDate, onOpen }: { selectedDate: string; onO
     <>
       <div className="stat-grid">
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>今日样本</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>今日样本</div>
           <div className="stat-value c-red">{loading ? '--' : rows.length}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>最深超跌</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>最深超跌</div>
           <div className="stat-value c-blue">{loading ? '--' : (minRet60 != null ? formatWeakBuyPct(minRet60).text : '--')}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>平均放量天数</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>平均放量天数</div>
           <div className="stat-value c-cyan">{loading ? '--' : (avgVolupDays != null ? avgVolupDays.toFixed(1) : '0.0')}</div>
         </div>
         <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>交易标的池命中</div>
+          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>交易标的池命中</div>
           <div className="stat-value c-gold">{loading ? '--' : rows.filter(row => row.in_pool).length}</div>
         </div>
       </div>
@@ -84,15 +84,15 @@ function WeakBuyTodayTable({ selectedDate, onOpen }: { selectedDate: string; onO
                         <td style={{ textAlign: 'left' }}>
                           {(row as any).primary_concept ? (
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                 {(row as any).primary_concept}
                               </span>
                               {(row as any).is_leader && <span title={(row as any).leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                             </span>
-                          ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          ) : <span style={{ color: '#8c909f' }}>—</span>}
                         </td>
                         <td className="right numeric">{row.close != null ? Number(row.close).toFixed(2) : '--'}</td>
-                        <td className="right numeric" style={{ color: ret60.isNegative ? 'var(--down)' : 'var(--up)', fontWeight: 600 }}>{ret60.text}</td>
+                        <td className="right numeric" style={{ color: ret60.isNegative ? '#22C55E' : '#ff5451', fontWeight: 600 }}>{ret60.text}</td>
                         <td className="right numeric">{row.volup15_days}</td>
                         <td className="right numeric">{avgRet.text}</td>
                         <td className="right numeric">{row.weak_days}</td>

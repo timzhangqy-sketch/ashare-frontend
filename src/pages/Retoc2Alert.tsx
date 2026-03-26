@@ -13,11 +13,11 @@ type MainTab = 'today' | 'watchlist';
 
 const fmt = (v: number | null | undefined, d = 2) => v != null ? v.toFixed(d) : '--';
 const pnlColor = (v: number | null | undefined) =>
-  v == null ? 'var(--text-muted)' : v > 0 ? 'var(--up)' : v < 0 ? 'var(--down)' : 'var(--text-muted)';
+  v == null ? '#8c909f' : v > 0 ? '#ff5451' : v < 0 ? '#22C55E' : '#8c909f';
 
 const GRADE_CFG: Record<string, { color: string; bg: string; border: string }> = {
-  A: { color: 'var(--down)', bg: 'var(--down-bg)', border: 'rgba(34,197,94,.4)' },
-  B: { color: 'var(--info)', bg: 'var(--info-bg)', border: 'rgba(59,130,246,.4)' },
+  A: { color: '#22C55E', bg: 'rgba(34, 197, 94, 0.15)', border: 'rgba(34,197,94,.4)' },
+  B: { color: '#3B82F6', bg: 'rgba(59, 130, 246, 0.15)', border: 'rgba(59,130,246,.4)' },
 };
 
 function GradeBadge({ grade }: { grade: string }) {
@@ -92,22 +92,22 @@ export default function Retoc2Alert() {
         <>
           <div className="stat-grid">
             <div className="stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>今日异动</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>今日异动</div>
               <div className={`stat-value c-gold${loading ? ' loading' : ''}`}>{loading ? '--' : alerts.length}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>A 级信号</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>A 级信号</div>
               <div className={`stat-value c-green${loading ? ' loading' : ''}`}>{loading ? '--' : aCount}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>平均 ret10%</div>
-              <div className="stat-value" style={{ color: loading ? 'var(--text-muted)' : pnlColor(avgRet10) }}>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>平均 ret10%</div>
+              <div className="stat-value" style={{ color: loading ? '#8c909f' : pnlColor(avgRet10) }}>
                 {loading ? '--' : `${avgRet10 >= 0 ? '+' : ''}${avgRet10.toFixed(2)}%`}
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>10 日最多触发</div>
-              <div className="stat-value" style={{ fontSize: maxBars ? 16 : 24, color: 'var(--accent)' }}>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>10 日最多触发</div>
+              <div className="stat-value" style={{ fontSize: maxBars ? 16 : 24, color: '#3B82F6' }}>
                 {loading ? '--' : maxBars ? maxBars.name : '--'}
               </div>
             </div>
@@ -164,14 +164,14 @@ export default function Retoc2Alert() {
                       <td style={{ textAlign: 'left' }}>
                         {(item as any).primary_concept ? (
                           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                            <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                            <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                               {(item as any).primary_concept}
                             </span>
                             {(item as any).is_leader && <span title={(item as any).leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                           </span>
-                        ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                        ) : <span style={{ color: '#8c909f' }}>—</span>}
                       </td>
-                      <td className="right"><span style={{ color: 'var(--warn)', fontWeight: 600 }}>{item.total_bars_10}</span></td>
+                      <td className="right"><span style={{ color: '#F59E0B', fontWeight: 600 }}>{item.total_bars_10}</span></td>
                       <td className="right c-sec">{item.cnt_bars}</td>
                       <td className="right" style={{ color: pnlColor(item.ret10_pct), fontWeight: 600 }}>
                         {item.ret10_pct != null ? `${item.ret10_pct >= 0 ? '+' : ''}${fmt(item.ret10_pct)}%` : '--'}

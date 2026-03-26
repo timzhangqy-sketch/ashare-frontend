@@ -644,3 +644,88 @@
 .portfolio-page [class*="tab"] {
   border-radius: 0 !important;
 }
+
+/* === 通用页面 Sapphire 覆盖（Risk/Research/Execution/System/策略页） === */
+.risk-page .card,
+.research-page .card,
+.execution-page .card,
+.system-page .card,
+.ignition-page .card,
+.retoc2-page .card,
+.pattern-page .card,
+.weak-buy-page .card,
+[class*="-page"] > section.card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  box-shadow: none !important;
+}
+
+[class*="-page"] .card-header {
+  background: var(--s-bg-surface) !important;
+  border-bottom: 1px solid var(--s-border) !important;
+}
+
+[class*="-page"] .stat-card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  box-shadow: none !important;
+}
+
+[class*="-page"] .stat-value {
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--s-text-primary) !important;
+}
+
+[class*="-page"] .stat-label {
+  font-size: 11px !important;
+  color: var(--s-text-muted) !important;
+  font-weight: 500 !important;
+}
+
+[class*="-page"] .card-title {
+  font-family: var(--s-font-headline) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--s-text-secondary) !important;
+}
+
+[class*="-page"] .data-table thead tr,
+[class*="-page"] .data-table thead {
+  background: var(--s-bg-container-high) !important;
+}
+
+[class*="-page"] .data-table thead th {
+  font-family: var(--s-font-headline) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: var(--s-text-muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 6px 12px !important;
+  border: none !important;
+}
+
+[class*="-page"] .data-table tbody tr {
+  border-bottom: 1px solid var(--s-border-subtle) !important;
+  transition: background-color 150ms ease !important;
+  height: 32px !important;
+}
+
+[class*="-page"] .data-table tbody tr:hover {
+  background: rgba(54, 57, 66, 0.3) !important;
+}
+
+[class*="-page"] .data-table tbody td {
+  padding: 4px 12px !important;
+  font-size: 11px !important;
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  vertical-align: middle !important;
+}
+
+[class*="-page"] [class*="tab"] {
+  border-radius: 0 !important;
+}

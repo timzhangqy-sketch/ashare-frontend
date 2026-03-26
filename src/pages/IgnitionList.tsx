@@ -69,15 +69,15 @@ export default function IgnitionList() {
         <>
           <div className="stat-grid">
             <div className="stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>今日入选</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>今日入选</div>
               <div className={`stat-value c-red${loading ? ' loading' : ''}`}>{loading ? '--' : rows.length}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>买入信号</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>买入信号</div>
               <div className={`stat-value c-gold${loading ? ' loading' : ''}`}>{loading ? '--' : buySignalCount}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>卖出信号</div>
+              <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>卖出信号</div>
               <div className={`stat-value c-green${loading ? ' loading' : ''}`}>{loading ? '--' : sellSignalCount}</div>
             </div>
           </div>
@@ -131,12 +131,12 @@ export default function IgnitionList() {
                         <td style={{ textAlign: 'left' }}>
                           {(item as any).primary_concept ? (
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                              <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                                 {(item as any).primary_concept}
                               </span>
                               {(item as any).is_leader && <span title={(item as any).leader_reason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                             </span>
-                          ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+                          ) : <span style={{ color: '#8c909f' }}>—</span>}
                         </td>
                         <td className="center c-sec">{item.entry_date}</td>
                         <td className="right" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -145,10 +145,10 @@ export default function IgnitionList() {
                         <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>
                           {(item as any).avg_vr3 != null ? Number((item as any).avg_vr3).toFixed(2) : '--'}
                         </td>
-                        <td className="right" style={{ color: Number((item as any).ret5_pct || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
+                        <td className="right" style={{ color: Number((item as any).ret5_pct || 0) >= 0 ? '#ff5451' : '#22C55E', fontWeight: 600 }}>
                           {(item as any).ret5_pct != null ? `${(Number((item as any).ret5_pct) * 100).toFixed(2)}%` : '--'}
                         </td>
-                        <td className="right" style={{ color: Number((item as any).ret20_pct || 0) >= 0 ? 'var(--up)' : 'var(--down)', fontWeight: 600 }}>
+                        <td className="right" style={{ color: Number((item as any).ret20_pct || 0) >= 0 ? '#ff5451' : '#22C55E', fontWeight: 600 }}>
                           {(item as any).ret20_pct != null ? `${(Number((item as any).ret20_pct) * 100).toFixed(2)}%` : '--'}
                         </td>
                         <td className="right c-muted" style={{ fontVariantNumeric: 'tabular-nums' }}>
@@ -160,7 +160,7 @@ export default function IgnitionList() {
                         <td className="center">{displaySignalLabel(item.buy_signal)}</td>
                         <td className="center">{displaySignalLabel(item.sell_signal)}</td>
                         <td className="center">
-                          <button type="button" title="承接" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }} onClick={(e) => { e.stopPropagation(); }}>
+                          <button type="button" title="承接" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#8c909f', padding: 4 }} onClick={(e) => { e.stopPropagation(); }}>
                             <ArrowRight size={16} />
                           </button>
                         </td>

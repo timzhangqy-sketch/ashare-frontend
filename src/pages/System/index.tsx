@@ -119,7 +119,7 @@ export default function SystemPage() {
       <section className="system-metrics">
         {viewModel.metrics.map((metric) => (
           <article key={metric.key} className="system-metric-card stat-card">
-            <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--text-secondary)' }}>{metric.label}</span>
+            <span style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>{metric.label}</span>
             <strong className="numeric">{metric.value}</strong>
           </article>
         ))}
