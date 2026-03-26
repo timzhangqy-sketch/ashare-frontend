@@ -45,10 +45,10 @@ const REGIME_LABEL: Record<string, string> = {
 };
 
 const REGIME_COLOR: Record<string, string> = {
-  strong: 'var(--up)',
-  bullish: 'var(--info)',
+  strong: '#ff5451',
+  bullish: '#3B82F6',
   neutral: 'var(--text-secondary)',
-  bearish: 'var(--warn)',
+  bearish: '#F59E0B',
   weak: 'var(--critical)',
 };
 
@@ -273,10 +273,10 @@ export default function TopBar() {
             return (
               <span key={idx.tsCode} className="topbar-index-item">
                 <span className="topbar-index-name">{idx.name}</span>
-                <span className="topbar-index-close" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
+                <span className="topbar-index-close" style={{ color: up ? '#ff5451' : '#22C55E' }}>
                   {idx.close?.toFixed(0)}
                 </span>
-                <span className="topbar-index-pct" style={{ color: up ? 'var(--up)' : 'var(--down)' }}>
+                <span className="topbar-index-pct" style={{ color: up ? '#ff5451' : '#22C55E' }}>
                   {up ? '+' : ''}{idx.pctChange?.toFixed(2)}%
                 </span>
               </span>
