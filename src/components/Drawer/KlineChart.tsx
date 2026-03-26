@@ -37,8 +37,8 @@ function chartTheme(dark: boolean) {
 }
 
 function candleColors(dark: boolean) {
-  const up = dark ? '#FF4D4F' : '#C82333'
-  const down = dark ? '#00B96B' : '#2F9E5B'
+  const up = dark ? '#ff5451' : '#C82333'
+  const down = dark ? '#22C55E' : '#2F9E5B'
   return {
     upColor: up,
     downColor: down,
