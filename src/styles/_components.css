@@ -301,3 +301,139 @@
 /* === fontWeight 工具类 === */
 .s-semi { font-weight: 600 !important; }
 .s-bold { font-weight: 700 !important; }
+
+/* === 信号中心 === */
+.signals-page .card {
+  background: var(--s-bg-surface);
+  border: 1px solid var(--s-border);
+  border-radius: var(--s-radius);
+  box-shadow: none;
+}
+
+.signals-page .card:hover {
+  border-color: var(--s-border-strong);
+}
+
+.signals-page .card-title {
+  font-family: var(--s-font-headline);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--s-text-secondary);
+}
+
+.signals-page .card-header {
+  background: var(--s-bg-surface);
+  border-bottom: 1px solid var(--s-border);
+}
+
+/* 信号中心表格覆盖 */
+.signals-page .data-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.signals-page .data-table thead tr,
+.signals-page .data-table thead {
+  background: var(--s-bg-container-high) !important;
+}
+
+.signals-page .data-table thead th {
+  font-family: var(--s-font-headline) !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: var(--s-text-muted) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 6px 12px !important;
+  border: none !important;
+}
+
+.signals-page .data-table tbody tr {
+  border-bottom: 1px solid var(--s-border-subtle) !important;
+  transition: background-color 150ms ease !important;
+  height: 32px !important;
+}
+
+.signals-page .data-table tbody tr:hover,
+.signals-page .signals-table-row:hover {
+  background: rgba(54, 57, 66, 0.3) !important;
+}
+
+.signals-page .data-table tbody td {
+  padding: 4px 12px !important;
+  font-size: 11px !important;
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  vertical-align: middle !important;
+}
+
+/* 名称列 */
+.signals-page .signals-cell-title {
+  font-family: var(--s-font-body) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  color: var(--s-text-primary) !important;
+}
+
+/* 代码列 */
+.signals-page .signals-inline-meta {
+  font-size: 10px !important;
+  color: var(--s-text-muted) !important;
+}
+
+/* 涨跌色 */
+.signals-page .signals-pnl-value.c-up,
+.signals-page .signals-pnl-value.positive {
+  color: var(--s-up) !important;
+}
+
+.signals-page .signals-pnl-value.c-down,
+.signals-page .signals-pnl-value.negative {
+  color: var(--s-down) !important;
+}
+
+/* origin badge */
+.signals-page .signals-origin-badge {
+  font-size: 10px !important;
+  border-radius: var(--s-radius) !important;
+}
+
+/* mini pill */
+.signals-page .signals-mini-pill {
+  font-size: 10px !important;
+  border-radius: var(--s-radius) !important;
+}
+
+/* KPI 摘要卡片（顶部3个） */
+.signals-page .signals-summary-card,
+.signals-page > .card:first-of-type {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+  box-shadow: none !important;
+}
+
+/* stat-card / stat-value / stat-label 在信号页的覆盖 */
+.signals-page .stat-card,
+.signals-page .signals-summary-card {
+  background: var(--s-bg-surface) !important;
+  border: 1px solid var(--s-border) !important;
+  border-radius: var(--s-radius) !important;
+}
+
+.signals-page .stat-value {
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--s-text-primary) !important;
+}
+
+.signals-page .stat-label {
+  font-size: 11px !important;
+  color: var(--s-text-muted) !important;
+  font-weight: 500 !important;
+}
+
+/* Tab 栏 */
+.signals-page [class*="tab"] {
+  border-radius: 0 !important;
+}

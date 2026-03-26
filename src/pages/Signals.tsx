@@ -587,12 +587,12 @@ function renderTableRows(
             <td style={{ textAlign: 'left' }}>
               {(row as SignalsBuyRowVm).primaryConcept ? (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                     {(row as SignalsBuyRowVm).primaryConcept}
                   </span>
                   {(row as SignalsBuyRowVm).isLeader && <span title={(row as SignalsBuyRowVm).leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                 </span>
-              ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+              ) : <span style={{ color: '#8c909f' }}>—</span>}
             </td>
             <td>{displayStrategyName((row as SignalsBuyRowVm).strategySource)}</td>
             <td>
@@ -618,7 +618,7 @@ function renderTableRows(
               <div className="signals-status-stack">
                 <span className={`signals-mini-pill${(row as SignalsBuyRowVm).inWatchlist ? ' active' : ''}`}>交易标的池</span>
                 {(row as SignalsBuyRowVm).inPortfolio
-                  ? <span className="signals-mini-pill active" style={{ color: 'var(--up)' }}>持仓</span>
+                  ? <span className="signals-mini-pill active" style={{ color: '#ff5451' }}>持仓</span>
                   : <span className="signals-mini-pill">观察</span>}
               </div>
             </td>
@@ -639,12 +639,12 @@ function renderTableRows(
             <td style={{ textAlign: 'left' }}>
               {(row as SignalsSellRowVm).primaryConcept ? (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                     {(row as SignalsSellRowVm).primaryConcept}
                   </span>
                   {(row as SignalsSellRowVm).isLeader && <span title={(row as SignalsSellRowVm).leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                 </span>
-              ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+              ) : <span style={{ color: '#8c909f' }}>—</span>}
             </td>
             <td>{displayStrategyName((row as SignalsSellRowVm).sourceStrategy)}</td>
             <td>{displayActionSignal((row as SignalsSellRowVm).actionSignal)}</td>
@@ -670,12 +670,12 @@ function renderTableRows(
             <td style={{ textAlign: 'left' }}>
               {(row as SignalsResonanceRowVm).primaryConcept ? (
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
                     {(row as SignalsResonanceRowVm).primaryConcept}
                   </span>
                   {(row as SignalsResonanceRowVm).isLeader && <span title={(row as SignalsResonanceRowVm).leaderReason || '概念龙头'} style={{ fontSize: '12px', cursor: 'help' }}>👑</span>}
                 </span>
-              ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
+              ) : <span style={{ color: '#8c909f' }}>—</span>}
             </td>
             <td className="signals-cell-wrap">
               {(row as SignalsResonanceRowVm).strategies.map((strategy) => displayStrategyName(strategy)).join(' / ')}
@@ -688,7 +688,7 @@ function renderTableRows(
               <div className="signals-status-stack">
                 <span className={`signals-mini-pill${(row as SignalsResonanceRowVm).inWatchlist ? ' active' : ''}`}>交易标的池</span>
                 {(row as SignalsResonanceRowVm).inPortfolio
-                  ? <span className="signals-mini-pill active" style={{ color: 'var(--up)' }}>持仓</span>
+                  ? <span className="signals-mini-pill active" style={{ color: '#ff5451' }}>持仓</span>
                   : <span className="signals-mini-pill">观察</span>}
               </div>
             </td>
