@@ -248,13 +248,13 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
             {buySuccess && <div className="source-summary-bar source-summary-bar-info drawer-toast">已加入持仓。</div>}
 
             {/* ═══ ① Header ═══ */}
-            <div className="drawer-header" style={{ padding: '10px 16px 8px' }}>
+            <div className="drawer-header">
               <div className="drawer-header-row1">
                 <div className="drawer-header-left">
-                  <span className="drawer-stock-title" data-testid="signals-stock-drawer-title" style={{ fontSize: '16px', fontWeight: 700 }}>{stock.name}</span>
-                  <span className="numeric" style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{stock.code}</span>
-                  {detail?.primary_concept && <span className="page-badge badge-blue" style={{ fontSize: '10px' }}>{detail.primary_concept}{detail.is_leader ? ' 👑' : ''}</span>}
-                  {stock.lists.map(l => <span key={l} className="page-badge badge-gold" style={{ fontSize: '10px' }}>{displayStrategy(l)}</span>)}
+                  <span className="drawer-stock-title" data-testid="signals-stock-drawer-title">{stock.name}</span>
+                  <span className="numeric s-text-sm s-text-muted">{stock.code}</span>
+                  {detail?.primary_concept && <span className="page-badge badge-blue">{detail.primary_concept}{detail.is_leader ? ' 👑' : ''}</span>}
+                  {stock.lists.map(l => <span key={l} className="page-badge badge-gold">{displayStrategy(l)}</span>)}
                   <MultiStrategyBadge tsCode={stock.code} />
                 </div>
                 <button className="drawer-close-btn" type="button" onClick={onClose} title="关闭 (Esc)" data-testid="signals-stock-drawer-close"><CloseIcon /></button>
@@ -297,7 +297,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
 
               {/* ═══ ④ Core Quote Grid ═══ */}
               <section className="drawer-section-compact" style={{ padding: '0 16px' }}>
-                <div className="drawer-section-title" style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '4px' }}>核心行情</div>
+                <div className="drawer-section-title" style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: '#8c909f', letterSpacing: '0.05em', marginBottom: '4px' }}>核心行情</div>
                 <div className="drawer-grid-6">
                   <GCell label="开盘" value={fmt(detail?.open ?? main?.open)} />
                   <GCell label="最高" value={fmt(detail?.high ?? main?.high)} />
@@ -325,7 +325,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
 
               {/* ═══ ⑤ System Status (lifecycle + risk) ═══ */}
               <section className="drawer-section-compact" style={{ padding: '0 16px' }}>
-                <div className="drawer-section-title" style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '4px' }}>系统状态</div>
+                <div className="drawer-section-title" style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: '#8c909f', letterSpacing: '0.05em', marginBottom: '4px' }}>系统状态</div>
                 {contextLoading ? (
                   <div className="drawer-inline-loading"><div className="spinner" /><span>加载中...</span></div>
                 ) : (
@@ -356,11 +356,11 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
                             <span className={`risk-badge risk-badge-${risk.riskLevel === 'low' ? 'low' : risk.riskLevel === 'medium' ? 'medium' : 'high'}`}>
                               {risk.riskLevel === 'low' ? '低风险' : risk.riskLevel === 'medium' ? '中风险' : risk.riskLevel === 'high' ? '高风险' : risk.riskLevel ?? '--'}
                             </span>
-                            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
+                            <span style={{ fontSize: '10px', color: '#8c909f' }}>
                               {risk.tradeAllowed ? '✅ 允许交易' : `🚫 ${risk.blockReason ?? '限制交易'}`}
                             </span>
                           </div>
-                          <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                          <div style={{ fontSize: '10px', color: '#8c909f', marginBottom: '4px' }}>
                             仓位系数 <span className="numeric">{risk.capMultiplier != null ? `${risk.capMultiplier.toFixed(2)}x` : '--'}</span>
                           </div>
                           <RiskDimBar label="财务" score={riskFinancial} />
@@ -369,7 +369,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
                           <RiskDimBar label="合规" score={riskCompliance} />
                         </>
                       ) : (
-                        <div style={{ fontSize: '12px', color: 'var(--text-muted)', padding: '8px 0' }}>暂无风控数据</div>
+                        <div style={{ fontSize: '12px', color: '#8c909f', padding: '8px 0' }}>暂无风控数据</div>
                       )}
                     </div>
                   </div>
@@ -378,12 +378,12 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
 
               {/* ═══ ⑥ AI Analysis ═══ */}
               <section className="drawer-section-compact" style={{ padding: '0 16px' }}>
-                <div className="drawer-section-title" style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div className="drawer-section-title" style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: '#8c909f', letterSpacing: '0.05em', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   AI 分析
                   {aiLoading ? <div className="spinner drawer-inline-spinner" /> : <span className="page-badge badge-yellow" style={{ fontSize: '9px' }}>演示数据</span>}
                 </div>
                 {aiLoading ? (
-                  <div style={{ fontSize: '12px', color: 'var(--text-muted)', padding: '8px 0' }}>正在加载...</div>
+                  <div style={{ fontSize: '12px', color: '#8c909f', padding: '8px 0' }}>正在加载...</div>
                 ) : ai ? (
                   <div className="drawer-card drawer-ai-card">
                     <div className="drawer-ai-columns">
@@ -415,7 +415,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
               <section className="drawer-section-compact" style={{ padding: '0 16px' }}>
                 <div
                   className="drawer-section-title drawer-section-toggle"
-                  style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: 'var(--text-muted)', letterSpacing: '0.05em', marginBottom: '4px', cursor: 'pointer', userSelect: 'none' }}
+                  style={{ fontSize: '11px', textTransform: 'uppercase' as const, color: '#8c909f', letterSpacing: '0.05em', marginBottom: '4px', cursor: 'pointer', userSelect: 'none' }}
                   onClick={() => setFinOpen(v => !v)}
                 >
                   财务概览 <span className={`toggle-arrow${finOpen ? ' open' : ''}`}>▶</span>

@@ -814,3 +814,119 @@ td.s-down,
 .s-down {
   color: #22C55E !important;
 }
+
+/* === StockDrawer Sapphire 样式 === */
+.drawer {
+  background: var(--s-bg-container) !important;
+  border-left: 1px solid var(--s-border) !important;
+  border-radius: 0 !important;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+.drawer-overlay.open {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.drawer-header {
+  background: var(--s-bg-container) !important;
+  border-bottom: 1px solid var(--s-border) !important;
+  padding: 10px 16px 8px !important;
+}
+
+.drawer-stock-title {
+  font-family: var(--s-font-body) !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--s-text-primary) !important;
+}
+
+.drawer-body {
+  background: var(--s-bg-container) !important;
+}
+
+.drawer-close-btn {
+  border-radius: var(--s-radius) !important;
+}
+
+/* Drawer 内数据网格 */
+.drawer .g-label {
+  font-size: 11px !important;
+  color: var(--s-text-muted) !important;
+  font-weight: 400 !important;
+  font-family: var(--s-font-body) !important;
+}
+
+.drawer .g-value {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+  color: var(--s-text-primary) !important;
+}
+
+/* Drawer 内 badge/pill */
+.drawer .drawer-pill,
+.drawer .page-badge {
+  border-radius: var(--s-radius) !important;
+  font-size: 10px !important;
+}
+
+/* Drawer 内风控维度条 */
+.drawer .risk-dim-row .dim-label {
+  font-size: 11px !important;
+  color: var(--s-text-muted) !important;
+  font-weight: 400 !important;
+}
+
+.drawer .risk-dim-row .dim-score {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  font-family: var(--s-font-mono) !important;
+}
+
+/* Drawer 内信心指数 */
+.drawer .drawer-confidence strong {
+  font-weight: 400 !important;
+  font-family: var(--s-font-mono) !important;
+}
+
+.drawer .drawer-confidence-track {
+  background: var(--s-bg-base) !important;
+  border-radius: var(--s-radius) !important;
+}
+
+/* Drawer 内所有数字不加粗 */
+.drawer .numeric {
+  font-weight: 400 !important;
+  font-family: var(--s-font-mono) !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* Drawer 内价格/涨跌 */
+.drawer .price {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  font-family: var(--s-font-mono) !important;
+}
+
+.drawer .change {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  font-family: var(--s-font-mono) !important;
+}
+
+/* Drawer section 标题 */
+.drawer h4,
+.drawer [class*="section-title"],
+.drawer [class*="heading"] {
+  font-family: var(--s-font-headline) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: var(--s-text-secondary) !important;
+}
+
+/* Drawer 内 status badge 文字 */
+.drawer .status-badge {
+  font-size: 10px !important;
+  border-radius: var(--s-radius) !important;
+}
