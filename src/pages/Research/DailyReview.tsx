@@ -238,7 +238,7 @@ export default function DailyReview() {
                 <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 4, left: -8 }}>
                   <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#8c909f' }} axisLine={{ stroke: 'rgba(66,71,84,0.15)' }} tickLine={false} interval={tickInterval} />
                   <YAxis tick={{ fontSize: 9, fill: '#8c909f' }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${v > 0 ? '+' : ''}${v}%`} width={42} domain={['auto', 'auto']} />
-                  <ReferenceLine y={0} stroke="rgba(66,71,84,0.3)" strokeDasharray="3 3" />
+                  <ReferenceLine y={0} stroke="rgba(66,71,84,0.6)" strokeWidth={1} />
                   <Tooltip contentStyle={{ background: '#1c2027', border: '1px solid rgba(66,71,84,0.3)', borderRadius: '2px', fontSize: '11px' }} labelStyle={{ color: '#8c909f', fontSize: '10px' }} formatter={(value: any, name: any) => [value != null ? `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(2)}%` : '-', name]} />
                   <Legend wrapperStyle={{ fontSize: '10px', color: '#8c909f' }} iconSize={8} />
                   {names.map((name, i) => (
