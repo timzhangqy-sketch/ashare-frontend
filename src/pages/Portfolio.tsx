@@ -58,6 +58,14 @@ const SIGNAL_TYPE_MAP: Record<string, string> = {
   EXIT: '主动退出',
   BUY: '买入',
   SELL: '卖出',
+  POOL_ENTRY: '入池买入',
+  VOL_CONFIRM: '放量确认',
+  REHEAT: '复热买入',
+  TIME_DECAY: '持仓超期',
+  TREND_BREAK: '趋势破位',
+  VOL_COLLAPSE: '量能衰竭',
+  SECTOR_RETREAT: '板块退潮',
+  REGIME_SHIFT: '环境恶化',
 };
 
 function normalizeTab(value: string | null): PortfolioTabKey {
@@ -1036,18 +1044,19 @@ export default function Portfolio() {
                     <tr>
                       <th>方向</th>
                       <th>成交日期</th>
-                      <th>标的</th>
+                      <th>代码</th>
+                      <th>名称</th>
                       <th className="right">成交价格</th>
                       <th className="right">成交数量</th>
                       <th className="right">成交金额</th>
-                      <th>触发来源</th>
+                      <th>策略来源</th>
                       <th>信号类型</th>
                     </tr>
                   </thead>
                   <tbody>
                     {transactionRows.length === 0 ? (
                       <tr className="portfolio-table-empty-row">
-                        <td colSpan={8}>
+                        <td colSpan={9}>
                           <div className="portfolio-empty-state table-empty">
                             <div className="portfolio-empty-title">{data?.transactions.emptyTitle}</div>
                             <div className="portfolio-empty-text">{data?.transactions.emptyText}</div>
@@ -1065,18 +1074,16 @@ export default function Portfolio() {
                             onClick={() => selectTransactionRow(row)}
                           >
                             <td>
-                              <span className={row.tradeType === 'BUY' ? 'text-buy' : 'text-sell'}>
-                                {row.tradeTypeLabel}
+                              <span className={row.tradeType === 'BUY' ? 's-up' : 's-down'}>
+                                {row.tradeType === 'BUY' ? '买入' : '卖出'}
                               </span>
                             </td>
                             <td className="numeric">{row.tradeDate}</td>
-                            <td>
-                              <div className="portfolio-cell-title">{row.name || row.tsCode}</div>
-                              <div className="portfolio-inline-meta numeric-muted">{row.tsCode}</div>
-                            </td>
-                            <td className="right numeric">{row.price.toFixed(2)}</td>
-                            <td className="right numeric">{row.shares}</td>
-                            <td className="right numeric">{row.amount.toFixed(2)}</td>
+                            <td className="numeric">{row.tsCode}</td>
+                            <td className="s-td-name s-clickable" onClick={() => selectTransactionRow(row)}>{row.name || '--'}</td>
+                            <td className="s-right numeric">{row.price.toFixed(2)}</td>
+                            <td className="s-right numeric">{row.shares?.toLocaleString()}</td>
+                            <td className="s-right numeric">{row.amount.toFixed(2)}</td>
                             <td>{row.triggerSourceLabel}</td>
                             <td>{SIGNAL_TYPE_MAP[row.signalType ?? ''] ?? row.signalType ?? '--'}</td>
                           </tr>
