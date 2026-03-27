@@ -77,7 +77,9 @@ function normalizeSection(value: string | null): 'open' | 'closed' | null {
 }
 
 function formatMoney(value: number | null | undefined): string {
-  return value == null ? '--' : `${value >= 0 ? '+' : ''}${value.toFixed(2)}`;
+  if (value == null) return '--';
+  const sign = value >= 0 ? '+' : '';
+  return `${sign}${value.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatPercent(value: number | null | undefined): string {
@@ -831,8 +833,9 @@ export default function Portfolio() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>标的</th>
-                      <th style={{ textAlign: 'left' }}>主概念</th>
+                      <th>代码</th>
+                      <th>名称</th>
+                      <th>主概念</th>
                       <th>来源策略</th>
                       <th className="center">建仓日期</th>
                       <th className="center portfolio-col-hold-days">持有天数</th>
@@ -840,13 +843,13 @@ export default function Portfolio() {
                       <th className="right">今日盈亏</th>
                       <th className="right">浮动盈亏</th>
                       <th className="center">当前信号</th>
-                      <th style={{ width: 60, textAlign: 'right' }}>动作</th>
+                      <th className="s-right">动作</th>
                     </tr>
                   </thead>
                   <tbody>
                     {openRows.length === 0 ? (
                       <tr className="portfolio-table-empty-row">
-                        <td colSpan={9}>
+                        <td colSpan={11}>
                           <div className="portfolio-empty-state table-empty">
                             <div className="portfolio-empty-title">{data?.tabs.open.emptyTitle}</div>
                             <div className="portfolio-empty-text">{data?.tabs.open.emptyText}</div>
@@ -860,11 +863,9 @@ export default function Portfolio() {
                           className={activeOpenRow?.id === row.id ? 'portfolio-table-row selected' : 'portfolio-table-row'}
                           onClick={() => selectOpenRow(row)}
                         >
+                          <td className="numeric">{row.tsCode}</td>
+                          <td className="s-td-name s-clickable" onClick={(e) => { e.stopPropagation(); }}>{row.name}</td>
                           <td>
-                            <div className="portfolio-cell-title">{row.name}</div>
-                            <div className="portfolio-inline-meta numeric-muted">{row.tsCode}</div>
-                          </td>
-                          <td style={{ textAlign: 'left' }}>
                             {row.primaryConcept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                                 <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
@@ -976,8 +977,9 @@ export default function Portfolio() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>标的</th>
-                      <th style={{ textAlign: 'left' }}>主概念</th>
+                      <th>代码</th>
+                      <th>名称</th>
+                      <th>主概念</th>
                       <th>来源策略</th>
                       <th className="center">建仓日期</th>
                       <th className="center">平仓日期</th>
@@ -989,7 +991,7 @@ export default function Portfolio() {
                   <tbody>
                     {closedRows.length === 0 ? (
                       <tr className="portfolio-table-empty-row">
-                        <td colSpan={8}>
+                        <td colSpan={9}>
                           <div className="portfolio-empty-state table-empty">
                             <div className="portfolio-empty-title">{data?.tabs.closed.emptyTitle}</div>
                             <div className="portfolio-empty-text">{data?.tabs.closed.emptyText}</div>
@@ -1003,11 +1005,9 @@ export default function Portfolio() {
                           className={activeClosedRow?.id === row.id ? 'portfolio-table-row selected' : 'portfolio-table-row'}
                           onClick={() => selectClosedRow(row)}
                         >
+                          <td className="numeric">{row.tsCode}</td>
+                          <td className="s-td-name s-clickable" onClick={(e) => { e.stopPropagation(); }}>{row.name}</td>
                           <td>
-                            <div className="portfolio-cell-title">{row.name}</div>
-                            <div className="portfolio-inline-meta numeric-muted">{row.tsCode}</div>
-                          </td>
-                          <td style={{ textAlign: 'left' }}>
                             {row.primaryConcept ? (
                               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                                 <span style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '4px', padding: '2px 8px', fontSize: '12px', color: '#c2c6d6' }}>
@@ -1083,7 +1083,7 @@ export default function Portfolio() {
                             <td className="s-td-name s-clickable" onClick={() => selectTransactionRow(row)}>{row.name || '--'}</td>
                             <td className="s-right numeric">{row.price.toFixed(2)}</td>
                             <td className="s-right numeric">{row.shares?.toLocaleString()}</td>
-                            <td className="s-right numeric">{row.amount.toFixed(2)}</td>
+                            <td className="s-right numeric">{row.amount.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                             <td>{row.triggerSourceLabel}</td>
                             <td>{SIGNAL_TYPE_MAP[row.signalType ?? ''] ?? row.signalType ?? '--'}</td>
                           </tr>
