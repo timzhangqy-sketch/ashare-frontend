@@ -245,7 +245,7 @@ export default function Dashboard() {
                         const STRAT_CN: Record<string, string> = { VOL_SURGE: '连续放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
                         return (
                         <tr key={`fill-${i}`}>
-                          <td style={{ width: '48px' }} className={f.direction === 'BUY' ? 's-up s-semi' : 's-down s-semi'}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                          <td style={{ width: '48px', color: f.direction === 'BUY' ? '#ff5451' : '#22C55E', fontWeight: 500 }}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
                           <td className="s-td-name s-clickable" onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
                           <td className="s-num s-right">{f.fill_price?.toFixed(2) ?? '—'}</td>
                           <td className="s-num s-right">{f.fill_shares?.toLocaleString() ?? '—'}</td>
