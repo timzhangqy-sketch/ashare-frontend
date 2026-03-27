@@ -9692,3 +9692,177 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   }
 }
 
+/* ===== Daily Review Styles (UI_DESIGN_SPEC_v3 compliant) ===== */
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.review-header-date {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e0e2ed;
+}
+.review-header-info {
+  font-size: 11px;
+  color: #8c909f;
+}
+.review-header-nav {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+.review-copy-btn {
+  margin-left: auto;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  background: rgba(59,130,246,0.15);
+  color: #3B82F6;
+}
+.review-copy-btn.copied {
+  background: rgba(34,197,94,0.15);
+  color: #22C55E;
+}
+.review-summary {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #c2c6d6;
+}
+.review-summary-line {
+  padding: 2px 0;
+}
+.review-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.review-section-card {
+  background: #181c23;
+  border: 1px solid rgba(66,71,84,0.15);
+  border-radius: 2px;
+  margin-bottom: 12px;
+  flex: none !important;
+  min-height: auto !important;
+}
+.review-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #c2c6d6;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(66,71,84,0.15);
+}
+.review-section-body {
+  padding: 0 12px 12px;
+}
+.review-table {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
+.review-table thead th {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: #8c909f !important;
+  font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 12px !important;
+  background: #262a32 !important;
+  text-align: left;
+  white-space: nowrap;
+}
+.review-table thead th.r {
+  text-align: right;
+}
+.review-table thead th.c {
+  text-align: center;
+}
+.review-table tbody tr {
+  height: 32px;
+  border-bottom: 1px solid rgba(66,71,84,0.1);
+  transition: background-color 150ms ease;
+}
+.review-table tbody tr:hover {
+  background: rgba(54,57,66,0.3);
+}
+.review-table tbody tr.highlight {
+  background: rgba(59,130,246,0.08);
+}
+.review-table tbody td {
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  color: #e0e2ed;
+  padding: 4px 12px !important;
+  white-space: nowrap;
+}
+.review-table tbody td.r {
+  text-align: right;
+}
+.review-table tbody td.c {
+  text-align: center;
+}
+.review-table tbody td.stock-name {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+.review-table tbody td.num {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400 !important;
+}
+.review-table tbody td.up {
+  color: #ff5451 !important;
+}
+.review-table tbody td.down {
+  color: #22C55E !important;
+}
+.review-table tbody td.muted {
+  color: #8c909f !important;
+}
+.review-table tbody td.warn-signal {
+  color: #F59E0B !important;
+  font-weight: 600 !important;
+}
+.review-risk-info {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #c2c6d6;
+}
+.review-risk-info .label {
+  color: #8c909f;
+}
+.review-risk-info .value {
+  font-weight: 600;
+}
+.review-empty {
+  padding: 16px;
+  color: #8c909f;
+  text-align: center;
+  font-size: 11px;
+}
+.review-pos-summary {
+  font-size: 11px;
+  color: #8c909f;
+  margin-bottom: 8px;
+  padding: 0 12px;
+}
+.regime-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-size: 9px;
+  font-weight: 600;
+}
+.regime-badge.strong { background: rgba(255,84,81,0.15); color: #ff5451; }
+.regime-badge.bullish { background: rgba(245,158,11,0.15); color: #F59E0B; }
+.regime-badge.neutral { background: rgba(234,179,8,0.15); color: #EAB308; }
+.regime-badge.bearish { background: rgba(59,130,246,0.15); color: #3B82F6; }
+.regime-badge.weak { background: rgba(34,197,94,0.15); color: #22C55E; }
+

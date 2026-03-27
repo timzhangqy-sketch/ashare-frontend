@@ -2,167 +2,97 @@ import { useEffect, useState } from 'react'
 import { fetchDailyReview } from '../../api'
 
 const IDX_NAMES: Record<string, string> = {
-  '000001.SH': '上证指数',
-  '399001.SZ': '深证成指',
-  '399006.SZ': '创业板指',
-  '000688.SH': '科创50',
+  '000001.SH': '上证指数', '399001.SZ': '深证成指',
+  '399006.SZ': '创业板指', '000688.SH': '科创50',
 }
-
-const REGIME_COLORS: Record<string, { bg: string; color: string }> = {
-  strong: { bg: 'rgba(255,84,81,0.15)', color: '#ff5451' },
-  bullish: { bg: 'rgba(245,158,11,0.15)', color: '#F59E0B' },
-  neutral: { bg: 'rgba(234,179,8,0.15)', color: '#EAB308' },
-  bearish: { bg: 'rgba(59,130,246,0.15)', color: '#3B82F6' },
-  weak: { bg: 'rgba(34,197,94,0.15)', color: '#22C55E' },
-}
-
 const REGIME_CN: Record<string, string> = {
   strong: '强势普涨', bullish: '偏强震荡', neutral: '震荡整理',
   bearish: '偏弱震荡', weak: '弱势普跌',
 }
+const STRATEGY_CN: Record<string, string> = {
+  VOL_SURGE: '连续放量', RETOC2: '异动反抽', PATTERN_T2UP9: '大涨蓄势',
+  WEAK_BUY: '弱市吸筹', POOL_ENTRY: '入池买入',
+}
 
-function fmtMoney(v: number | null | undefined) {
+function fm(v: number | null | undefined) {
   if (v == null) return '-'
   return v.toLocaleString('zh-CN', { maximumFractionDigits: 0 })
 }
-
-function fmtPct(v: number | null | undefined) {
+function fp(v: number | null | undefined) {
   if (v == null) return '-'
   return `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`
 }
+function toneClass(v: number | null | undefined) {
+  if (v == null) return ''
+  return v > 0 ? 'up' : v < 0 ? 'down' : ''
+}
+function cn(strategy: string) { return STRATEGY_CN[strategy] || strategy }
+function ds(d: string | null | undefined) { return d ? String(d).slice(5) : '-' }
 
-function pctColor(v: number | null | undefined) {
-  if (v == null) return undefined
-  return v > 0 ? '#ff5451' : v < 0 ? '#22C55E' : '#c2c6d6'
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="review-section-card">
+      <div className="review-section-title">{title}</div>
+      <div className="review-section-body">{children}</div>
+    </div>
+  )
 }
 
 function RegimeBadge({ regime }: { regime: string }) {
-  const style = REGIME_COLORS[regime] || REGIME_COLORS.neutral
-  return (
-    <span style={{
-      display: 'inline-block', padding: '2px 8px', borderRadius: '3px',
-      fontSize: '11px', fontWeight: 600,
-      background: style.bg, color: style.color,
-    }}>
-      {REGIME_CN[regime] || regime}
-    </span>
-  )
-}
-
-function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section className="card" style={{ marginBottom: '12px', flex: 'none' }}>
-      <div className="card-header" style={{ padding: '8px 16px' }}>
-        <span style={{ fontSize: '13px', fontWeight: 600, color: '#c2c6d6' }}>{title}</span>
-      </div>
-      <div className="card-body" style={{ padding: '0 16px 12px' }}>
-        {children}
-      </div>
-    </section>
-  )
+  return <span className={`regime-badge ${regime}`}>{REGIME_CN[regime] || regime}</span>
 }
 
 function generateMarkdown(data: any): string {
   const d = data
-  const td = d.trade_date || '-'
   const regime = d.current_regime || '-'
   const limit = d.regime_limit || '-'
-  let md = `# 每日复盘 ${td}\n\n`
+  let md = `# 每日复盘 ${d.trade_date}\n\n`
   md += `**市场环境**: ${REGIME_CN[regime] || regime} | **仓位上限**: ${limit}%\n\n`
 
-  // 市场环境
-  md += `## 1. 市场环境\n`
-  md += `| 日期 | 得分 | 环境 | ADR | 均涨幅 | 中位涨幅 |\n`
-  md += `|------|------|------|-----|--------|----------|\n`
+  md += `## 1. 市场环境\n| 日期 | 得分 | 环境 | ADR | 均涨幅 | 中位涨幅 |\n|------|------|------|-----|--------|----------|\n`
   for (const r of d.market_env || []) {
-    const dt = String(r.trade_date || '').slice(5)
-    md += `| ${dt} | ${Number(r.breadth_score || 0).toFixed(1)} | ${r.market_regime || '-'} | ${Number(r.adr || 0).toFixed(3)} | ${fmtPct(r.avg_pct_chg)} | ${fmtPct(r.median_pct_chg)} |\n`
+    md += `| ${ds(r.trade_date)} | ${Number(r.breadth_score || 0).toFixed(1)} | ${r.market_regime || '-'} | ${Number(r.adr || 0).toFixed(3)} | ${fp(r.avg_pct_chg)} | ${fp(r.median_pct_chg)} |\n`
   }
 
-  // 大盘指数
-  md += `\n## 2. 大盘指数\n`
-  md += `| 日期 | 指数 | 收盘 | 涨跌% |\n`
-  md += `|------|------|------|-------|\n`
+  md += `\n## 2. 大盘指数\n| 日期 | 指数 | 收盘 | 涨跌% |\n|------|------|------|-------|\n`
   for (const r of d.index || []) {
-    const dt = String(r.trade_date || '').slice(5)
-    md += `| ${dt} | ${IDX_NAMES[r.ts_code] || r.ts_code} | ${Number(r.close || 0).toFixed(2)} | ${fmtPct(r.pct_chg)} |\n`
+    md += `| ${ds(r.trade_date)} | ${IDX_NAMES[r.ts_code] || r.ts_code} | ${Number(r.close || 0).toFixed(2)} | ${fp(r.pct_chg)} |\n`
   }
 
-  // 当前持仓
   md += `\n## 3. 当前持仓\n`
-  if ((d.positions || []).length === 0) {
-    md += `（空仓）\n`
-  } else {
-    md += `| 代码 | 名称 | 策略 | 开仓日 | 持天数 | 成本 | 市值 | 浮盈 | 浮盈% | 卖出信号 |\n`
-    md += `|------|------|------|--------|--------|------|------|------|-------|----------|\n`
+  if (!(d.positions || []).length) { md += `（空仓）\n` } else {
+    md += `| 代码 | 名称 | 策略 | 开仓日 | 持天数 | 成本 | 市值 | 浮盈 | 浮盈% | 卖出信号 |\n|------|------|------|--------|--------|------|------|------|-------|----------|\n`
     for (const r of d.positions || []) {
-      const sell = r.sell_signal || ''
-      md += `| ${r.ts_code} | ${r.stock_name || '-'} | ${r.strategy} | ${r.open_date} | ${r.hold_days} | ${fmtMoney(r.cost_amount)} | ${fmtMoney(r.market_value)} | ${fmtMoney(r.unrealized_pnl)} | ${fmtPct((r.unrealized_pnl_pct || 0) * 100)} | ${sell} |\n`
+      md += `| ${r.ts_code} | ${r.stock_name || '-'} | ${cn(r.strategy)} | ${r.open_date} | ${r.hold_days} | ${fm(r.cost_amount)} | ${fm(r.market_value)} | ${fm(r.unrealized_pnl)} | ${fp((r.unrealized_pnl_pct || 0) * 100)} | ${r.sell_signal || ''} |\n`
     }
   }
 
-  // 已平仓
   md += `\n## 4. 已平仓\n`
-  if ((d.closed || []).length === 0) {
-    md += `（暂无已平仓记录）\n`
-  } else {
-    md += `| 名称 | 策略 | 开仓→平仓 | 持天数 | 盈亏 | 盈亏% |\n`
-    md += `|------|------|-----------|--------|------|-------|\n`
-    for (const r of d.closed || []) {
-      md += `| ${r.stock_name || '-'} | ${r.strategy} | ${r.open_date}→${r.close_date} | ${r.hold_days} | ${fmtMoney(r.realized_pnl)} | ${fmtPct(r.pnl_pct)} |\n`
-    }
+  if (!(d.closed || []).length) { md += `（暂无）\n` } else {
+    md += `| 名称 | 策略 | 开仓→平仓 | 持天数 | 盈亏 | 盈亏% |\n|------|------|-----------|--------|------|-------|\n`
+    for (const r of d.closed || []) { md += `| ${r.stock_name || '-'} | ${cn(r.strategy)} | ${r.open_date}→${r.close_date} | ${r.hold_days} | ${fm(r.realized_pnl)} | ${fp(r.pnl_pct)} |\n` }
   }
 
-  // 订单流水
   md += `\n## 5. 订单流水\n`
-  if ((d.orders || []).length === 0) {
-    md += `（无订单）\n`
-  } else {
-    md += `| ID | 日期 | 方向 | 名称 | 策略 | 信号 | 状态 | 金额 |\n`
-    md += `|----|------|------|------|------|------|------|------|\n`
-    for (const r of d.orders || []) {
-      md += `| ${r.id} | ${r.trade_date} | ${r.direction} | ${r.stock_name || '-'} | ${r.strategy} | ${r.signal_type || '-'} | ${r.approval_status || r.status} | ${fmtMoney(r.fill_amount || r.order_amount)} |\n`
-    }
+  if (!(d.orders || []).length) { md += `（无订单）\n` } else {
+    md += `| ID | 日期 | 方向 | 名称 | 策略 | 信号 | 状态 | 金额 |\n|----|------|------|------|------|------|------|------|\n`
+    for (const r of d.orders || []) { md += `| ${r.id} | ${r.trade_date} | ${r.direction === 'BUY' ? '买入' : '卖出'} | ${r.stock_name || '-'} | ${cn(r.strategy)} | ${r.signal_type || '-'} | ${r.approval_status || r.status} | ${fm(r.fill_amount || r.order_amount)} |\n` }
   }
 
-  // NAV走势
-  md += `\n## 6. NAV走势\n`
-  md += `| 日期 | NAV | 现金 | 市值 | 仓位% | 持仓 | 累计% |\n`
-  md += `|------|-----|------|------|-------|------|-------|\n`
-  for (const r of d.nav || []) {
-    md += `| ${r.snap_date} | ${fmtMoney(r.total_nav)} | ${fmtMoney(r.cash_balance)} | ${fmtMoney(r.market_value)} | ${r.position_pct || 0}% | ${r.open_count || 0} | ${fmtPct((r.total_pnl_pct || 0) * 100)} |\n`
-  }
+  md += `\n## 6. NAV走势\n| 日期 | NAV | 现金 | 市值 | 仓位% | 持仓 | 累计% |\n|------|-----|------|------|-------|------|-------|\n`
+  for (const r of d.nav || []) { md += `| ${r.snap_date} | ${fm(r.total_nav)} | ${fm(r.cash_balance)} | ${fm(r.market_value)} | ${r.position_pct || 0}% | ${r.open_count || 0} | ${fp((r.total_pnl_pct || 0) * 100)} |\n` }
 
-  // 策略入池
-  md += `\n## 7. 策略入池\n`
-  md += `| 日期 | 环境 | 策略 | 数量 |\n`
-  md += `|------|------|------|------|\n`
-  for (const r of d.watchlist_stats || []) {
-    md += `| ${r.entry_date} | ${r.regime || '-'} | ${r.strategy} | ${r.cnt} |\n`
-  }
+  md += `\n## 7. 策略入池\n| 日期 | 环境 | 策略 | 数量 |\n|------|------|------|------|\n`
+  for (const r of d.watchlist_stats || []) { md += `| ${r.entry_date} | ${REGIME_CN[r.regime] || r.regime || '-'} | ${cn(r.strategy)} | ${r.cnt} |\n` }
 
-  // 风控
-  md += `\n## 8. 风控状态\n`
-  md += `- 审批模式: ${JSON.stringify(d.risk_config?.approval_mode || '-')}\n`
-  md += `- 环境: ${regime} → 仓位上限: ${limit}%\n`
+  md += `\n## 8. 风控状态\n- 审批模式: ${JSON.stringify(d.risk_config?.approval_mode || '-').replace(/"/g, '')}\n- 环境: ${REGIME_CN[regime] || regime} → 仓位上限: ${limit}%\n`
 
-  // 待处理
   md += `\n## 9. 待处理\n`
-  const pa = d.pending_approvals || []
-  const ss = d.sell_signals || []
-  if (pa.length === 0 && ss.length === 0) {
-    md += `✅ 无待处理事项\n`
-  } else {
-    if (pa.length > 0) {
-      md += `- ${pa.length}笔待审批:\n`
-      for (const r of pa) md += `  - ${r.direction} ${r.stock_name} (${r.strategy}) ${fmtMoney(r.order_amount)}\n`
-    }
-    if (ss.length > 0) {
-      md += `- ${ss.length}只有卖出信号:\n`
-      for (const r of ss) md += `  - ${r.stock_name} → ${r.sell_signal}\n`
-    }
+  const pa = d.pending_approvals || [], ss = d.sell_signals || []
+  if (!pa.length && !ss.length) { md += `✅ 无待处理事项\n` } else {
+    if (pa.length) { md += `- ${pa.length}笔待审批:\n`; for (const r of pa) md += `  - ${r.direction === 'BUY' ? '买入' : '卖出'} ${r.stock_name} (${cn(r.strategy)}) ${fm(r.order_amount)}\n` }
+    if (ss.length) { md += `- ${ss.length}只有卖出信号:\n`; for (const r of ss) md += `  - ${r.stock_name} → ${r.sell_signal}\n` }
   }
-
   return md
 }
 
@@ -195,13 +125,10 @@ export default function DailyReview() {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (e) {
-      console.error('Copy failed:', e)
       const blob = new Blob([md], { type: 'text/plain' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
-      a.href = url
-      a.download = `复盘报告_${data.trade_date || 'unknown'}.md`
-      a.click()
+      a.href = url; a.download = `复盘报告_${data.trade_date || ''}.md`; a.click()
       URL.revokeObjectURL(url)
     }
   }
@@ -215,365 +142,248 @@ export default function DailyReview() {
   const closed = data.closed || []
   const orders = data.orders || []
   const nav = data.nav || []
+  const navTop = nav[0]
 
   return (
-    <div style={{ display: 'block' }}>
+    <div>
       {/* 顶部信息栏 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
-        <span style={{ fontSize: '14px', fontWeight: 600, color: '#e2e4ea' }}>
-          {data.trade_date}
-        </span>
+      <div className="review-header">
+        <span className="review-header-date">{data.trade_date}</span>
         <RegimeBadge regime={regime} />
-        <span style={{ fontSize: '12px', color: '#8b8fa3' }}>
-          仓位上限 {data.regime_limit}%
-        </span>
-        {nav.length > 0 && (
-          <span style={{ fontSize: '12px', color: pctColor(nav[0].total_pnl_pct), fontWeight: 600 }}>
-            NAV {fmtMoney(nav[0].total_nav)} ({fmtPct((nav[0].total_pnl_pct || 0) * 100)})
+        <span className="review-header-info">仓位上限 {data.regime_limit}%</span>
+        {navTop && (
+          <span className={`review-header-nav ${toneClass(navTop.total_pnl_pct)}`}>
+            NAV {fm(navTop.total_nav)} ({fp((navTop.total_pnl_pct || 0) * 100)})
           </span>
         )}
-        <button
-          type="button"
-          onClick={handleCopy}
-          style={{
-            marginLeft: 'auto', padding: '4px 12px', fontSize: '12px', fontWeight: 600,
-            background: copied ? 'rgba(34,197,94,0.15)' : 'rgba(59,130,246,0.15)',
-            color: copied ? '#22C55E' : '#3B82F6',
-            border: 'none', borderRadius: '3px', cursor: 'pointer',
-          }}
-        >
+        <button type="button" className={`review-copy-btn${copied ? ' copied' : ''}`} onClick={handleCopy}>
           {copied ? '✅ 已复制' : '📋 复制Markdown报告'}
         </button>
       </div>
 
       {/* 复盘要点 */}
-      <SectionCard title="复盘要点">
-        <div style={{ fontSize: '13px', lineHeight: '1.8', color: '#c2c6d6' }}>
+      <Card title="复盘要点">
+        <div className="review-summary">
           {(() => {
             const env = data.market_env || []
-            const today = env[0] || {}
-            const yesterday = env[1] || {}
-            const pos = data.positions || []
-            const pa = data.pending_approvals || []
-            const ss = data.sell_signals || []
-            const navRow = (data.nav || [])[0]
-            const totalPnl = pos.reduce((s: number, r: any) => s + (r.unrealized_pnl || 0), 0)
-            const posPct = navRow?.position_pct || 0
-
+            const today = env[0] || {}, yesterday = env[1] || {}
+            const pa = data.pending_approvals || [], ss = data.sell_signals || []
+            const totalPnl = positions.reduce((s: number, r: any) => s + (r.unrealized_pnl || 0), 0)
+            const posPct = navTop?.position_pct || 0
             const lines: string[] = []
 
-            // 市场环境变化
             if (today.market_regime && yesterday.market_regime) {
               if (today.market_regime !== yesterday.market_regime) {
                 lines.push(`📊 市场环境从 ${REGIME_CN[yesterday.market_regime] || yesterday.market_regime} 转为 ${REGIME_CN[today.market_regime] || today.market_regime}，得分 ${Number(today.breadth_score || 0).toFixed(1)}`)
               } else {
-                lines.push(`📊 市场维持 ${REGIME_CN[today.market_regime] || today.market_regime}，得分 ${Number(today.breadth_score || 0).toFixed(1)}，均涨幅 ${fmtPct(today.avg_pct_chg)}`)
+                lines.push(`📊 市场维持 ${REGIME_CN[today.market_regime] || today.market_regime}，得分 ${Number(today.breadth_score || 0).toFixed(1)}，均涨幅 ${fp(today.avg_pct_chg)}`)
               }
             }
-
-            // 仓位状态
-            if (pos.length === 0) {
-              lines.push('💰 当前空仓')
-            } else {
-              lines.push(`💼 持仓 ${pos.length} 只，仓位 ${posPct}%（上限 ${data.regime_limit}%），总浮盈 ${fmtMoney(totalPnl)}（${fmtPct((navRow?.total_pnl_pct || 0) * 100)}）`)
+            if (!positions.length) { lines.push('💰 当前空仓') }
+            else { lines.push(`💼 持仓 ${positions.length} 只，仓位 ${posPct}%（上限 ${data.regime_limit}%），总浮盈 ${fm(totalPnl)}（${fp((navTop?.total_pnl_pct || 0) * 100)}）`) }
+            if (posPct > (data.regime_limit || 100)) { lines.push(`⚠️ 仓位 ${posPct}% 超过环境上限 ${data.regime_limit}%`) }
+            for (const s of ss) {
+              const pi = positions.find((p: any) => p.ts_code === s.ts_code)
+              lines.push(`🔴 ${s.stock_name} 触发卖出信号 ${s.sell_signal}${pi ? '，浮盈 ' + fp((pi.unrealized_pnl_pct || 0) * 100) : ''}`)
             }
-
-            // 仓位超限预警
-            if (posPct > (data.regime_limit || 100)) {
-              lines.push(`⚠️ 仓位 ${posPct}% 超过环境上限 ${data.regime_limit}%`)
-            }
-
-            // 卖出信号
-            if (ss.length > 0) {
-              for (const s of ss) {
-                const posInfo = pos.find((p: any) => p.ts_code === s.ts_code)
-                const pnlStr = posInfo ? `浮盈 ${fmtPct((posInfo.unrealized_pnl_pct || 0) * 100)}` : ''
-                lines.push(`🔴 ${s.stock_name} 触发卖出信号 ${s.sell_signal}${pnlStr ? '，' + pnlStr : ''}`)
-              }
-            }
-
-            // 持仓中亏损较大的
-            for (const p of pos) {
-              if ((p.unrealized_pnl_pct || 0) < -0.05) {
-                lines.push(`❗ ${p.stock_name} 浮亏 ${fmtPct((p.unrealized_pnl_pct || 0) * 100)}，需关注止损`)
-              }
-            }
-
-            // 待审批
-            if (pa.length > 0) {
-              lines.push(`📋 ${pa.length} 笔订单待审批`)
-            }
-
-            // 入池情况
-            const todayStats = (data.watchlist_stats || []).filter((r: any) => String(r.entry_date) === data.trade_date)
-            if (todayStats.length > 0) {
-              const totalNew = todayStats.reduce((s: number, r: any) => s + (r.cnt || 0), 0)
-              const details = todayStats.map((r: any) => `${r.strategy} ${r.cnt}只`).join('、')
-              lines.push(`🆕 今日入池 ${totalNew} 只：${details}`)
-            } else {
-              lines.push('📭 今日无新入池标的')
-            }
-
-            if (lines.length === 0) lines.push('暂无特别事项')
-
-            return lines.map((line, i) => <div key={i} style={{ padding: '2px 0' }}>{line}</div>)
+            for (const p of positions) { if ((p.unrealized_pnl_pct || 0) < -0.05) lines.push(`❗ ${p.stock_name} 浮亏 ${fp((p.unrealized_pnl_pct || 0) * 100)}，需关注止损`) }
+            if (pa.length) lines.push(`📋 ${pa.length} 笔订单待审批`)
+            const ts = (data.watchlist_stats || []).filter((r: any) => String(r.entry_date) === data.trade_date)
+            if (ts.length) { lines.push(`🆕 今日入池 ${ts.reduce((s: number, r: any) => s + (r.cnt || 0), 0)} 只：${ts.map((r: any) => `${cn(r.strategy)} ${r.cnt}只`).join('、')}`) }
+            else lines.push('📭 今日无新入池标的')
+            if (!lines.length) lines.push('暂无特别事项')
+            return lines.map((l, i) => <div key={i} className="review-summary-line">{l}</div>)
           })()}
         </div>
-      </SectionCard>
+      </Card>
 
-      {/* 第二行: 市场环境 + 大盘指数 并排 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-      <SectionCard title="市场环境（最近5天）">
-        <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
-          <thead><tr>
-            <th>日期</th><th style={{ textAlign: 'right' }}>得分</th><th>环境</th>
-            <th style={{ textAlign: 'right' }}>ADR</th><th style={{ textAlign: 'right' }}>均涨幅</th>
-            <th style={{ textAlign: 'right' }}>中位涨幅</th>
-          </tr></thead>
-          <tbody>
-            {(data.market_env || []).map((r: any, i: number) => {
-              const isToday = String(r.trade_date) === data.trade_date
-              return (
-                <tr key={i} style={isToday ? { background: 'rgba(59,130,246,0.08)' } : undefined}>
-                  <td>{String(r.trade_date || '').slice(5)}</td>
-                  <td style={{ textAlign: 'right' }}>{Number(r.breadth_score || 0).toFixed(1)}</td>
+      {/* 市场环境 + 大盘指数 并排 */}
+      <div className="review-grid-2col">
+        <Card title="市场环境（最近5天）">
+          <table className="review-table">
+            <thead><tr><th>日期</th><th className="r">得分</th><th>环境</th><th className="r">ADR</th><th className="r">均涨幅</th><th className="r">中位涨幅</th></tr></thead>
+            <tbody>
+              {(data.market_env || []).map((r: any, i: number) => (
+                <tr key={i} className={String(r.trade_date) === data.trade_date ? 'highlight' : undefined}>
+                  <td>{ds(r.trade_date)}</td>
+                  <td className="r num">{Number(r.breadth_score || 0).toFixed(1)}</td>
                   <td><RegimeBadge regime={r.market_regime || 'neutral'} /></td>
-                  <td style={{ textAlign: 'right' }}>{Number(r.adr || 0).toFixed(3)}</td>
-                  <td style={{ textAlign: 'right', color: pctColor(r.avg_pct_chg) }}>{fmtPct(r.avg_pct_chg)}</td>
-                  <td style={{ textAlign: 'right', color: pctColor(r.median_pct_chg) }}>{fmtPct(r.median_pct_chg)}</td>
+                  <td className="r num">{Number(r.adr || 0).toFixed(3)}</td>
+                  <td className={`r num ${toneClass(r.avg_pct_chg)}`}>{fp(r.avg_pct_chg)}</td>
+                  <td className={`r num ${toneClass(r.median_pct_chg)}`}>{fp(r.median_pct_chg)}</td>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </SectionCard>
+              ))}
+            </tbody>
+          </table>
+        </Card>
 
-      {/* 模块2: 大盘指数 */}
-      <SectionCard title="大盘指数（最近3天）">
-        <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
-          <thead><tr>
-            <th>日期</th><th>指数</th><th style={{ textAlign: 'right' }}>收盘</th>
-            <th style={{ textAlign: 'right' }}>涨跌%</th>
-          </tr></thead>
-          <tbody>
-            {(data.index || []).map((r: any, i: number) => (
-              <tr key={i}>
-                <td>{String(r.trade_date || '').slice(5)}</td>
-                <td>{IDX_NAMES[r.ts_code] || r.ts_code}</td>
-                <td style={{ textAlign: 'right' }}>{Number(r.close || 0).toFixed(2)}</td>
-                <td style={{ textAlign: 'right', color: pctColor(r.pct_chg) }}>{fmtPct(r.pct_chg)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </SectionCard>
+        <Card title="大盘指数（最近3天）">
+          <table className="review-table">
+            <thead><tr><th>日期</th><th>指数</th><th className="r">收盘</th><th className="r">涨跌%</th></tr></thead>
+            <tbody>
+              {(data.index || []).map((r: any, i: number) => (
+                <tr key={i}>
+                  <td>{ds(r.trade_date)}</td>
+                  <td className="stock-name">{IDX_NAMES[r.ts_code] || r.ts_code}</td>
+                  <td className="r num">{Number(r.close || 0).toFixed(2)}</td>
+                  <td className={`r num ${toneClass(r.pct_chg)}`}>{fp(r.pct_chg)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
       </div>
 
-      {/* 模块3: 当前持仓 */}
-      <SectionCard title={`当前持仓（${positions.length}只）`}>
-        {positions.length === 0 ? (
-          <div style={{ padding: '16px', color: '#8b8fa3', textAlign: 'center' }}>空仓</div>
-        ) : (
-          <>
-            <div style={{ fontSize: '12px', color: '#8b8fa3', marginBottom: '8px' }}>
-              总成本 {fmtMoney(positions.reduce((s: number, r: any) => s + (r.cost_amount || 0), 0))}
-              {' | '}总市值 {fmtMoney(positions.reduce((s: number, r: any) => s + (r.market_value || 0), 0))}
-              {' | '}总浮盈{' '}
-              <span style={{ color: pctColor(positions.reduce((s: number, r: any) => s + (r.unrealized_pnl || 0), 0)) }}>
-                {fmtMoney(positions.reduce((s: number, r: any) => s + (r.unrealized_pnl || 0), 0))}
-              </span>
-            </div>
-            <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
-              <thead><tr>
-                <th></th><th>代码</th><th>名称</th><th>策略</th><th>开仓日</th>
-                <th style={{ textAlign: 'right' }}>开仓价</th><th style={{ textAlign: 'right' }}>持天数</th>
-                <th style={{ textAlign: 'right' }}>成本</th><th style={{ textAlign: 'right' }}>市值</th>
-                <th style={{ textAlign: 'right' }}>浮盈</th><th style={{ textAlign: 'right' }}>浮盈%</th>
-                <th>概念</th><th>信号</th>
-              </tr></thead>
-              <tbody>
-                {positions.map((r: any, i: number) => {
-                  const pnlPctRaw = r.unrealized_pnl_pct || 0
-                  const pnlPct = pnlPctRaw * 100
-                  const icon = pnlPct < -5 ? '🔴' : pnlPct < -2 ? '🟡' : pnlPct > 2 ? '🟢' : '⚪'
-                  return (
-                    <tr key={i}>
-                      <td>{icon}</td>
-                      <td>{r.ts_code}</td>
-                      <td>{r.stock_name || '-'}</td>
-                      <td>{r.strategy}</td>
-                      <td>{r.open_date}</td>
-                      <td style={{ textAlign: 'right' }}>{Number(r.open_price || 0).toFixed(2)}</td>
-                      <td style={{ textAlign: 'right' }}>{r.hold_days}</td>
-                      <td style={{ textAlign: 'right' }}>{fmtMoney(r.cost_amount)}</td>
-                      <td style={{ textAlign: 'right' }}>{fmtMoney(r.market_value)}</td>
-                      <td style={{ textAlign: 'right', color: pctColor(r.unrealized_pnl) }}>{fmtMoney(r.unrealized_pnl)}</td>
-                      <td style={{ textAlign: 'right', color: pctColor(pnlPct), fontWeight: 600 }}>{fmtPct(pnlPct)}</td>
-                      <td style={{ fontSize: '11px', color: '#8b8fa3' }}>{r.concept || ''}</td>
-                      <td>{r.sell_signal ? <span style={{ color: '#F59E0B', fontWeight: 600 }}>⚠️{r.sell_signal}</span> : ''}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </>
-        )}
-      </SectionCard>
-
-      {/* 模块4: 已平仓 */}
-      <SectionCard title={`已平仓记录（最近10笔）`}>
-        {closed.length === 0 ? (
-          <div style={{ padding: '16px', color: '#8b8fa3', textAlign: 'center' }}>暂无已平仓记录</div>
-        ) : (
-          <>
-            <div style={{ fontSize: '12px', color: '#8b8fa3', marginBottom: '8px' }}>
-              盈{closed.filter((r: any) => (r.realized_pnl || 0) > 0).length}
-              {' '}亏{closed.filter((r: any) => (r.realized_pnl || 0) <= 0).length}
-              {' | '}合计{' '}
-              <span style={{ color: pctColor(closed.reduce((s: number, r: any) => s + (r.realized_pnl || 0), 0)) }}>
-                {fmtMoney(closed.reduce((s: number, r: any) => s + (r.realized_pnl || 0), 0))}
-              </span>
-            </div>
-            <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
-              <thead><tr>
-                <th></th><th>名称</th><th>策略</th><th>开仓→平仓</th>
-                <th style={{ textAlign: 'right' }}>持天数</th>
-                <th style={{ textAlign: 'right' }}>盈亏</th><th style={{ textAlign: 'right' }}>盈亏%</th>
-              </tr></thead>
-              <tbody>
-                {closed.map((r: any, i: number) => (
+      {/* 当前持仓 */}
+      <Card title={`当前持仓（${positions.length}只）`}>
+        {!positions.length ? <div className="review-empty">空仓</div> : (<>
+          <div className="review-pos-summary">
+            总成本 {fm(positions.reduce((s: number, r: any) => s + (r.cost_amount || 0), 0))}
+            {' | '}总市值 {fm(positions.reduce((s: number, r: any) => s + (r.market_value || 0), 0))}
+            {' | '}总浮盈 <span className={toneClass(positions.reduce((s: number, r: any) => s + (r.unrealized_pnl || 0), 0))}>{fm(positions.reduce((s: number, r: any) => s + (r.unrealized_pnl || 0), 0))}</span>
+          </div>
+          <table className="review-table">
+            <thead><tr><th className="c"></th><th>代码</th><th>名称</th><th>策略</th><th>开仓日</th><th className="r">开仓价</th><th className="r">持天数</th><th className="r">成本</th><th className="r">市值</th><th className="r">浮盈</th><th className="r">浮盈%</th><th>概念</th><th>信号</th></tr></thead>
+            <tbody>
+              {positions.map((r: any, i: number) => {
+                const pp = (r.unrealized_pnl_pct || 0) * 100
+                const icon = pp < -5 ? '🔴' : pp < -2 ? '🟡' : pp > 2 ? '🟢' : '⚪'
+                return (
                   <tr key={i}>
-                    <td>{(r.realized_pnl || 0) > 0 ? '✅' : '❌'}</td>
-                    <td>{r.stock_name || '-'}</td>
-                    <td>{r.strategy}</td>
-                    <td>{r.open_date}→{r.close_date}</td>
-                    <td style={{ textAlign: 'right' }}>{r.hold_days}</td>
-                    <td style={{ textAlign: 'right', color: pctColor(r.realized_pnl) }}>{fmtMoney(r.realized_pnl)}</td>
-                    <td style={{ textAlign: 'right', color: pctColor(r.pnl_pct), fontWeight: 600 }}>{fmtPct(r.pnl_pct)}</td>
+                    <td className="c">{icon}</td>
+                    <td className="num">{r.ts_code}</td>
+                    <td className="stock-name">{r.stock_name || '-'}</td>
+                    <td>{cn(r.strategy)}</td>
+                    <td>{r.open_date}</td>
+                    <td className="r num">{Number(r.open_price || 0).toFixed(2)}</td>
+                    <td className="r num">{r.hold_days}</td>
+                    <td className="r num">{fm(r.cost_amount)}</td>
+                    <td className="r num">{fm(r.market_value)}</td>
+                    <td className={`r num ${toneClass(r.unrealized_pnl)}`}>{fm(r.unrealized_pnl)}</td>
+                    <td className={`r num ${toneClass(pp)}`}>{fp(pp)}</td>
+                    <td className="muted">{r.concept || ''}</td>
+                    <td className="warn-signal">{r.sell_signal ? `⚠️${r.sell_signal}` : ''}</td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
-      </SectionCard>
+                )
+              })}
+            </tbody>
+          </table>
+        </>)}
+      </Card>
 
-      {/* 模块5: 订单流水 */}
-      <SectionCard title="订单流水（最近2天）">
-        {orders.length === 0 ? (
-          <div style={{ padding: '16px', color: '#8b8fa3', textAlign: 'center' }}>无订单</div>
-        ) : (
-          <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
-            <thead><tr>
-              <th>ID</th><th>日期</th><th>方向</th><th>名称</th><th>策略</th>
-              <th>信号</th><th>状态</th><th style={{ textAlign: 'right' }}>金额</th><th>拒绝原因</th>
-            </tr></thead>
+      {/* 已平仓 */}
+      <Card title="已平仓记录（最近10笔）">
+        {!closed.length ? <div className="review-empty">暂无已平仓记录</div> : (<>
+          <div className="review-pos-summary">
+            盈{closed.filter((r: any) => (r.realized_pnl || 0) > 0).length}
+            {' '}亏{closed.filter((r: any) => (r.realized_pnl || 0) <= 0).length}
+            {' | '}合计 <span className={toneClass(closed.reduce((s: number, r: any) => s + (r.realized_pnl || 0), 0))}>{fm(closed.reduce((s: number, r: any) => s + (r.realized_pnl || 0), 0))}</span>
+          </div>
+          <table className="review-table">
+            <thead><tr><th className="c"></th><th>名称</th><th>策略</th><th>开仓→平仓</th><th className="r">持天数</th><th className="r">盈亏</th><th className="r">盈亏%</th></tr></thead>
+            <tbody>
+              {closed.map((r: any, i: number) => (
+                <tr key={i}>
+                  <td className="c">{(r.realized_pnl || 0) > 0 ? '✅' : '❌'}</td>
+                  <td className="stock-name">{r.stock_name || '-'}</td>
+                  <td>{cn(r.strategy)}</td>
+                  <td>{r.open_date}→{r.close_date}</td>
+                  <td className="r num">{r.hold_days}</td>
+                  <td className={`r num ${toneClass(r.realized_pnl)}`}>{fm(r.realized_pnl)}</td>
+                  <td className={`r num ${toneClass(r.pnl_pct)}`}>{fp(r.pnl_pct)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>)}
+      </Card>
+
+      {/* 订单流水 */}
+      <Card title="订单流水（最近2天）">
+        {!orders.length ? <div className="review-empty">无订单</div> : (
+          <table className="review-table">
+            <thead><tr><th>ID</th><th>日期</th><th>方向</th><th>名称</th><th>策略</th><th>信号</th><th>状态</th><th className="r">金额</th><th>拒绝原因</th></tr></thead>
             <tbody>
               {orders.map((r: any, i: number) => (
                 <tr key={i}>
-                  <td>{r.id}</td>
-                  <td>{String(r.trade_date || '').slice(5)}</td>
-                  <td style={{ color: r.direction === 'BUY' ? '#ff5451' : '#22C55E', fontWeight: 600 }}>{r.direction}</td>
-                  <td>{r.stock_name || '-'}</td>
-                  <td>{r.strategy}</td>
-                  <td style={{ fontSize: '11px' }}>{r.signal_type || '-'}</td>
+                  <td className="num">{r.id}</td>
+                  <td>{ds(r.trade_date)}</td>
+                  <td className={r.direction === 'BUY' ? 'up' : 'down'}>{r.direction === 'BUY' ? '买入' : '卖出'}</td>
+                  <td className="stock-name">{r.stock_name || '-'}</td>
+                  <td>{cn(r.strategy)}</td>
+                  <td className="muted">{r.signal_type || '-'}</td>
                   <td>{r.approval_status || r.status}</td>
-                  <td style={{ textAlign: 'right' }}>{fmtMoney(r.fill_amount || r.order_amount)}</td>
-                  <td style={{ fontSize: '11px', color: '#F59E0B' }}>{r.reject_reason || ''}</td>
+                  <td className="r num">{fm(r.fill_amount || r.order_amount)}</td>
+                  <td className="warn-signal">{r.reject_reason || ''}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-      </SectionCard>
+      </Card>
 
-      {/* 模块6: NAV走势 */}
-      <SectionCard title="NAV走势">
-        {nav.length === 0 ? (
-          <div style={{ padding: '16px', color: '#8b8fa3', textAlign: 'center' }}>暂无数据</div>
-        ) : (
-          <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
-            <thead><tr>
-              <th>日期</th><th style={{ textAlign: 'right' }}>NAV</th><th style={{ textAlign: 'right' }}>现金</th>
-              <th style={{ textAlign: 'right' }}>市值</th><th style={{ textAlign: 'right' }}>仓位%</th>
-              <th style={{ textAlign: 'right' }}>持仓</th><th style={{ textAlign: 'right' }}>累计%</th>
-            </tr></thead>
+      {/* NAV走势 */}
+      <Card title="NAV走势">
+        {!nav.length ? <div className="review-empty">暂无数据</div> : (
+          <table className="review-table">
+            <thead><tr><th>日期</th><th className="r">NAV</th><th className="r">现金</th><th className="r">市值</th><th className="r">仓位%</th><th className="r">持仓</th><th className="r">累计%</th></tr></thead>
             <tbody>
               {nav.map((r: any, i: number) => (
                 <tr key={i}>
                   <td>{r.snap_date}</td>
-                  <td style={{ textAlign: 'right' }}>{fmtMoney(r.total_nav)}</td>
-                  <td style={{ textAlign: 'right' }}>{fmtMoney(r.cash_balance)}</td>
-                  <td style={{ textAlign: 'right' }}>{fmtMoney(r.market_value)}</td>
-                  <td style={{ textAlign: 'right' }}>{r.position_pct || 0}%</td>
-                  <td style={{ textAlign: 'right' }}>{r.open_count || 0}</td>
-                  <td style={{ textAlign: 'right', color: pctColor(r.total_pnl_pct), fontWeight: 600 }}>{fmtPct((r.total_pnl_pct || 0) * 100)}</td>
+                  <td className="r num">{fm(r.total_nav)}</td>
+                  <td className="r num">{fm(r.cash_balance)}</td>
+                  <td className="r num">{fm(r.market_value)}</td>
+                  <td className="r num">{r.position_pct || 0}%</td>
+                  <td className="r num">{r.open_count || 0}</td>
+                  <td className={`r num ${toneClass(r.total_pnl_pct)}`}>{fp((r.total_pnl_pct || 0) * 100)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-      </SectionCard>
+      </Card>
 
-      {/* 模块7+8+9: 策略入池 + 风控 + 待处理 — 两列布局 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-        {/* 策略入池 */}
-        <SectionCard title="策略入池统计（最近5天）">
-          <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
-            <thead><tr><th>日期</th><th>环境</th><th>策略</th><th style={{ textAlign: 'right' }}>数量</th></tr></thead>
+      {/* 策略入池 + 风控+待处理 并排 */}
+      <div className="review-grid-2col">
+        <Card title="策略入池统计（最近5天）">
+          <table className="review-table">
+            <thead><tr><th>日期</th><th>环境</th><th>策略</th><th className="r">数量</th></tr></thead>
             <tbody>
               {(data.watchlist_stats || []).map((r: any, i: number) => (
                 <tr key={i}>
-                  <td>{String(r.entry_date || '').slice(5)}</td>
+                  <td>{ds(r.entry_date)}</td>
                   <td><RegimeBadge regime={r.regime || 'neutral'} /></td>
-                  <td>{r.strategy}</td>
-                  <td style={{ textAlign: 'right' }}>{r.cnt}</td>
+                  <td>{cn(r.strategy)}</td>
+                  <td className="r num">{r.cnt}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </SectionCard>
-
-        {/* 风控 + 待处理 */}
+        </Card>
         <div>
-          <SectionCard title="风控状态">
-            <div style={{ fontSize: '13px', lineHeight: '1.8', color: '#c2c6d6' }}>
-              <div>审批模式: <span style={{ fontWeight: 600 }}>{JSON.stringify(data.risk_config?.approval_mode || '-').replace(/"/g, '')}</span></div>
-              <div>环境: <RegimeBadge regime={regime} /> → 仓位上限 <span style={{ fontWeight: 600 }}>{data.regime_limit}%</span></div>
-              {nav.length > 0 && (
-                <div>NAV: <span style={{ fontWeight: 600, color: pctColor(nav[0].total_pnl_pct) }}>{fmtMoney(nav[0].total_nav)} ({fmtPct((nav[0].total_pnl_pct || 0) * 100)})</span></div>
-              )}
-              <div>最大回撤阈值: 8%</div>
+          <Card title="风控状态">
+            <div className="review-risk-info">
+              <div><span className="label">审批模式: </span><span className="value">{JSON.stringify(data.risk_config?.approval_mode || '-').replace(/"/g, '')}</span></div>
+              <div><span className="label">环境: </span><RegimeBadge regime={regime} /> → 仓位上限 <span className="value">{data.regime_limit}%</span></div>
+              {navTop && <div><span className="label">NAV: </span><span className={`value ${toneClass(navTop.total_pnl_pct)}`}>{fm(navTop.total_nav)} ({fp((navTop.total_pnl_pct || 0) * 100)})</span></div>}
+              <div><span className="label">最大回撤阈值: </span><span className="value">8%</span></div>
             </div>
-          </SectionCard>
-          <SectionCard title="待处理事项">
-            {(data.pending_approvals || []).length === 0 && (data.sell_signals || []).length === 0 ? (
-              <div style={{ padding: '8px 0', color: '#22C55E', fontSize: '13px' }}>✅ 无待处理事项</div>
+          </Card>
+          <Card title="待处理事项">
+            {!(data.pending_approvals || []).length && !(data.sell_signals || []).length ? (
+              <div className="review-summary-line" style={{ color: '#22C55E' }}>✅ 无待处理事项</div>
             ) : (
-              <div style={{ fontSize: '13px', color: '#c2c6d6' }}>
-                {(data.pending_approvals || []).length > 0 && (
-                  <div style={{ marginBottom: '8px' }}>
-                    <span style={{ color: '#ff5451', fontWeight: 600 }}>🔴 {data.pending_approvals.length}笔待审批</span>
-                    {data.pending_approvals.map((r: any, i: number) => (
-                      <div key={i} style={{ paddingLeft: '16px', fontSize: '12px' }}>
-                        {r.direction} {r.stock_name} ({r.strategy}) {fmtMoney(r.order_amount)}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {(data.sell_signals || []).length > 0 && (
-                  <div>
-                    <span style={{ color: '#F59E0B', fontWeight: 600 }}>⚠️ {data.sell_signals.length}只有卖出信号</span>
-                    {data.sell_signals.map((r: any, i: number) => (
-                      <div key={i} style={{ paddingLeft: '16px', fontSize: '12px' }}>
-                        {r.stock_name} → {r.sell_signal}
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="review-summary">
+                {(data.pending_approvals || []).length > 0 && <div className="review-summary-line">🔴 {data.pending_approvals.length}笔待审批
+                  {data.pending_approvals.map((r: any, i: number) => <div key={i} style={{ paddingLeft: '16px' }}>{r.direction === 'BUY' ? '买入' : '卖出'} {r.stock_name} ({cn(r.strategy)}) {fm(r.order_amount)}</div>)}
+                </div>}
+                {(data.sell_signals || []).length > 0 && <div className="review-summary-line">⚠️ {data.sell_signals.length}只有卖出信号
+                  {data.sell_signals.map((r: any, i: number) => <div key={i} style={{ paddingLeft: '16px' }}>{r.stock_name} → {r.sell_signal}</div>)}
+                </div>}
               </div>
             )}
-          </SectionCard>
+          </Card>
         </div>
       </div>
     </div>
