@@ -180,12 +180,30 @@ export default function DailyReview() {
       .finally(() => setLoading(false))
   }, [])
 
-  async function handleCopy() {
+  function handleCopy() {
     if (!data) return
     const md = generateMarkdown(data)
-    await navigator.clipboard.writeText(md)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      const textarea = document.createElement('textarea')
+      textarea.value = md
+      textarea.style.position = 'fixed'
+      textarea.style.opacity = '0'
+      document.body.appendChild(textarea)
+      textarea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textarea)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (e) {
+      console.error('Copy failed:', e)
+      const blob = new Blob([md], { type: 'text/plain' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `复盘报告_${data.trade_date || 'unknown'}.md`
+      a.click()
+      URL.revokeObjectURL(url)
+    }
   }
 
   if (loading) return <div className="page-loading"><div className="spinner" />加载复盘数据中...</div>
