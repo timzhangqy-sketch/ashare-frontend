@@ -9,14 +9,16 @@ import { useContextPanel } from '../../context/useContextPanel'
 import { useApiData } from '../../hooks/useApiData'
 import type { ResearchTab, ResearchWorkspaceViewModel } from '../../types/research'
 import { getStrategyDisplayName } from '../../utils/displayNames'
+import DailyReview from './DailyReview'
 
-const TAB_ORDER: ResearchTab[] = ['summary', 'ic', 'attribution', 'resonance']
+const TAB_ORDER: (ResearchTab | 'review')[] = ['summary', 'ic', 'attribution', 'resonance', 'review']
 
-const TAB_LABELS: Record<ResearchTab, string> = {
+const TAB_LABELS: Record<ResearchTab | 'review', string> = {
   summary: '回测概览',
   ic: '因子 IC',
   attribution: '归因分析',
   resonance: '共振研究',
+  review: '每日复盘',
 }
 
 function formatPercent(value: number | null | undefined, digits = 2) {
@@ -198,7 +200,7 @@ export default function ResearchPage() {
   const emptyTitle = getSourcePanelTitle(activeDataSource) ?? activeTab?.emptyTitle ?? tableModel?.emptyTitle ?? '当前暂无研究数据'
   const emptyText = getSourcePanelText(activeDataSource) ?? activeTab?.emptyText ?? tableModel?.emptyText ?? '相关研究结果会在这里展示。'
 
-  function syncTab(tab: ResearchTab) {
+  function syncTab(tab: ResearchTab | 'review') {
     const next = new URLSearchParams(searchParams)
     if (tab === 'summary') next.delete('tab')
     else next.set('tab', tab)
@@ -240,6 +242,15 @@ export default function ResearchPage() {
         ))}
       </div>
 
+      {query.tab === 'review' as any ? (
+        <div className="research-layout">
+          <section className="card research-main">
+            <div className="card-body" style={{ padding: '16px' }}>
+              <DailyReview />
+            </div>
+          </section>
+        </div>
+      ) : (
       <div className="research-layout">
         <section className="card research-main">
           <div className="card-header research-section-header">
@@ -371,6 +382,7 @@ export default function ResearchPage() {
           ) : null}
         </section>
       </div>
+      )}
     </div>
   )
 }

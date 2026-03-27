@@ -1084,4 +1084,10 @@ export async function fetchSignalSummary() {
   return res.data;
 }
 
+export async function fetchDailyReview(date?: string): Promise<any> {
+  const params = date ? { date } : {};
+  const res = await api.get('/api/review', { params });
+  return res.data;
+}
+
 export default api;
