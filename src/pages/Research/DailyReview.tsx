@@ -218,52 +218,34 @@ export default function DailyReview() {
           </table>
         </Card>
 
-        <Card title="大盘指数走势">
+        <Card title="大盘走势（近3月）">
           {(() => {
             const raw = data.index || []
             const dates = [...new Set(raw.map((r: any) => String(r.trade_date)))].sort() as string[]
-            // 用收盘价归一化为涨跌幅基准（以第一天为100%）
             const baseClose: Record<string, number> = {}
             raw.forEach((r: any) => {
               const name = IDX_NAMES[r.ts_code] || r.ts_code
-              if (!baseClose[name]) baseClose[name] = r.close
+              if (!baseClose[name] && r.close) baseClose[name] = r.close
             })
             const chartData = dates.map((d: string) => {
               const row: any = { date: d.slice(5) }
               raw.filter((r: any) => String(r.trade_date) === d).forEach((r: any) => {
                 const name = IDX_NAMES[r.ts_code] || r.ts_code
-                const base = baseClose[name] || r.close
-                row[name] = Number(((r.close / base - 1) * 100).toFixed(2))
+                const base = baseClose[name]
+                if (base && r.close) row[name] = Number(((r.close / base - 1) * 100).toFixed(2))
               })
               return row
             })
-            // 每隔约20个交易日显示一个刻度
             const tickInterval = Math.max(1, Math.floor(dates.length / 6))
-            const colors = ['#ff5451', '#3B82F6', '#F59E0B', '#A855F7']
             const names = ['上证指数', '深证成指', '创业板指', '科创50']
+            const colors = ['#ff5451', '#3B82F6', '#F59E0B', '#A855F7']
             return (
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={chartData} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 9, fill: '#8c909f' }}
-                    axisLine={{ stroke: 'rgba(66,71,84,0.15)' }}
-                    tickLine={false}
-                    interval={tickInterval}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 9, fill: '#8c909f' }}
-                    axisLine={false}
-                    tickLine={false}
-                    tickFormatter={(v: number) => `${v > 0 ? '+' : ''}${v}%`}
-                    width={50}
-                  />
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 4, left: -8 }}>
+                  <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#8c909f' }} axisLine={{ stroke: 'rgba(66,71,84,0.15)' }} tickLine={false} interval={tickInterval} />
+                  <YAxis tick={{ fontSize: 9, fill: '#8c909f' }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${v > 0 ? '+' : ''}${v}%`} width={42} domain={['auto', 'auto']} />
                   <ReferenceLine y={0} stroke="rgba(66,71,84,0.3)" strokeDasharray="3 3" />
-                  <Tooltip
-                    contentStyle={{ background: '#1c2027', border: '1px solid rgba(66,71,84,0.3)', borderRadius: '2px', fontSize: '11px' }}
-                    labelStyle={{ color: '#8c909f', fontSize: '10px' }}
-                    formatter={(value: any, name: any) => [value != null ? `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(2)}%` : '-', name]}
-                  />
+                  <Tooltip contentStyle={{ background: '#1c2027', border: '1px solid rgba(66,71,84,0.3)', borderRadius: '2px', fontSize: '11px' }} labelStyle={{ color: '#8c909f', fontSize: '10px' }} formatter={(value: any, name: any) => [value != null ? `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(2)}%` : '-', name]} />
                   <Legend wrapperStyle={{ fontSize: '10px', color: '#8c909f' }} iconSize={8} />
                   {names.map((name, i) => (
                     <Line key={name} type="monotone" dataKey={name} stroke={colors[i]} strokeWidth={1.5} dot={false} activeDot={{ r: 3 }} connectNulls />
