@@ -199,7 +199,7 @@ export default function DailyReview() {
   const nav = data.nav || []
 
   return (
-    <div style={{ padding: '0' }}>
+    <div>
       {/* 顶部信息栏 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
         <span style={{ fontSize: '14px', fontWeight: 600, color: '#e2e4ea' }}>

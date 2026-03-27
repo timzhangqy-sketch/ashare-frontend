@@ -243,8 +243,10 @@ export default function ResearchPage() {
       </div>
 
       {query.tab === 'review' ? (
-        <div style={{ flex: 1, overflow: 'auto', padding: '0' }}>
-          <DailyReview />
+        <div style={{ flex: '1 1 0', overflow: 'auto', minHeight: 0 }}>
+          <div style={{ padding: '0 0 24px 0' }}>
+            <DailyReview />
+          </div>
         </div>
       ) : (
       <div className="research-layout">
