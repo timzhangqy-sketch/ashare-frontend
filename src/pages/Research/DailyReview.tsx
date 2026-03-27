@@ -228,6 +228,81 @@ export default function DailyReview() {
         </button>
       </div>
 
+      {/* 复盘要点 */}
+      <SectionCard title="复盘要点">
+        <div style={{ fontSize: '13px', lineHeight: '1.8', color: '#c2c6d6' }}>
+          {(() => {
+            const env = data.market_env || []
+            const today = env[0] || {}
+            const yesterday = env[1] || {}
+            const pos = data.positions || []
+            const pa = data.pending_approvals || []
+            const ss = data.sell_signals || []
+            const navRow = (data.nav || [])[0]
+            const totalPnl = pos.reduce((s: number, r: any) => s + (r.unrealized_pnl || 0), 0)
+            const posPct = navRow?.position_pct || 0
+
+            const lines: string[] = []
+
+            // 市场环境变化
+            if (today.market_regime && yesterday.market_regime) {
+              if (today.market_regime !== yesterday.market_regime) {
+                lines.push(`📊 市场环境从 ${REGIME_CN[yesterday.market_regime] || yesterday.market_regime} 转为 ${REGIME_CN[today.market_regime] || today.market_regime}，得分 ${Number(today.breadth_score || 0).toFixed(1)}`)
+              } else {
+                lines.push(`📊 市场维持 ${REGIME_CN[today.market_regime] || today.market_regime}，得分 ${Number(today.breadth_score || 0).toFixed(1)}，均涨幅 ${fmtPct(today.avg_pct_chg)}`)
+              }
+            }
+
+            // 仓位状态
+            if (pos.length === 0) {
+              lines.push('💰 当前空仓')
+            } else {
+              lines.push(`💼 持仓 ${pos.length} 只，仓位 ${posPct}%（上限 ${data.regime_limit}%），总浮盈 ${fmtMoney(totalPnl)}（${fmtPct(navRow?.total_pnl_pct)}）`)
+            }
+
+            // 仓位超限预警
+            if (posPct > (data.regime_limit || 100)) {
+              lines.push(`⚠️ 仓位 ${posPct}% 超过环境上限 ${data.regime_limit}%`)
+            }
+
+            // 卖出信号
+            if (ss.length > 0) {
+              for (const s of ss) {
+                const posInfo = pos.find((p: any) => p.ts_code === s.ts_code)
+                const pnlStr = posInfo ? `浮盈 ${fmtPct(posInfo.unrealized_pnl_pct)}` : ''
+                lines.push(`🔴 ${s.stock_name} 触发卖出信号 ${s.sell_signal}${pnlStr ? '，' + pnlStr : ''}`)
+              }
+            }
+
+            // 持仓中亏损较大的
+            for (const p of pos) {
+              if ((p.unrealized_pnl_pct || 0) < -5) {
+                lines.push(`❗ ${p.stock_name} 浮亏 ${fmtPct(p.unrealized_pnl_pct)}，需关注止损`)
+              }
+            }
+
+            // 待审批
+            if (pa.length > 0) {
+              lines.push(`📋 ${pa.length} 笔订单待审批`)
+            }
+
+            // 入池情况
+            const todayStats = (data.watchlist_stats || []).filter((r: any) => String(r.entry_date) === data.trade_date)
+            if (todayStats.length > 0) {
+              const totalNew = todayStats.reduce((s: number, r: any) => s + (r.cnt || 0), 0)
+              const details = todayStats.map((r: any) => `${r.strategy} ${r.cnt}只`).join('、')
+              lines.push(`🆕 今日入池 ${totalNew} 只：${details}`)
+            } else {
+              lines.push('📭 今日无新入池标的')
+            }
+
+            if (lines.length === 0) lines.push('暂无特别事项')
+
+            return lines.map((line, i) => <div key={i} style={{ padding: '2px 0' }}>{line}</div>)
+          })()}
+        </div>
+      </SectionCard>
+
       {/* 第二行: 市场环境 + 大盘指数 并排 */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
       <SectionCard title="市场环境（最近5天）">
