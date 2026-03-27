@@ -64,7 +64,7 @@ function settle<T>(promise: Promise<T>) {
 }
 
 export function normalizeResearchTab(value: string | null): ResearchTab {
-  if (value === 'ic' || value === 'attribution' || value === 'resonance') return value;
+  if (value === 'ic' || value === 'attribution' || value === 'resonance' || value === 'review') return value;
   return 'summary';
 }
 
@@ -565,6 +565,13 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
         emptyTitle: '当前没有可展示的共振结果',
         emptyText: '共振分析当前支持兼容回退，后续可接入真实接口。',
       },
+      review: {
+        label: '每日复盘',
+        title: '每日复盘',
+        description: '汇总当日市场环境、持仓、订单、NAV和风控状态。',
+        emptyTitle: '',
+        emptyText: '',
+      },
     },
     tabStates: {
       summary: {
@@ -603,6 +610,10 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
       ),
         dataSource: resonanceDataSource,
       },
+      review: {
+        ...buildTabState('real', '每日复盘使用独立API。'),
+        dataSource: buildResearchDataSource('real', '每日复盘', '独立API', null),
+      },
     },
     metrics: query.tab === 'ic' ? (() => {
       const t5Rows = allIcMapped.filter(r => r.horizon === 'T5').sort((a, b) => Math.abs(b.ic) - Math.abs(a.ic));
@@ -636,6 +647,7 @@ export async function loadResearchWorkspace(query: ResearchQueryModel): Promise<
       ic: icDataSource,
       attribution: attributionDataSource,
       resonance: resonanceDataSource,
+      review: buildResearchDataSource('real', '每日复盘', '独立API', null),
     },
     factorMeta,
   };

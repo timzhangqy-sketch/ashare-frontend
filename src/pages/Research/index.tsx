@@ -11,9 +11,9 @@ import type { ResearchTab, ResearchWorkspaceViewModel } from '../../types/resear
 import { getStrategyDisplayName } from '../../utils/displayNames'
 import DailyReview from './DailyReview'
 
-const TAB_ORDER: (ResearchTab | 'review')[] = ['summary', 'ic', 'attribution', 'resonance', 'review']
+const TAB_ORDER: ResearchTab[] = ['summary', 'ic', 'attribution', 'resonance', 'review']
 
-const TAB_LABELS: Record<ResearchTab | 'review', string> = {
+const TAB_LABELS: Record<ResearchTab, string> = {
   summary: '回测概览',
   ic: '因子 IC',
   attribution: '归因分析',
@@ -200,7 +200,7 @@ export default function ResearchPage() {
   const emptyTitle = getSourcePanelTitle(activeDataSource) ?? activeTab?.emptyTitle ?? tableModel?.emptyTitle ?? '当前暂无研究数据'
   const emptyText = getSourcePanelText(activeDataSource) ?? activeTab?.emptyText ?? tableModel?.emptyText ?? '相关研究结果会在这里展示。'
 
-  function syncTab(tab: ResearchTab | 'review') {
+  function syncTab(tab: ResearchTab) {
     const next = new URLSearchParams(searchParams)
     if (tab === 'summary') next.delete('tab')
     else next.set('tab', tab)
@@ -242,7 +242,7 @@ export default function ResearchPage() {
         ))}
       </div>
 
-      {query.tab === 'review' as any ? (
+      {query.tab === 'review' ? (
         <div className="research-layout">
           <section className="card research-main">
             <div className="card-body" style={{ padding: '16px' }}>

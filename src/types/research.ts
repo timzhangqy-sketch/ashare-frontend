@@ -1,4 +1,4 @@
-export type ResearchTab = 'summary' | 'ic' | 'attribution' | 'resonance';
+export type ResearchTab = 'summary' | 'ic' | 'attribution' | 'resonance' | 'review';
 export type ResearchSource = 'dashboard' | 'signals' | 'watchlist' | 'portfolio' | 'risk' | 'execution' | 'direct';
 export type ResearchHorizon = 'T1' | 'T3' | 'T5' | 'T10' | 'T20';
 export type ResearchGroupType = 'strategy' | 'market' | 'style';
