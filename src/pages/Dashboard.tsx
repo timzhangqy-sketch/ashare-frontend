@@ -230,22 +230,22 @@ export default function Dashboard() {
                   <table className="s-table">
                     <thead>
                       <tr>
-                        <th className="s-left">方向</th>
-                        <th className="s-left">股票</th>
-                        <th className="s-right">价格</th>
-                        <th className="s-right">数量</th>
-                        <th className="s-left">策略</th>
-                        <th className="s-left">信号</th>
-                        <th className="s-right">盈亏</th>
+                        <th className="s-left" style={{width:'48px'}}>方向</th>
+                        <th className="s-left" style={{width:'80px'}}>股票</th>
+                        <th className="s-right" style={{width:'60px'}}>价格</th>
+                        <th className="s-right" style={{width:'60px'}}>数量</th>
+                        <th className="s-left" style={{width:'90px'}}>策略</th>
+                        <th className="s-left" style={{width:'72px'}}>信号</th>
+                        <th className="s-right" style={{width:'56px'}}>盈亏</th>
                       </tr>
                     </thead>
                     <tbody>
                       {fills.map((f: any, i: number) => {
-                        const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败' };
-                        const STRAT_CN: Record<string, string> = { VOL_SURGE: '放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
+                        const SIGNAL_CN: Record<string, string> = { BREAKOUT: '突破', PULLBACK: '回踩', TREND_BREAK: '破位', STOP_LOSS: '止损', TIME_EXIT: '超期', TRAILING_STOP: '追踪止盈', TAKE_PROFIT: '止盈', WARN_MA_BREAK: '均线破位', BREAKOUT_FAIL: '突破失败', POOL_ENTRY: '入池买入', VOL_CONFIRM: '放量确认', REHEAT: '再热买入', REGIME_SHIFT: '环境恶化', SECTOR_RETREAT: '板块退潮', VOL_COLLAPSE: '缩量破位', TIME_DECAY: '持有超期', HARD_STOP: '硬止损', REDUCE: '减仓' };
+                        const STRAT_CN: Record<string, string> = { VOL_SURGE: '连续放量蓄势', RETOC2: '异动策略', PATTERN_T2UP9: '形态策略', WEAK_BUY: '弱市吸筹', PATTERN_GREEN10: '阳线形态', IGNITE: '点火策略' };
                         return (
                         <tr key={`fill-${i}`}>
-                          <td className={f.direction === 'BUY' ? 's-up s-semi' : 's-down s-semi'}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
+                          <td style={{ width: '48px' }} className={f.direction === 'BUY' ? 's-up s-semi' : 's-down s-semi'}>{f.direction === 'BUY' ? '买入' : '卖出'}</td>
                           <td className="s-td-name s-clickable" onClick={() => handleStockClick(f.ts_code, f.name)}>{f.name}</td>
                           <td className="s-num s-right">{f.fill_price?.toFixed(2) ?? '—'}</td>
                           <td className="s-num s-right">{f.fill_shares?.toLocaleString() ?? '—'}</td>
