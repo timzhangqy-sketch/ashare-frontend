@@ -51,7 +51,7 @@ function RegimeBadge({ regime }: { regime: string }) {
 
 function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="card" style={{ marginBottom: '12px' }}>
+    <section className="card" style={{ marginBottom: '12px', flex: 'none' }}>
       <div className="card-header" style={{ padding: '8px 16px' }}>
         <span style={{ fontSize: '13px', fontWeight: 600, color: '#c2c6d6' }}>{title}</span>
       </div>
@@ -199,7 +199,7 @@ export default function DailyReview() {
   const nav = data.nav || []
 
   return (
-    <div>
+    <div style={{ display: 'block' }}>
       {/* 顶部信息栏 */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', flexWrap: 'wrap' }}>
         <span style={{ fontSize: '14px', fontWeight: 600, color: '#e2e4ea' }}>
