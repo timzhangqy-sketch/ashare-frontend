@@ -243,12 +243,8 @@ export default function ResearchPage() {
       </div>
 
       {query.tab === 'review' ? (
-        <div className="research-layout">
-          <section className="card research-main">
-            <div className="card-body" style={{ padding: '16px' }}>
-              <DailyReview />
-            </div>
-          </section>
+        <div style={{ flex: 1, overflow: 'auto', padding: '0' }}>
+          <DailyReview />
         </div>
       ) : (
       <div className="research-layout">
