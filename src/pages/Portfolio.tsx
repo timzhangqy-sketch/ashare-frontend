@@ -841,7 +841,9 @@ export default function Portfolio() {
                       <th className="center portfolio-col-hold-days">持有天数</th>
                       <th className="right">最新价</th>
                       <th className="right">今日盈亏</th>
+                      <th className="right">今日%</th>
                       <th className="right">浮动盈亏</th>
+                      <th className="right">浮动%</th>
                       <th className="center">当前信号</th>
                       <th className="s-right">动作</th>
                     </tr>
@@ -849,7 +851,7 @@ export default function Portfolio() {
                   <tbody>
                     {openRows.length === 0 ? (
                       <tr className="portfolio-table-empty-row">
-                        <td colSpan={11}>
+                        <td colSpan={13}>
                           <div className="portfolio-empty-state table-empty">
                             <div className="portfolio-empty-title">{data?.tabs.open.emptyTitle}</div>
                             <div className="portfolio-empty-text">{data?.tabs.open.emptyText}</div>
@@ -881,13 +883,17 @@ export default function Portfolio() {
                           <td className="center numeric">{row.openDate}</td>
                           <td className="center numeric portfolio-col-hold-days">{formatHoldDays(row, true)}</td>
                           <td className="right numeric">{row.latestClose?.toFixed(2) ?? '--'}</td>
-                          <td className={`right numeric ${row.todayPnl != null && row.todayPnl > 0 ? 'pnl-positive' : row.todayPnl != null && row.todayPnl < 0 ? 'pnl-negative' : 'pnl-muted'}`}>
-                            <div>{row.todayPnl != null && row.todayPnl !== 0 ? formatMoney(row.todayPnl) : '0.00'}</div>
-                            <div className={`portfolio-inline-meta ${row.todayPnl != null && row.todayPnl > 0 ? 'pnl-positive' : row.todayPnl != null && row.todayPnl < 0 ? 'pnl-negative' : 'pnl-muted'}`}>{row.todayPnl != null && row.todayPnl !== 0 ? formatPercentAlready(row.todayPnlPct) : '0.00%'}</div>
+                          <td className={`s-right numeric ${row.todayPnl != null && row.todayPnl > 0 ? 'c-up' : row.todayPnl != null && row.todayPnl < 0 ? 'c-down' : ''}`}>
+                            {row.todayPnl != null && row.todayPnl !== 0 ? formatMoney(row.todayPnl) : '0.00'}
                           </td>
-                          <td className={`right numeric ${row.unrealizedPnl != null && row.unrealizedPnl > 0 ? 'pnl-positive' : row.unrealizedPnl != null && row.unrealizedPnl < 0 ? 'pnl-negative' : 'pnl-muted'}`}>
-                            <div>{row.unrealizedPnl != null && row.unrealizedPnl !== 0 ? formatMoney(row.unrealizedPnl) : '0.00'}</div>
-                            <div className={`portfolio-inline-meta ${row.unrealizedPnl != null && row.unrealizedPnl > 0 ? 'pnl-positive' : row.unrealizedPnl != null && row.unrealizedPnl < 0 ? 'pnl-negative' : 'pnl-muted'}`}>{row.unrealizedPnl != null && row.unrealizedPnl !== 0 ? formatPercent(row.unrealizedPnlPct) : '0.00%'}</div>
+                          <td className={`s-right numeric ${row.todayPnl != null && row.todayPnl > 0 ? 'c-up' : row.todayPnl != null && row.todayPnl < 0 ? 'c-down' : ''}`}>
+                            {row.todayPnl != null && row.todayPnl !== 0 ? formatPercentAlready(row.todayPnlPct) : '0.00%'}
+                          </td>
+                          <td className={`s-right numeric ${row.unrealizedPnl != null && row.unrealizedPnl > 0 ? 'c-up' : row.unrealizedPnl != null && row.unrealizedPnl < 0 ? 'c-down' : ''}`}>
+                            {row.unrealizedPnl != null && row.unrealizedPnl !== 0 ? formatMoney(row.unrealizedPnl) : '0.00'}
+                          </td>
+                          <td className={`s-right numeric ${row.unrealizedPnl != null && row.unrealizedPnl > 0 ? 'c-up' : row.unrealizedPnl != null && row.unrealizedPnl < 0 ? 'c-down' : ''}`}>
+                            {row.unrealizedPnl != null && row.unrealizedPnl !== 0 ? formatPercent(row.unrealizedPnlPct) : '0.00%'}
                           </td>
                           <td className="center">
                             {(() => {
@@ -985,13 +991,14 @@ export default function Portfolio() {
                       <th className="center">平仓日期</th>
                       <th className="center portfolio-col-hold-days">持有天数</th>
                       <th className="right">已实现盈亏</th>
+                      <th className="right">收益率</th>
                       <th>退出原因</th>
                     </tr>
                   </thead>
                   <tbody>
                     {closedRows.length === 0 ? (
                       <tr className="portfolio-table-empty-row">
-                        <td colSpan={9}>
+                        <td colSpan={10}>
                           <div className="portfolio-empty-state table-empty">
                             <div className="portfolio-empty-title">{data?.tabs.closed.emptyTitle}</div>
                             <div className="portfolio-empty-text">{data?.tabs.closed.emptyText}</div>
@@ -1023,9 +1030,11 @@ export default function Portfolio() {
                           <td className="center numeric">{row.openDate}</td>
                           <td className="center numeric">{row.closeDate ?? '--'}</td>
                           <td className="center numeric portfolio-col-hold-days">{formatHoldDays(row, false)}</td>
-                          <td className={`right numeric ${row.realizedPnl != null && row.realizedPnl > 0 ? 'pnl-positive' : row.realizedPnl != null && row.realizedPnl < 0 ? 'pnl-negative' : ''}`}>
-                            <div>{formatMoney(row.realizedPnl)}</div>
-                            <div className="portfolio-inline-meta">{formatPercent(row.realizedPnlPct)}</div>
+                          <td className={`s-right numeric ${row.realizedPnl != null && row.realizedPnl > 0 ? 'c-up' : row.realizedPnl != null && row.realizedPnl < 0 ? 'c-down' : ''}`}>
+                            {formatMoney(row.realizedPnl)}
+                          </td>
+                          <td className={`s-right numeric ${row.realizedPnl != null && row.realizedPnl > 0 ? 'c-up' : row.realizedPnl != null && row.realizedPnl < 0 ? 'c-down' : ''}`}>
+                            {formatPercent(row.realizedPnlPct)}
                           </td>
                           <td>{formatSignalReason(row.exitReason)}</td>
                         </tr>
