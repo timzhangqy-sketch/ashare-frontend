@@ -97,7 +97,7 @@ function generateMarkdown(data: any): string {
     md += `|------|------|------|--------|--------|------|------|------|-------|----------|\n`
     for (const r of d.positions || []) {
       const sell = r.sell_signal || ''
-      md += `| ${r.ts_code} | ${r.stock_name || '-'} | ${r.strategy} | ${r.open_date} | ${r.hold_days} | ${fmtMoney(r.cost_amount)} | ${fmtMoney(r.market_value)} | ${fmtMoney(r.unrealized_pnl)} | ${fmtPct(r.unrealized_pnl_pct)} | ${sell} |\n`
+      md += `| ${r.ts_code} | ${r.stock_name || '-'} | ${r.strategy} | ${r.open_date} | ${r.hold_days} | ${fmtMoney(r.cost_amount)} | ${fmtMoney(r.market_value)} | ${fmtMoney(r.unrealized_pnl)} | ${fmtPct((r.unrealized_pnl_pct || 0) * 100)} | ${sell} |\n`
     }
   }
 
@@ -130,7 +130,7 @@ function generateMarkdown(data: any): string {
   md += `| 日期 | NAV | 现金 | 市值 | 仓位% | 持仓 | 累计% |\n`
   md += `|------|-----|------|------|-------|------|-------|\n`
   for (const r of d.nav || []) {
-    md += `| ${r.snap_date} | ${fmtMoney(r.total_nav)} | ${fmtMoney(r.cash_balance)} | ${fmtMoney(r.market_value)} | ${r.position_pct || 0}% | ${r.open_count || 0} | ${fmtPct(r.total_pnl_pct)} |\n`
+    md += `| ${r.snap_date} | ${fmtMoney(r.total_nav)} | ${fmtMoney(r.cash_balance)} | ${fmtMoney(r.market_value)} | ${r.position_pct || 0}% | ${r.open_count || 0} | ${fmtPct((r.total_pnl_pct || 0) * 100)} |\n`
   }
 
   // 策略入池
@@ -229,7 +229,7 @@ export default function DailyReview() {
         </span>
         {nav.length > 0 && (
           <span style={{ fontSize: '12px', color: pctColor(nav[0].total_pnl_pct), fontWeight: 600 }}>
-            NAV {fmtMoney(nav[0].total_nav)} ({fmtPct(nav[0].total_pnl_pct)})
+            NAV {fmtMoney(nav[0].total_nav)} ({fmtPct((nav[0].total_pnl_pct || 0) * 100)})
           </span>
         )}
         <button
@@ -275,7 +275,7 @@ export default function DailyReview() {
             if (pos.length === 0) {
               lines.push('💰 当前空仓')
             } else {
-              lines.push(`💼 持仓 ${pos.length} 只，仓位 ${posPct}%（上限 ${data.regime_limit}%），总浮盈 ${fmtMoney(totalPnl)}（${fmtPct(navRow?.total_pnl_pct)}）`)
+              lines.push(`💼 持仓 ${pos.length} 只，仓位 ${posPct}%（上限 ${data.regime_limit}%），总浮盈 ${fmtMoney(totalPnl)}（${fmtPct((navRow?.total_pnl_pct || 0) * 100)}）`)
             }
 
             // 仓位超限预警
@@ -287,15 +287,15 @@ export default function DailyReview() {
             if (ss.length > 0) {
               for (const s of ss) {
                 const posInfo = pos.find((p: any) => p.ts_code === s.ts_code)
-                const pnlStr = posInfo ? `浮盈 ${fmtPct(posInfo.unrealized_pnl_pct)}` : ''
+                const pnlStr = posInfo ? `浮盈 ${fmtPct((posInfo.unrealized_pnl_pct || 0) * 100)}` : ''
                 lines.push(`🔴 ${s.stock_name} 触发卖出信号 ${s.sell_signal}${pnlStr ? '，' + pnlStr : ''}`)
               }
             }
 
             // 持仓中亏损较大的
             for (const p of pos) {
-              if ((p.unrealized_pnl_pct || 0) < -5) {
-                lines.push(`❗ ${p.stock_name} 浮亏 ${fmtPct(p.unrealized_pnl_pct)}，需关注止损`)
+              if ((p.unrealized_pnl_pct || 0) < -0.05) {
+                lines.push(`❗ ${p.stock_name} 浮亏 ${fmtPct((p.unrealized_pnl_pct || 0) * 100)}，需关注止损`)
               }
             }
 
@@ -393,7 +393,8 @@ export default function DailyReview() {
               </tr></thead>
               <tbody>
                 {positions.map((r: any, i: number) => {
-                  const pnlPct = r.unrealized_pnl_pct || 0
+                  const pnlPctRaw = r.unrealized_pnl_pct || 0
+                  const pnlPct = pnlPctRaw * 100
                   const icon = pnlPct < -5 ? '🔴' : pnlPct < -2 ? '🟡' : pnlPct > 2 ? '🟢' : '⚪'
                   return (
                     <tr key={i}>
@@ -506,7 +507,7 @@ export default function DailyReview() {
                   <td style={{ textAlign: 'right' }}>{fmtMoney(r.market_value)}</td>
                   <td style={{ textAlign: 'right' }}>{r.position_pct || 0}%</td>
                   <td style={{ textAlign: 'right' }}>{r.open_count || 0}</td>
-                  <td style={{ textAlign: 'right', color: pctColor(r.total_pnl_pct), fontWeight: 600 }}>{fmtPct(r.total_pnl_pct)}</td>
+                  <td style={{ textAlign: 'right', color: pctColor(r.total_pnl_pct), fontWeight: 600 }}>{fmtPct((r.total_pnl_pct || 0) * 100)}</td>
                 </tr>
               ))}
             </tbody>
@@ -540,7 +541,7 @@ export default function DailyReview() {
               <div>审批模式: <span style={{ fontWeight: 600 }}>{JSON.stringify(data.risk_config?.approval_mode || '-').replace(/"/g, '')}</span></div>
               <div>环境: <RegimeBadge regime={regime} /> → 仓位上限 <span style={{ fontWeight: 600 }}>{data.regime_limit}%</span></div>
               {nav.length > 0 && (
-                <div>NAV: <span style={{ fontWeight: 600, color: pctColor(nav[0].total_pnl_pct) }}>{fmtMoney(nav[0].total_nav)} ({fmtPct(nav[0].total_pnl_pct)})</span></div>
+                <div>NAV: <span style={{ fontWeight: 600, color: pctColor(nav[0].total_pnl_pct) }}>{fmtMoney(nav[0].total_nav)} ({fmtPct((nav[0].total_pnl_pct || 0) * 100)})</span></div>
               )}
               <div>最大回撤阈值: 8%</div>
             </div>
