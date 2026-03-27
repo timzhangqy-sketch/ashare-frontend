@@ -228,7 +228,8 @@ export default function DailyReview() {
         </button>
       </div>
 
-      {/* 模块1: 市场环境 */}
+      {/* 第二行: 市场环境 + 大盘指数 并排 */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
       <SectionCard title="市场环境（最近5天）">
         <table className="data-table" style={{ tableLayout: 'auto', width: '100%' }}>
           <thead><tr>
@@ -273,6 +274,7 @@ export default function DailyReview() {
           </tbody>
         </table>
       </SectionCard>
+      </div>
 
       {/* 模块3: 当前持仓 */}
       <SectionCard title={`当前持仓（${positions.length}只）`}>
