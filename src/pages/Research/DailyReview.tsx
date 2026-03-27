@@ -218,7 +218,7 @@ export default function DailyReview() {
           </table>
         </Card>
 
-        <Card title="大盘指数走势（近1年）">
+        <Card title="大盘指数走势">
           {(() => {
             const raw = data.index || []
             const dates = [...new Set(raw.map((r: any) => String(r.trade_date)))].sort() as string[]
@@ -238,7 +238,7 @@ export default function DailyReview() {
               return row
             })
             // 每隔约20个交易日显示一个刻度
-            const tickInterval = Math.max(1, Math.floor(dates.length / 12))
+            const tickInterval = Math.max(1, Math.floor(dates.length / 6))
             const colors = ['#ff5451', '#3B82F6', '#F59E0B', '#A855F7']
             const names = ['上证指数', '深证成指', '创业板指', '科创50']
             return (
@@ -266,7 +266,7 @@ export default function DailyReview() {
                   />
                   <Legend wrapperStyle={{ fontSize: '10px', color: '#8c909f' }} iconSize={8} />
                   {names.map((name, i) => (
-                    <Line key={name} type="monotone" dataKey={name} stroke={colors[i]} strokeWidth={1.5} dot={false} connectNulls />
+                    <Line key={name} type="monotone" dataKey={name} stroke={colors[i]} strokeWidth={1.5} dot={false} activeDot={{ r: 3 }} connectNulls />
                   ))}
                 </LineChart>
               </ResponsiveContainer>
