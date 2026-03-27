@@ -243,12 +243,7 @@ export default function ResearchPage() {
       </div>
 
       {query.tab === 'review' ? (
-        <div style={{
-          flex: '1 1 0',
-          overflow: 'auto',
-          minHeight: 0,
-          display: 'block',
-        }}>
+        <div className="review-container">
           <DailyReview />
         </div>
       ) : (

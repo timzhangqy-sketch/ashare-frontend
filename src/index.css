@@ -8847,6 +8847,21 @@ textarea {
   flex: 1 !important;
 }
 
+/* ===== Daily Review Tab overrides (2026-03-27) ===== */
+.research-page .review-container {
+  flex: 1 1 0 !important;
+  overflow: auto !important;
+  min-height: 0 !important;
+  display: block !important;
+}
+.research-page .review-container .card {
+  min-height: auto !important;
+  flex: none !important;
+}
+.research-page .review-container .card:has(.data-table) {
+  min-height: auto !important;
+}
+
 /* ═══ Pipeline popup z-index fix ═══ */
 .pipeline-popup {
   z-index: 9999 !important;
