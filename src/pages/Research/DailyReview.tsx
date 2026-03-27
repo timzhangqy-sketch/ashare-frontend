@@ -218,25 +218,19 @@ export default function DailyReview() {
           </table>
         </Card>
 
-        <Card title="大盘走势（近3月）">
+        <Card title="大盘每日涨跌（近3月）">
           {(() => {
             const raw = data.index || []
             const dates = [...new Set(raw.map((r: any) => String(r.trade_date)))].sort() as string[]
-            const baseClose: Record<string, number> = {}
-            raw.forEach((r: any) => {
-              const name = IDX_NAMES[r.ts_code] || r.ts_code
-              if (!baseClose[name] && r.close) baseClose[name] = r.close
-            })
             const chartData = dates.map((d: string) => {
               const row: any = { date: d.slice(5) }
               raw.filter((r: any) => String(r.trade_date) === d).forEach((r: any) => {
                 const name = IDX_NAMES[r.ts_code] || r.ts_code
-                const base = baseClose[name]
-                if (base && r.close) row[name] = Number(((r.close / base - 1) * 100).toFixed(2))
+                if (r.pct_chg != null) row[name] = Number(r.pct_chg)
               })
               return row
             })
-            const tickInterval = Math.max(1, Math.floor(dates.length / 6))
+            const tickInterval = Math.max(1, Math.floor(dates.length / 8))
             const names = ['上证指数', '深证成指', '创业板指', '科创50']
             const colors = ['#ff5451', '#3B82F6', '#F59E0B', '#A855F7']
             return (
@@ -248,7 +242,7 @@ export default function DailyReview() {
                   <Tooltip contentStyle={{ background: '#1c2027', border: '1px solid rgba(66,71,84,0.3)', borderRadius: '2px', fontSize: '11px' }} labelStyle={{ color: '#8c909f', fontSize: '10px' }} formatter={(value: any, name: any) => [value != null ? `${Number(value) >= 0 ? '+' : ''}${Number(value).toFixed(2)}%` : '-', name]} />
                   <Legend wrapperStyle={{ fontSize: '10px', color: '#8c909f' }} iconSize={8} />
                   {names.map((name, i) => (
-                    <Line key={name} type="monotone" dataKey={name} stroke={colors[i]} strokeWidth={1.5} dot={false} activeDot={{ r: 3 }} connectNulls />
+                    <Line key={name} type="monotone" dataKey={name} stroke={colors[i]} strokeWidth={1} dot={false} activeDot={{ r: 3 }} connectNulls />
                   ))}
                 </LineChart>
               </ResponsiveContainer>
