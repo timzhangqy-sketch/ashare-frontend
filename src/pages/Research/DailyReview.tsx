@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from 'recharts'
 import { fetchDailyReview } from '../../api'
 
 const IDX_NAMES: Record<string, string> = {
@@ -217,20 +218,39 @@ export default function DailyReview() {
           </table>
         </Card>
 
-        <Card title="大盘指数（最近3天）">
-          <table className="review-table">
-            <thead><tr><th>日期</th><th>指数</th><th className="r">收盘</th><th className="r">涨跌%</th></tr></thead>
-            <tbody>
-              {(data.index || []).map((r: any, i: number) => (
-                <tr key={i}>
-                  <td>{ds(r.trade_date)}</td>
-                  <td className="stock-name">{IDX_NAMES[r.ts_code] || r.ts_code}</td>
-                  <td className="r num">{Number(r.close || 0).toFixed(2)}</td>
-                  <td className={`r num ${toneClass(r.pct_chg)}`}>{fp(r.pct_chg)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <Card title="大盘指数走势">
+          {(() => {
+            const raw = data.index || []
+            const dates = [...new Set(raw.map((r: any) => String(r.trade_date)))].sort() as string[]
+            const chartData = dates.map((d: string) => {
+              const row: any = { date: d.slice(5) }
+              raw.filter((r: any) => String(r.trade_date) === d).forEach((r: any) => {
+                const name = IDX_NAMES[r.ts_code] || r.ts_code
+                row[name] = r.pct_chg != null ? Number(r.pct_chg) : null
+              })
+              return row
+            })
+            const colors = ['#ff5451', '#3B82F6', '#F59E0B', '#A855F7']
+            const names = ['上证指数', '深证成指', '创业板指', '科创50']
+            return (
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={chartData} margin={{ top: 8, right: 16, bottom: 4, left: 0 }}>
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#8c909f' }} axisLine={{ stroke: 'rgba(66,71,84,0.15)' }} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: '#8c909f' }} axisLine={false} tickLine={false} tickFormatter={(v: number) => `${v}%`} width={45} />
+                  <ReferenceLine y={0} stroke="rgba(66,71,84,0.3)" strokeDasharray="3 3" />
+                  <Tooltip
+                    contentStyle={{ background: '#1c2027', border: '1px solid rgba(66,71,84,0.3)', borderRadius: '2px', fontSize: '11px' }}
+                    labelStyle={{ color: '#8c909f', fontSize: '10px' }}
+                    formatter={(value: any) => value != null ? [`${Number(value).toFixed(2)}%`] : ['-']}
+                  />
+                  <Legend wrapperStyle={{ fontSize: '10px', color: '#8c909f' }} iconSize={8} />
+                  {names.map((name, i) => (
+                    <Line key={name} type="monotone" dataKey={name} stroke={colors[i]} strokeWidth={1.5} dot={{ r: 3, fill: colors[i] }} connectNulls />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            )
+          })()}
         </Card>
       </div>
 
