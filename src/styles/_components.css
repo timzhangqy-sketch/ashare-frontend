@@ -573,7 +573,6 @@
 .portfolio-page .portfolio-summary-value {
   font-family: var(--s-font-mono) !important;
   font-variant-numeric: tabular-nums !important;
-  color: var(--s-text-primary) !important;
 }
 
 .portfolio-page .stat-label {
@@ -676,7 +675,10 @@
 [class*="-page"] .stat-value {
   font-family: var(--s-font-mono) !important;
   font-variant-numeric: tabular-nums !important;
-  color: var(--s-text-primary) !important;
+}
+
+[class*="-page"] .stat-value {
+  color: var(--s-text-primary);
 }
 
 [class*="-page"] .stat-label {
