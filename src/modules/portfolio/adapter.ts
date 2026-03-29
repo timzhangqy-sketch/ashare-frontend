@@ -381,8 +381,8 @@ function buildOpenSummary(
     metrics: [
       buildMetric('总资产(NAV)', formatNav(summaryApi.total_nav), noHelper, truthMeta('real', 'marketValue', 'total_nav'), undefined),
       buildMetric('初始本金', formatNav(initialCap), noHelper, truthMeta('real', 'marketValue', 'initial_capital'), undefined),
-      buildMetric('累计收益', fmtCumPct(cumPct), noHelper, truthMeta('real', 'unrealizedPnl', 'cumulative_pnl_pct'), 'up'),
-      buildMetric('年化收益', `${annualized >= 0 ? '+' : ''}${(annualized * 100).toFixed(1)}%`, noHelper, truthMeta('derived', 'nextAction', '年化由前端计算'), 'up'),
+      buildMetric('累计收益', fmtCumPct(cumPct), noHelper, truthMeta('real', 'unrealizedPnl', 'cumulative_pnl_pct'), cumPct >= 0 ? 'up' : 'down'),
+      buildMetric('年化收益', `${annualized >= 0 ? '+' : ''}${(annualized * 100).toFixed(1)}%`, noHelper, truthMeta('derived', 'nextAction', '年化由前端计算'), annualized >= 0 ? 'up' : 'down'),
       buildMetric('股票市值', formatNav(summaryApi.total_market_value), noHelper, truthMeta('real', 'marketValue', 'total_market_value'), undefined),
       buildMetric('现金', formatNav(summaryApi.cash), noHelper, truthMeta('real', 'marketValue', 'cash'), undefined),
       buildMetric('持仓浮盈', fmtFloatPnl(floatPnl), noHelper, truthMeta('real', 'unrealizedPnl', 'total_unrealized_pnl'), floatPnl >= 0 ? 'up' : 'down'),
