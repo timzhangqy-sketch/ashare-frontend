@@ -584,7 +584,7 @@ export default function Dashboard() {
           </div>
         </div>
       </section>
-      {/* ═══ 第3行：概念热度 + 热门个股 + 资金异动 ═══ */}
+      {/* ═══ 第3行：概念热度 + 热门个股 + 强势板块 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'stretch' }}>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
@@ -688,6 +688,102 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title">强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
+            <div className="sector-table-wrap s-card-inner">
+              <table className="s-table">
+                <thead>
+                  <tr>
+                    <th className="s-left">#</th>
+                    <th className="s-left">概念</th>
+                    <th className="s-right">3日</th>
+                    <th className="s-right">今日</th>
+                    <th className="s-right">涨停</th>
+                    <th className="s-right">上涨比</th>
+                    <th className="s-right">龙头</th>
+                    <th className="s-center">标记</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {momentum.length > 0 ? momentum.map((c, i) => (
+                    <tr key={c.concept_code}>
+                      <td>{i + 1}</td>
+                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
+                      <td className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
+                        {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
+                      </td>
+                      <td className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
+                        {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
+                      </td>
+                      <td className="s-num s-right">{c.limit_up_count ?? 0}</td>
+                      <td className="s-num s-right">{Math.round((c.up_ratio ?? 0) * 100)}%</td>
+                      <td className={(c.leader_avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
+                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
+                      </td>
+                      <td className="s-center">
+                        {c.strategy_hit_count > 0 && <span style={{ color: '#3B82F6', marginRight: 3 }}>🎯{c.strategy_hit_count}</span>}
+                        {c.heat_persistence > 0 && <span className="s-fire">🔥{c.heat_persistence}天</span>}
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan={8} className="s-center">暂无数据</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* ═══ 第4行：异动板块 + 板块资金异动 ═══ */}
+      <section className="dashboard-section-grid dashboard-sector-row" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+        {/* 左栏：异动板块 Top5 */}
+        <div className="card">
+          <div className="card-body dashboard-module-body s-card-body-flex">
+            <h3 className="card-title s-card-title">异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
+            <div className="sector-table-wrap s-card-inner">
+              <table className="s-table">
+                <thead>
+                  <tr>
+                    <th className="s-left">#</th>
+                    <th className="s-left">概念</th>
+                    <th className="s-right">量比</th>
+                    <th className="s-right">3日均额</th>
+                    <th className="s-right">今日</th>
+                    <th className="s-left">龙头</th>
+                    <th className="s-right">涨幅</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {surge.length > 0 ? surge.map((c, i) => (
+                    <tr key={c.concept_code}>
+                      <td>{i + 1}</td>
+                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
+                      <td className={(c.concept_vr3 ?? 0) >= 2.0 ? 's-warn s-num s-right' : 's-num s-right'}>
+                        {(c.concept_vr3 ?? 0).toFixed(1)}x
+                      </td>
+                      <td className="s-num s-right">
+                        {(c.amount_3d_avg ?? 0).toFixed(1)}亿
+                      </td>
+                      <td className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
+                        {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
+                      </td>
+                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
+                        {c.leader_top_stock || '—'}
+                      </td>
+                      <td className={(c.leader_top_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
+                        {c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${(c.leader_top_pct_chg ?? 0).toFixed(1)}%` : '—'}
+                      </td>
+                    </tr>
+                  )) : (
+                    <tr><td colSpan={7} className="s-center">暂无异动板块</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {/* 右栏：板块资金异动 */}
+        <div className="card">
+          <div className="card-body dashboard-module-body s-card-body-flex">
             <h3 className="card-title s-card-title">板块资金异动<InfoTip data={DASHBOARD_META.fund_flow} /></h3>
             {fundFlow ? (
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -751,104 +847,8 @@ export default function Dashboard() {
             )}
           </div>
         </div>
-      </section>
-      {/* ═══ 第4行：板块轮动三栏 ═══ */}
-      <section className="dashboard-section-grid dashboard-sector-row" style={{ gridTemplateColumns: '1fr 1fr 1fr', alignItems: 'stretch' }}>
-        {/* 左栏：强势板块 Top10 */}
-        <div className="card">
-          <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title">强势板块 Top10<InfoTip data={DASHBOARD_META.momentum} /></h3>
-            <div className="sector-table-wrap s-card-inner">
-              <table className="s-table">
-                <thead>
-                  <tr>
-                    <th className="s-left">#</th>
-                    <th className="s-left">概念</th>
-                    <th className="s-right">3日</th>
-                    <th className="s-right">今日</th>
-                    <th className="s-right">涨停</th>
-                    <th className="s-right">上涨比</th>
-                    <th className="s-right">龙头</th>
-                    <th className="s-center">标记</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {momentum.length > 0 ? momentum.map((c, i) => (
-                    <tr key={c.concept_code}>
-                      <td>{i + 1}</td>
-                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
-                      <td className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
-                        {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
-                      </td>
-                      <td className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
-                        {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
-                      </td>
-                      <td className="s-num s-right">{c.limit_up_count ?? 0}</td>
-                      <td className="s-num s-right">{Math.round((c.up_ratio ?? 0) * 100)}%</td>
-                      <td className={(c.leader_avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
-                        {c.leader_avg_pct_chg != null ? `${c.leader_avg_pct_chg >= 0 ? '+' : ''}${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
-                      </td>
-                      <td className="s-center">
-                        {c.strategy_hit_count > 0 && <span style={{ color: '#3B82F6', marginRight: 3 }}>🎯{c.strategy_hit_count}</span>}
-                        {c.heat_persistence > 0 && <span className="s-fire">🔥{c.heat_persistence}天</span>}
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={8} className="s-center">暂无数据</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        {/* 中栏：异动板块 Top5 */}
-        <div className="card">
-          <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title">异动板块 Top5<InfoTip data={DASHBOARD_META.surge} /></h3>
-            <div className="sector-table-wrap s-card-inner">
-              <table className="s-table">
-                <thead>
-                  <tr>
-                    <th className="s-left">#</th>
-                    <th className="s-left">概念</th>
-                    <th className="s-right">量比</th>
-                    <th className="s-right">3日均额</th>
-                    <th className="s-right">今日</th>
-                    <th className="s-left">龙头</th>
-                    <th className="s-right">涨幅</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {surge.length > 0 ? surge.map((c, i) => (
-                    <tr key={c.concept_code}>
-                      <td>{i + 1}</td>
-                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
-                      <td className={(c.concept_vr3 ?? 0) >= 2.0 ? 's-warn s-num s-right' : 's-num s-right'}>
-                        {(c.concept_vr3 ?? 0).toFixed(1)}x
-                      </td>
-                      <td className="s-num s-right">
-                        {(c.amount_3d_avg ?? 0).toFixed(1)}亿
-                      </td>
-                      <td className={(c.avg_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
-                        {(c.avg_pct_chg ?? 0) >= 0 ? '+' : ''}{(c.avg_pct_chg ?? 0).toFixed(2)}%
-                      </td>
-                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '80px' }}>
-                        {c.leader_top_stock || '—'}
-                      </td>
-                      <td className={(c.leader_top_pct_chg ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
-                        {c.leader_top_pct_chg != null ? `${c.leader_top_pct_chg >= 0 ? '+' : ''}${(c.leader_top_pct_chg ?? 0).toFixed(1)}%` : '—'}
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={7} className="s-center">暂无异动板块</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        {/* 右栏：退潮板块 Top5 */}
-        <div className="card">
+        {/* 隐藏：退潮板块 Top5 */}
+        {false && (<div className="card">
           <div className="card-body dashboard-module-body s-card-body-flex">
             <h3 className="card-title s-card-title">退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
             <div className="sector-table-wrap s-card-inner">
@@ -886,7 +886,7 @@ export default function Dashboard() {
               </table>
             </div>
           </div>
-        </div>
+        </div>)}
       </section>
       {/* ═══ 第5行：风控 + 系统 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
