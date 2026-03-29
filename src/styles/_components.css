@@ -930,3 +930,16 @@ td.s-down,
   font-size: 10px !important;
   border-radius: var(--s-radius) !important;
 }
+
+/* === 今日信号表格买卖色强制生效 === */
+.s-table td.s-up {
+  color: #ff5451 !important;
+}
+
+.s-table td.s-down {
+  color: #22C55E !important;
+}
+
+.s-table td.s-semi {
+  font-weight: 600 !important;
+}

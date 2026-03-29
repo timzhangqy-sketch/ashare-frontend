@@ -571,7 +571,7 @@ export default function Dashboard() {
                         <td className="s-td-name s-clickable" onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>{item.name}</td>
                         <td>{(() => { const STRAT_CN: Record<string, string> = { VOL_SURGE: '连续放量蓄势', RETOC2: '第4次异动', PATTERN_T2UP9: 'T-2大涨蓄势', WEAK_BUY: '弱市吸筹' }; return STRAT_CN[item.strategy] ?? item.strategy ?? '—'; })()}</td>
                         <td>{(() => { const SIG_CN: Record<string, string> = { POOL_ENTRY: '入池买入', BREAKOUT: '突破', PULLBACK: '回踩', VOL_CONFIRM: '放量确认' }; return SIG_CN[item.signal] ?? item.signal ?? '—'; })()}</td>
-                        <td className="s-right s-num">{item.risk_score != null ? `${Number(item.risk_score).toFixed(0)} 分` : '—'}</td>
+                        <td className="s-right s-num">{item.risk_score != null && item.risk_score > 0 ? `${Number(item.risk_score).toFixed(0)} 分` : '—'}</td>
                         <td className="s-text-muted">{item.reason ?? '—'}</td>
                       </tr>
                     ))}
