@@ -261,7 +261,7 @@ export default function Dashboard() {
                   </table>
                 </>
               )}
-              {(hasSell || hasBuy) && (
+              {false && (hasSell || hasBuy) && (
                 <>
                   <div className="s-signal-header">{hasFills ? '待执行信号' : '今日信号'}</div>
                   <div className="s-signal-group">
@@ -290,7 +290,7 @@ export default function Dashboard() {
                 </>
               )}
               {!hasFills && !hasSell && !hasBuy && (
-                <span className="s-text-sm s-text-muted">今日无成交与信号</span>
+                <span className="s-text-sm s-text-muted">今日无成交记录</span>
               )}
             </div>
           </div>
@@ -538,35 +538,47 @@ export default function Dashboard() {
             <div style={{ borderTop: '1px solid rgba(30, 45, 69, 0.3)', margin: '12px 0' }}></div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title">今日机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
-              <a href="/signals" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>信号 →</a>
+              <h3 className="card-title s-card-title" style={{ margin: 0 }}>今日信号</h3>
+              <a href="/signals" className="s-text-xs" style={{ color: '#3B82F6', textDecoration: 'none' }}>信号中心 →</a>
             </div>
             <div className="s-card-inner">
-              {(opp?.topOpportunities?.length ?? 0) > 0 ? (
+              {((actionList?.sell?.length ?? 0) + (actionList?.buy?.length ?? 0)) > 0 ? (
                 <table className="s-table">
                   <thead>
                     <tr>
+                      <th className="s-left">方向</th>
                       <th className="s-left">股票</th>
                       <th className="s-left">策略</th>
-                      <th className="s-right">评分</th>
-                      <th className="s-right">状态</th>
+                      <th className="s-left">信号</th>
+                      <th className="s-right">风控分</th>
+                      <th className="s-left">状态</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {opp!.topOpportunities.map((item) => (
-                      <tr key={`r2-${item.id}`}>
-                        <td className="s-td-name">
-                          <span className="s-clickable" onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
-                        </td>
-                        <td className="s-td-name">{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td className="s-num s-right">{item.scoreLabel}</td>
-                        <td className="s-right" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
+                    {(actionList?.sell ?? []).map((item: any, i: number) => (
+                      <tr key={`sig-sell-${i}`}>
+                        <td className="s-down s-semi">卖出</td>
+                        <td className="s-td-name s-clickable" onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>{item.name}</td>
+                        <td>{item.strategy ?? '—'}</td>
+                        <td>{item.signal ?? '—'}</td>
+                        <td className="s-right s-num">{item.gain_pct != null ? `${item.gain_pct >= 0 ? '+' : ''}${(item.gain_pct * 100).toFixed(1)}%` : '—'}</td>
+                        <td className="s-text-muted">{item.reason_cn ?? '—'}</td>
+                      </tr>
+                    ))}
+                    {(actionList?.buy ?? []).map((item: any, i: number) => (
+                      <tr key={`sig-buy-${i}`}>
+                        <td className="s-up s-semi">买入</td>
+                        <td className="s-td-name s-clickable" onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>{item.name}</td>
+                        <td>{(() => { const STRAT_CN: Record<string, string> = { VOL_SURGE: '连续放量蓄势', RETOC2: '第4次异动', PATTERN_T2UP9: 'T-2大涨蓄势', WEAK_BUY: '弱市吸筹' }; return STRAT_CN[item.strategy] ?? item.strategy ?? '—'; })()}</td>
+                        <td>{(() => { const SIG_CN: Record<string, string> = { POOL_ENTRY: '入池买入', BREAKOUT: '突破', PULLBACK: '回踩', VOL_CONFIRM: '放量确认' }; return SIG_CN[item.signal] ?? item.signal ?? '—'; })()}</td>
+                        <td className="s-right s-num">{item.risk_score != null ? `${Number(item.risk_score).toFixed(0)} 分` : '—'}</td>
+                        <td className="s-text-muted">{item.reason ?? '—'}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               ) : (
-                <div style={{ padding: 12, textAlign: 'center', color: '#8c909f', fontSize: 13 }}>暂无买点信号</div>
+                <div className="s-empty">暂无待执行信号</div>
               )}
             </div>
           </div>

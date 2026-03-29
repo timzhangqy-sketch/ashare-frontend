@@ -870,15 +870,20 @@ export async function getDashboardSummary(tradeDate?: string): Promise<RawDashbo
 export interface ActionListSellItem {
   ts_code?: string;
   name?: string;
+  strategy?: string;
   signal?: string;
   gain_pct?: number | null;
+  reason_cn?: string;
   [key: string]: unknown;
 }
 
 export interface ActionListBuyItem {
   ts_code?: string;
   name?: string;
+  strategy?: string;
+  signal?: string;
   reason?: string;
+  risk_score?: number | null;
   [key: string]: unknown;
 }
 
