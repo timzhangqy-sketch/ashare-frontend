@@ -3564,15 +3564,15 @@ a { text-decoration: none; color: inherit; }
 }
 
 .watchlist-signal-badge.buy {
-  color: var(--down);
-  border-color: rgba(0, 185, 107, 0.35);
-  background: rgba(0, 185, 107, 0.08);
-}
-
-.watchlist-signal-badge.sell {
   color: var(--up);
   border-color: rgba(255, 77, 79, 0.35);
   background: rgba(255, 77, 79, 0.08);
+}
+
+.watchlist-signal-badge.sell {
+  color: var(--down);
+  border-color: rgba(0, 185, 107, 0.35);
+  background: rgba(0, 185, 107, 0.08);
 }
 
 .watchlist-signal-empty {

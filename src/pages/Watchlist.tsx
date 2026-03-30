@@ -119,7 +119,7 @@ export default function Watchlist() {
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedRow?.tsCode, selectedDate, data?.tradeDate, openPanel, closePanel]);
+  }, [selectedRow?.tsCode, selectedDate, data?.tradeDate, queryState.view, openPanel, closePanel]);
 
   useEffect(() => {
     return () => {
@@ -470,7 +470,7 @@ export default function Watchlist() {
               <tbody>
                 {rows.length === 0 ? (
                   <tr className="watchlist-table-empty-row">
-                    <td colSpan={11}>
+                    <td colSpan={12}>
                       <div className="watchlist-empty-state table-empty">
                         <div className="watchlist-empty-title">{data?.emptyTitle ?? '当前没有可展示的交易标的池记录'}</div>
                         <div className="watchlist-empty-text">{data?.emptyText ?? '请调整筛选条件后重试。'}</div>
@@ -592,7 +592,7 @@ export default function Watchlist() {
         </div>
       </section>
 
-      <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} />
+      <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} sourcePage="watchlist" />
     </div>
   )
 }

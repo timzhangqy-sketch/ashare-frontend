@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
   addPortfolio,
   fetchAIAnalysis,
@@ -137,9 +137,10 @@ interface Props {
   onClose: () => void
   autoOpenBuyForm?: boolean
   avgCost?: number | null
+  sourcePage?: string
 }
 
-export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, avgCost = null }: Props) {
+export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, avgCost = null, sourcePage = 'signals' }: Props) {
   const { selectedDate } = useDate()
   const open = !!stock
 
@@ -156,13 +157,16 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
   const [buySuccess, setBuySuccess] = useState(false)
   const [buyError, setBuyError] = useState('')
   const [finOpen, setFinOpen] = useState(false)
+  const buyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => { return () => { if (buyTimerRef.current) clearTimeout(buyTimerRef.current) } }, [])
 
   const contextPayload = useMemo<StockContextPanelPayload | null>(
     () => stock ? { title: stock.name, name: stock.name, tsCode: stock.code, sourceStrategy: stock.lists[0] ?? null } : null,
     [stock],
   )
   const { data: contextView, loading: contextLoading } = useStockContextViewModel({
-    tsCode: stock?.code ?? null, tradeDate: selectedDate, sourcePage: 'signals',
+    tsCode: stock?.code ?? null, tradeDate: selectedDate, sourcePage,
     activeTab: 'drawer', focus: stock?.code ?? null, payload: contextPayload, enabled: open,
   })
 
@@ -234,7 +238,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
     setBuying(true); setBuyError('')
     try {
       await addPortfolio({ ts_code: stock.code, name: stock.name, open_price: price, shares, open_date: buyDate, source_strategy: stock.lists[0] ?? 'SIGNALS' })
-      setShowBuyForm(false); setBuySuccess(true); setTimeout(() => setBuySuccess(false), 3000)
+      setShowBuyForm(false); setBuySuccess(true); if (buyTimerRef.current) clearTimeout(buyTimerRef.current); buyTimerRef.current = setTimeout(() => setBuySuccess(false), 3000)
     } catch (error: unknown) { setBuyError(error instanceof Error ? error.message : '加入持仓失败，请稍后重试。') }
     finally { setBuying(false) }
   }
@@ -350,7 +354,7 @@ export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, a
                       {risk ? (
                         <>
                           <div className="drawer-risk-header">
-                            <span className={`risk-total numeric ${risk.riskScoreTotal != null && risk.riskScoreTotal >= 70 ? 'c-up' : ''}`}>
+                            <span className="risk-total numeric" style={{ color: risk.riskScoreTotal != null ? (risk.riskScoreTotal >= 90 ? '#DC2626' : risk.riskScoreTotal >= 70 ? '#F59E0B' : '#8c909f') : undefined }}>
                               {risk.riskScoreTotal != null ? risk.riskScoreTotal.toFixed(1) : '--'}
                             </span>
                             <span className={`risk-badge risk-badge-${risk.riskLevel === 'low' ? 'low' : risk.riskLevel === 'medium' ? 'medium' : 'high'}`}>

@@ -200,6 +200,7 @@ export default function Retoc2Alert() {
         stock={selected}
         autoOpenBuyForm={buyMode}
         onClose={() => { setSelected(null); setBuyMode(false); }}
+        sourcePage="retoc2"
       />
     </div>
   );

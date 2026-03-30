@@ -698,8 +698,8 @@ export default function Portfolio() {
                   <td className={`right numeric ${s.avg_return_pct > 0 ? 'c-up' : s.avg_return_pct < 0 ? 'c-down' : ''}`}>{s.avg_return_pct > 0 ? '+' : ''}{s.avg_return_pct}%</td>
                   <td className={`right numeric ${s.total_pnl > 0 ? 'c-up' : s.total_pnl < 0 ? 'c-down' : ''}`}>{s.total_pnl > 0 ? '+' : ''}{s.total_pnl.toLocaleString()}</td>
                   <td className="right numeric">{s.avg_hold_days}</td>
-                  <td className={`right numeric ${(s.best_return_pct ?? 0) > 0 ? 'c-up' : ''}`}>{(s.best_return_pct ?? 0) > 0 ? '+' : ''}{s.best_return_pct}%</td>
-                  <td className={`right numeric ${(s.worst_return_pct ?? 0) < 0 ? 'c-down' : ''}`}>{(s.worst_return_pct ?? 0) > 0 ? '+' : ''}{s.worst_return_pct}%</td>
+                  <td className={`right numeric ${(s.best_return_pct ?? 0) > 0 ? 'c-up' : ''}`}>{s.best_return_pct != null ? `${s.best_return_pct > 0 ? '+' : ''}${s.best_return_pct.toFixed(2)}%` : '--'}</td>
+                  <td className={`right numeric ${(s.worst_return_pct ?? 0) < 0 ? 'c-down' : ''}`}>{s.worst_return_pct != null ? `${s.worst_return_pct > 0 ? '+' : ''}${s.worst_return_pct.toFixed(2)}%` : '--'}</td>
                   <td className="right numeric">{s.profit_loss_ratio ?? '--'}</td>
                 </tr>
               ))}
@@ -736,7 +736,6 @@ export default function Portfolio() {
         const strategyDist = Array.isArray(concentration.strategy_distribution) ? concentration.strategy_distribution : [];
         const industryDist = Array.isArray(concentration.industry_distribution) ? concentration.industry_distribution : [];
         if (strategyDist.length > 0 || industryDist.length > 0) {
-          console.log('[Portfolio concentration]', { strategy_distribution: strategyDist, industry_distribution: industryDist });
         }
         if (strategyDist.length === 0 && industryDist.length === 0) return null;
         return (
@@ -1160,6 +1159,7 @@ export default function Portfolio() {
           setDrawerAvgCost(null);
         }}
         avgCost={drawerAvgCost}
+        sourcePage="portfolio"
       />
     </div>
   );

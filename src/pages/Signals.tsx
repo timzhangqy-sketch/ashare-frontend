@@ -241,7 +241,7 @@ function buildDrawerSourceMeta(row: SignalsRowVm): DataSourceMeta {
 // Signals drawer still seeds placeholder detail from the selected row.
 function buildDrawerPlaceholderStock(row: SignalsRowVm): StockDetail {
   const close = 'latestClose' in row ? row.latestClose ?? 0 : 'close' in row ? row.close ?? 0 : 0;
-  const changePct = 'pctChg' in row ? row.pctChg ?? 0 : 'todayPnl' in row ? row.todayPnl ?? 0 : 0;
+  const changePct = 'pctChg' in row ? row.pctChg ?? 0 : 0; // sell rows have todayPnl (money), not changePct
   return getMockDetail(row.tsCode, row.name, getRowStrategies(row), close, changePct);
 }
 
@@ -650,8 +650,8 @@ function renderTableRows(
             <td>{displayActionSignal((row as SignalsSellRowVm).actionSignal)}</td>
             <td className="right numeric">{(row as SignalsSellRowVm).holdDays != null ? `${(row as SignalsSellRowVm).holdDays} 天` : '--'}</td>
             <td className="right numeric">{formatNumber((row as SignalsSellRowVm).latestClose)}</td>
-            <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsSellRowVm).todayPnl)}`}>{formatSigned((row as SignalsSellRowVm).todayPnl, '%')}</td>
-            <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsSellRowVm).unrealizedPnl)}`}>{formatSigned((row as SignalsSellRowVm).unrealizedPnl, '%')}</td>
+            <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsSellRowVm).todayPnl)}`}>{formatSigned((row as SignalsSellRowVm).todayPnl)}</td>
+            <td className={`right numeric signals-pnl-value ${pnlClass((row as SignalsSellRowVm).unrealizedPnl)}`}>{formatSigned((row as SignalsSellRowVm).unrealizedPnl)}</td>
             <td className="signals-cell-wrap">{formatSignalReason((row as SignalsSellRowVm).signalReason)}</td>
             <td>
               <div className={`signals-origin-badge ${originClassName((row as SignalsSellRowVm).origin)}`}>
@@ -1037,6 +1037,7 @@ export default function Signals() {
         stock={drawerState?.stock ?? null}
         sourceMeta={drawerState?.sourceMeta ?? null}
         autoOpenBuyForm={autoOpenBuyForm}
+        sourcePage="signals"
         onClose={() => {
           setDrawerState(null);
           setAutoOpenBuyForm(false);

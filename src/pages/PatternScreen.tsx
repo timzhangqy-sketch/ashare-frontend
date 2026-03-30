@@ -78,7 +78,7 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
                     const t2Pct = pctMaybe(row.ret_t2);
                     const ret2dPct = pctMaybe(row.ret_2d);
                     const pctStyle = (n: number | null) => ({ color: n == null ? '#8c909f' : n > 0 ? '#ff5451' : n < 0 ? '#22C55E' : '#8c909f', fontWeight: 600 as const });
-                    const detail = getMockDetail(row.ts_code, row.name, ['形态策略'], 0, (row.ret_t0 ?? 0) * 100);
+                    const detail = getMockDetail(row.ts_code, row.name, ['形态策略'], row.close ?? 0, (row.ret_t0 ?? 0) * 100);
                     return (
                       <tr key={row.ts_code} onClick={() => onOpen(detail)}>
                         <td className="c-sec numeric-muted">{row.ts_code}</td>
@@ -132,7 +132,7 @@ export default function PatternScreen() {
       ) : (
         <T2TodayTable selectedDate={selectedDate} onOpen={(stock) => { setBuyMode(false); setSelected(stock); }} />
       )}
-      <StockDrawer stock={selected} autoOpenBuyForm={buyMode} onClose={() => { setSelected(null); setBuyMode(false); }} />
+      <StockDrawer stock={selected} autoOpenBuyForm={buyMode} onClose={() => { setSelected(null); setBuyMode(false); }} sourcePage="pattern" />
     </div>
   );
 }

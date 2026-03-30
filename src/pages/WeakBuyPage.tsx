@@ -78,7 +78,7 @@ function WeakBuyTodayTable({ selectedDate, onOpen }: { selectedDate: string; onO
                     const ret60 = formatWeakBuyPct(row.ret60_pct);
                     const avgRet = formatWeakBuyPct(row.avg_ret_pct);
                     return (
-                      <tr key={row.ts_code} onClick={() => onOpen(getMockDetail(row.ts_code, row.name, ['弱市吸筹'], 0, row.ret60_pct != null ? row.ret60_pct * 100 : 0))}>
+                      <tr key={row.ts_code} onClick={() => onOpen(getMockDetail(row.ts_code, row.name, ['弱市吸筹'], row.close ?? 0, 0 /* TODO: 当日涨跌幅字段待接入 */))}>
                         <td className="c-sec numeric-muted">{row.ts_code}</td>
                         <td style={{ fontWeight: 500 }}>{row.name}<CrossTags tsCode={row.ts_code} currentStrategy="WEAK_BUY" /></td>
                         <td style={{ textAlign: 'left' }}>
@@ -129,7 +129,7 @@ export default function WeakBuyPage() {
       ) : (
         <WeakBuyTodayTable selectedDate={selectedDate} onOpen={(stock) => { setBuyMode(false); setSelected(stock); }} />
       )}
-      <StockDrawer stock={selected} autoOpenBuyForm={buyMode} onClose={() => { setSelected(null); setBuyMode(false); }} />
+      <StockDrawer stock={selected} autoOpenBuyForm={buyMode} onClose={() => { setSelected(null); setBuyMode(false); }} sourcePage="weak_buy" />
     </div>
   );
 }

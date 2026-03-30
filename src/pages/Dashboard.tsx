@@ -12,8 +12,6 @@ import {
 import type { ActionListResponse } from '../api';
 import { getStrategyDisplayName } from '../utils/displayNames';
 import StatusState from '../components/Dashboard/StatusState';
-import SourceSummaryBar from '../components/data-source/SourceSummaryBar';
-import SignalSummaryBar from '../components/SignalSummaryBar';
 import StockDrawer from '../components/Drawer/StockDrawer';
 import { useDashboardRuntime } from '../context/useDashboardRuntime';
 import { useDate } from '../context/useDate';
@@ -183,8 +181,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-page" data-testid="dashboard-page">
-      {false && <SourceSummaryBar meta={viewModel?.dataSource} className="dashboard-source-summary" />}
-      {false && <SignalSummaryBar />}
 
       {status === 'error' ? (
         <section className="card">
@@ -261,34 +257,7 @@ export default function Dashboard() {
                   </table>
                 </>
               )}
-              {false && (hasSell || hasBuy) && (
-                <>
-                  <div className="s-signal-header">{hasFills ? '待执行信号' : '今日信号'}</div>
-                  <div className="s-signal-group">
-                    {hasSell && (
-                      <div className="s-signal-row">
-                        <span className="s-signal-label s-signal-sell">● 卖出</span>
-                        {actionList!.sell!.slice(0, 5).map((item: any, i: number) => (
-                          <span key={`sell-${item.ts_code ?? i}`} className="s-signal-item" onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
-                            {item.name} <span className="s-text-xs" style={{ color: (item.gain_pct ?? 0) >= 0 ? '#ff5451' : '#22C55E' }}>{item.gain_pct != null ? `${item.gain_pct >= 0 ? '+' : ''}${(item.gain_pct * 100).toFixed(1)}%` : ''}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {hasBuy && (
-                      <div className="s-signal-row">
-                        <span className="s-signal-label s-signal-buy">● 买入</span>
-                        {actionList!.buy!.slice(0, 5).map((item: any, i: number) => (
-                          <span key={`buy-${item.ts_code ?? i}`} className="s-signal-item" onClick={() => item.ts_code && handleStockClick(item.ts_code, item.name ?? '')}>
-                            {item.name}
-                          </span>
-                        ))}
-                        {actionList!.buy!.length > 5 && <span className="s-text-xs s-text-muted">(+{actionList!.buy!.length - 5})</span>}
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
+
               {!hasFills && !hasSell && !hasBuy && (
                 <span className="s-text-sm s-text-muted">今日无成交记录</span>
               )}
@@ -348,7 +317,7 @@ export default function Dashboard() {
                           <span className="s-text-secondary">宽度 </span>
                           <span style={{ color: '#e0e2ed', fontWeight: 600 }}>{breadthScore}</span>
                           {breadthDelta != null && (
-                            <span style={{ color: breadthDelta > 0 ? '#52c41a' : breadthDelta < 0 ? '#ff4d4f' : '#e0e2ed', marginLeft: '2px' }}>
+                            <span style={{ color: breadthDelta > 0 ? '#ff5451' : breadthDelta < 0 ? '#22C55E' : '#e0e2ed', marginLeft: '2px' }}>
                               {breadthDelta > 0 ? '↑' : breadthDelta < 0 ? '↓' : '→'}
                             </span>
                           )}
@@ -847,90 +816,10 @@ export default function Dashboard() {
             )}
           </div>
         </div>
-        {/* 隐藏：退潮板块 Top5 */}
-        {false && (<div className="card">
-          <div className="card-body dashboard-module-body s-card-body-flex">
-            <h3 className="card-title s-card-title">退潮板块 Top5<InfoTip data={DASHBOARD_META.retreat} /></h3>
-            <div className="sector-table-wrap s-card-inner">
-              <table className="s-table">
-                <thead>
-                  <tr>
-                    <th className="s-left">#</th>
-                    <th className="s-left">概念</th>
-                    <th className="s-right">今日涨幅</th>
-                    <th className="s-right">3日累计</th>
-                    <th className="s-right">跌停</th>
-                    <th className="s-right">龙头今日</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {retreat.length > 0 ? retreat.map((c, i) => (
-                    <tr key={c.concept_code}>
-                      <td>{i + 1}</td>
-                      <td className="s-td-name" style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }}>{c.concept_name}</td>
-                      <td className="s-down s-num s-right">
-                        {(c.today_pct_chg ?? 0).toFixed(2)}%
-                      </td>
-                      <td className={(c.momentum_3d ?? 0) >= 0 ? 's-up s-num s-right' : 's-down s-num s-right'}>
-                        {(c.momentum_3d ?? 0) >= 0 ? '+' : ''}{(c.momentum_3d ?? 0).toFixed(2)}%
-                      </td>
-                      <td className="s-num s-right">{c.limit_down_count ?? 0}</td>
-                      <td className="s-down s-num s-right">
-                        {c.leader_avg_pct_chg != null ? `${(c.leader_avg_pct_chg ?? 0).toFixed(2)}%` : '—'}
-                      </td>
-                    </tr>
-                  )) : (
-                    <tr><td colSpan={6} className="s-center">暂无退潮板块</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>)}
       </section>
       {/* ═══ 第5行：风控 + 系统 ═══ */}
       <section className="dashboard-section-grid" style={{ gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
-        {false && <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title">机会<InfoTip data={DASHBOARD_META.opportunity} /></h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
-                  买点 {opp?.metrics?.find(m => m.id === 'opp-buy')?.value ?? '—'} | 共振 {opp?.metrics?.find(m => m.id === 'opp-resonance')?.value ?? '—'} | 候选 {opp?.metrics?.find(m => m.id === 'opp-watchlist')?.value ?? '—'}
-                </span>
-                <a href="/signals" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>信号 →</a>
-              </div>
-            </div>
-            <div className="s-card-inner">
-              {(opp?.topOpportunities?.length ?? 0) > 0 ? (
-                <table className="s-table">
-                  <thead>
-                    <tr>
-                      <th className="s-left">股票</th>
-                      <th className="s-left">策略</th>
-                      <th className="s-right">评分</th>
-                      <th className="s-right">状态</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {opp!.topOpportunities.map((item) => (
-                      <tr key={item.id}>
-                        <td className="s-td-name">
-                          <span className="s-clickable" onClick={() => handleStockClick(item.id, item.name)}>{item.name}</span>
-                        </td>
-                        <td className="s-td-name">{getStrategyDisplayName(item.strategy) || item.strategyLabel?.split(' / ')[0] || '—'}</td>
-                        <td className="s-num s-right">{item.scoreLabel}</td>
-                        <td className="s-right" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.helperText}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <div style={{ padding: 16, textAlign: 'center', color: '#8c909f', fontSize: 13 }}>暂无买点信号</div>
-              )}
-            </div>
-          </div>
-        </div>}
+
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -968,72 +857,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-        {false && <div className="card">
-          <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <h3 className="card-title s-card-title">组合<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                {portfolioRaw && (
-                  <span style={{ fontSize: 11, color: '#8c909f', background: 'rgba(255,255,255,0.05)', padding: '2px 6px' }}>
-                    持仓 {portfolioRaw.position_count ?? '—'} | NAV {(() => { const v = portfolioRaw.snapshot?.total_nav; return v != null ? (v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString()) : '—'; })()}
-                  </span>
-                )}
-                <a href="/portfolio" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>组合 →</a>
-              </div>
-            </div>
-            {portfolioRaw ? (() => {
-              const snap = portfolioRaw.snapshot ?? {};
-              const nav = snap.total_nav ?? 0;
-              const initCap = portfolioRaw.initial_capital ?? 1000000;
-              const cumPct = (snap.cumulative_pnl_pct ?? 0) * 100;
-              const startDate = portfolioRaw.start_date ?? '';
-              const daysDiff = startDate ? Math.max(1, Math.floor((Date.now() - new Date(startDate).getTime()) / 86400000)) : 1;
-              const annPct = cumPct / daysDiff * 365;
-              const mv = snap.snap_market_value ?? 0;
-              const cash = snap.cash ?? 0;
-              const unrealPnl = portfolioRaw.total_unrealized_pnl ?? 0;
-              const posCnt = portfolioRaw.position_count ?? 0;
-              const cashRatio = (portfolioRaw.cash_ratio ?? 0) * 100;
-              const mdd = portfolioRaw.max_drawdown_pct ?? 0;
-              const bench = portfolioRaw.benchmark_pct ?? 0;
-              const benchLabel = portfolioRaw.benchmark_label ?? '';
-              const fmtMoney = (v: number) => v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString();
-              const fmtPct = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`;
-              const pctColor = (v: number) => v > 0 ? '#ff5451' : v < 0 ? '#22C55E' : '#e0e2ed';
 
-              const cells: { label: string; value: string; color?: string; sub?: string }[] = [
-                { label: '总资产(NAV)', value: fmtMoney(nav) },
-                { label: '初始本金', value: fmtMoney(initCap) },
-                { label: '累计收益', value: fmtPct(cumPct), color: pctColor(cumPct) },
-                { label: '年化收益', value: fmtPct(annPct), color: pctColor(annPct) },
-                { label: '股票市值', value: fmtMoney(mv) },
-                { label: '现金', value: fmtMoney(cash) },
-                { label: '持仓浮盈', value: `${unrealPnl >= 0 ? '+' : ''}${fmtMoney(unrealPnl)}`, color: pctColor(unrealPnl) },
-                { label: '开始日期', value: startDate || '—' },
-                { label: '当前持仓', value: `${posCnt}只` },
-                { label: '现金比例', value: `${cashRatio.toFixed(1)}%` },
-                { label: '最大回撤', value: `-${mdd.toFixed(2)}%`, color: '#22C55E' },
-                { label: benchLabel || '基准', value: fmtPct(bench), color: pctColor(bench), sub: startDate ? `自${startDate.slice(5)}至今` : '' },
-              ];
-
-              return (
-                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 12px' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 6 }}>
-                    {cells.map((c) => (
-                      <div key={c.label}>
-                        <div style={{ fontSize: 11, color: '#666', marginBottom: 2 }}>{c.label}</div>
-                        <div style={{ fontSize: 13, fontWeight: 400, color: c.color ?? '#e0e2ed', fontVariantNumeric: 'tabular-nums' }}>{c.value}</div>
-                        {c.sub && <div style={{ fontSize: 10, color: '#666', marginTop: 1 }}>{c.sub}</div>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })() : (
-              <div style={{ padding: 16, textAlign: 'center', color: '#8c909f', fontSize: 13 }}>加载中...</div>
-            )}
-          </div>
-        </div>}
         <div className="card">
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -1064,7 +888,7 @@ export default function Dashboard() {
       </section>
 
 
-      <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} />
+      <StockDrawer stock={drawerStock} onClose={() => setDrawerStock(null)} sourcePage="dashboard" />
     </div>
   );
 }
