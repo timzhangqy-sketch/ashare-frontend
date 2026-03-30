@@ -10,7 +10,6 @@ import {
   mapRawDashboardResponseToDto,
 } from '../adapters/dashboard';
 import type { ActionListResponse } from '../api';
-import { getStrategyDisplayName } from '../utils/displayNames';
 import StatusState from '../components/Dashboard/StatusState';
 import StockDrawer from '../components/Drawer/StockDrawer';
 import { useDashboardRuntime } from '../context/useDashboardRuntime';
@@ -56,7 +55,7 @@ export default function Dashboard() {
   const [actionList, setActionList] = useState<ActionListResponse | null>(null);
   const [momentum, setMomentum] = useState<ConceptMomentum[]>([]);
   const [surge, setSurge] = useState<ConceptSurge[]>([]);
-  const [retreat, setRetreat] = useState<ConceptRetreat[]>([]);
+  const [, setRetreat] = useState<ConceptRetreat[]>([]);
   const [resonance, setResonance] = useState<ConceptResonance>({ resonance_hits: [], retreat_warnings: [] }); // kept for hidden card
   void resonance;
   const [distribution, setDistribution] = useState<MarketDistribution | null>(null);
@@ -158,7 +157,6 @@ export default function Dashboard() {
   const fills = actionList?.fills ?? [];
   const hasFills = fills.length > 0;
 
-  const opp = viewModel?.opportunity;
   const risk = viewModel?.risk;
   const sys = viewModel?.systemHealth;
 

@@ -17,6 +17,9 @@ export type ContextPanelSourcePage =
   | 'research'
   | 'system'
   | 'execution'
+  | 'pattern'
+  | 'weak_buy'
+  | 'retoc2'
   | 'direct';
 
 export type ContextPanelTagTone = 'neutral' | 'source' | 'strategy' | 'state' | 'risk';

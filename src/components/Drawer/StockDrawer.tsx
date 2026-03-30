@@ -10,6 +10,7 @@ import {
 import { useDate } from '../../context/useDate'
 import { useStockContextViewModel } from '../../hooks/useStockContextViewModel'
 import type { StockContextPanelPayload } from '../../types/contextPanel'
+import type { ContextPanelSourcePage } from '../../types/contextPanel'
 import type { StockDetail } from '../../types/stock'
 import { displaySignalLabel } from '../../utils/labelMaps'
 import { MultiStrategyBadge } from '../CrossTags'
@@ -137,7 +138,7 @@ interface Props {
   onClose: () => void
   autoOpenBuyForm?: boolean
   avgCost?: number | null
-  sourcePage?: string
+  sourcePage?: ContextPanelSourcePage
 }
 
 export default function StockDrawer({ stock, onClose, autoOpenBuyForm = false, avgCost = null, sourcePage = 'signals' }: Props) {
