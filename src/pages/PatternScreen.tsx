@@ -93,12 +93,12 @@ function T2TodayTable({ selectedDate, onOpen }: { selectedDate: string; onOpen: 
                             </span>
                           ) : <span style={{ color: '#8c909f' }}>—</span>}
                         </td>
-                        <td className="center numeric-muted">{selectedDate}</td>
+                        <td className="center numeric-muted">{row.anchor_date ?? '--'}</td>
                         <td className="right numeric" style={pctStyle(t2Pct)}>{t2Pct == null ? '--' : `${t2Pct > 0 ? '+' : ''}${t2Pct.toFixed(2)}%`}</td>
                         <td className="right numeric" style={pctStyle(ret2dPct)}>{ret2dPct == null ? '--' : `${ret2dPct > 0 ? '+' : ''}${ret2dPct.toFixed(2)}%`}</td>
                         <td className="right numeric">{row.close != null ? Number(row.close).toFixed(2) : '--'}</td>
                         <td className="right numeric c-muted">--</td>
-                        <td className="right numeric">20</td>
+                        <td className="right numeric">--</td>
                         <td className="right numeric">{row.amount_yi != null ? Number(row.amount_yi).toFixed(2) : '--'}</td>
                         <td className="center">{row.buy_signal ? <span className="status-badge source-badge source-badge-info">{displaySignalLabel(row.buy_signal)}</span> : <span className="c-muted">--</span>}</td>
                         <td className="center">{row.sell_signal ? <span className="status-badge source-badge source-badge-warning">{displaySignalLabel(row.sell_signal)}</span> : <span className="c-muted">--</span>}</td>

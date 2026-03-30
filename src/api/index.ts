@@ -137,6 +137,7 @@ export interface PatternT2up9Item {
   ret_2d:          number;
   in_pool:         boolean;
   in_continuation: boolean;
+  anchor_date?:    string | null;
   close?:          number | null;
   amount_yi?:      number | null;
   buy_signal?:     string | null;
