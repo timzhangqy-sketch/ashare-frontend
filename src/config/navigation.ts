@@ -11,6 +11,7 @@ export type AppRouteKey =
   | 'retoc2'
   | 'pattern'
   | 'weak-buy'
+  | 'ml-select'
   | 'holdings'
   | 'backtest';
 
@@ -169,6 +170,16 @@ export const appRouteDefinitions: AppRouteDefinition[] = [
     showInMainNav: false,
     isLegacy: true,
     icon: 'shield',
+  },
+  {
+    key: 'ml-select',
+    path: '/ml-select',
+    label: 'ML智能选股',
+    title: 'ML智能选股',
+    description: '',
+    showInMainNav: false,
+    isLegacy: true,
+    icon: 'zap',
   },
   {
     key: 'holdings',

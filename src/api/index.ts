@@ -187,6 +187,62 @@ export async function fetchPatternWeakBuy(date: string): Promise<PatternWeakBuyI
   return toArray<PatternWeakBuyItem>(res.data);
 }
 
+// ── ML Select ─────────────────────────────────────────────────────────────
+
+export interface MlSelectStock {
+  ml_rank: number;
+  ts_code: string;
+  name: string;
+  ml_score: number;
+  model_version: string;
+  close: number | null;
+  pct_chg: number | null;
+  amount: number | null;
+  pe: number | null;
+  pb: number | null;
+  turnover_rate_f: number | null;
+  circ_mv_yi: number | null;
+  industry: string | null;
+  primary_concept: string | null;
+  in_watchlist_strategy: string | null;
+  in_portfolio: boolean;
+}
+
+export interface MlSelectModel {
+  version: string;
+  trained_at: string;
+  training_samples: number;
+  ndcg_at_5: number;
+  top3_hit_rate: number;
+  n_features: string;
+  best_iteration: string;
+}
+
+export interface MlSelectFeatureImp {
+  feature: string;
+  importance: number;
+}
+
+export interface MlSelectStats {
+  total_scored: number;
+  avg_score: number;
+  max_score: number;
+  min_score: number;
+}
+
+export interface MlSelectResponse {
+  trade_date: string;
+  stocks: MlSelectStock[];
+  model: MlSelectModel | null;
+  feature_importance: MlSelectFeatureImp[];
+  stats: MlSelectStats | null;
+}
+
+export async function fetchMlSelect(date: string = 'latest'): Promise<MlSelectResponse> {
+  const res = await api.get(`/api/ml_select/${date}`);
+  return res.data;
+}
+
 // ── Portfolio ─────────────────────────────────────────────────────────────
 
 export interface PortfolioItem {
