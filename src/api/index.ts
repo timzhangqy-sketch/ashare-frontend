@@ -194,6 +194,7 @@ export interface MlSelectStock {
   ts_code: string;
   name: string;
   ml_score: number;
+  consecutive_days: number;
   model_version: string;
   close: number | null;
   pct_chg: number | null;
@@ -206,6 +207,7 @@ export interface MlSelectStock {
   primary_concept: string | null;
   in_watchlist_strategy: string | null;
   in_portfolio: boolean;
+  in_ml_watch: boolean;
 }
 
 export interface MlSelectModel {
@@ -225,9 +227,7 @@ export interface MlSelectFeatureImp {
 
 export interface MlSelectStats {
   total_scored: number;
-  avg_score: number;
-  max_score: number;
-  min_score: number;
+  daily_count: number;
 }
 
 export interface MlSelectResponse {
@@ -238,8 +238,67 @@ export interface MlSelectResponse {
   stats: MlSelectStats | null;
 }
 
+export interface MlSelectWatchStock {
+  ts_code: string;
+  name: string;
+  primary_concept: string | null;
+  entry_date: string;
+  entry_rank: number;
+  entry_score: number;
+  latest_rank: number | null;
+  latest_score: number | null;
+  latest_date: string | null;
+  watch_days: number;
+  status: string;
+  triggered_date: string | null;
+  expired_date: string | null;
+  close: number | null;
+  pct_chg: number | null;
+  turnover_rate_f: number | null;
+  circ_mv_yi: number | null;
+  industry: string | null;
+}
+
+export interface MlSelectWatchResponse {
+  trade_date: string;
+  stocks: MlSelectWatchStock[];
+  stats: { active_count: number; triggered_count: number; expired_count: number };
+}
+
+export interface MlSelectTriggeredStock {
+  ts_code: string;
+  name: string;
+  primary_concept: string | null;
+  entry_date: string;
+  status: string;
+  entry_score: number | null;
+  entry_rank: number | null;
+  close: number | null;
+  pct_chg: number | null;
+  turnover_rate_f: number | null;
+  circ_mv_yi: number | null;
+  industry: string | null;
+  buy_signal: string | null;
+  sell_signal: string | null;
+}
+
+export interface MlSelectTriggeredResponse {
+  trade_date: string;
+  stocks: MlSelectTriggeredStock[];
+}
+
 export async function fetchMlSelect(date: string = 'latest'): Promise<MlSelectResponse> {
   const res = await api.get(`/api/ml_select/${date}`);
+  return res.data;
+}
+
+export async function fetchMlSelectWatch(date: string = 'latest'): Promise<MlSelectWatchResponse> {
+  const res = await api.get(`/api/ml_select/watch/${date}`);
+  return res.data;
+}
+
+export async function fetchMlSelectTriggered(date: string = 'latest'): Promise<MlSelectTriggeredResponse> {
+  const res = await api.get(`/api/ml_select/triggered/${date}`);
   return res.data;
 }
 
