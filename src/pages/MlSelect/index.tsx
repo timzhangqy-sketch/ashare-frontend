@@ -3,15 +3,14 @@ import StockDrawer from '../../components/Drawer/StockDrawer';
 import { useDate } from '../../context/useDate';
 import { useApiData } from '../../hooks/useApiData';
 import {
-  fetchMlSelect, fetchMlSelectWatch, fetchMlSelectTriggered,
+  fetchMlSelect, fetchMlSelectWatch,
   type MlSelectResponse, type MlSelectStock,
   type MlSelectWatchResponse, type MlSelectWatchStock,
-  type MlSelectTriggeredResponse, type MlSelectTriggeredStock,
 } from '../../api';
 import { getMockDetail } from '../../utils/score';
 import type { StockDetail } from '../../types/stock';
 
-type MainTab = 'daily' | 'watch' | 'triggered';
+type MainTab = 'daily' | 'watch';
 
 const FEATURE_CN: Record<string, string> = {
   std_20: '20日波动率', std_10: '10日波动率', std_5: '5日波动率', std_60: '60日波动率',
@@ -300,89 +299,6 @@ function WatchTab({ selectedDate, onOpen }: { selectedDate: string; onOpen: (s: 
 }
 
 // ══════════════════════════════════════════
-// Tab 3: 交易标的池
-// ══════════════════════════════════════════
-
-function TriggeredTab({ selectedDate, onOpen }: { selectedDate: string; onOpen: (s: StockDetail) => void }) {
-  const { data, loading, error, refetch } = useApiData<MlSelectTriggeredResponse>(() => fetchMlSelectTriggered(selectedDate), [selectedDate]);
-  const stocks = data?.stocks ?? [];
-
-  return (
-    <>
-      <div className="stat-grid">
-        <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>交易标的数</div>
-          <div className="stat-value c-red">{loading ? '--' : stocks.length}</div>
-        </div>
-        <div className="stat-card">
-          <div className="stat-label" style={{ fontSize: '12px', fontWeight: 400, color: '#c2c6d6' }}>数据来源</div>
-          <div className="stat-value" style={{ fontSize: '14px', color: '#c2c6d6' }}>真实数据</div>
-        </div>
-      </div>
-
-      {loading ? <div className="page-loading"><div className="spinner" />加载中...</div> : null}
-      {!loading && error ? (
-        <div className="page-error">
-          <div className="page-error-msg">交易标的数据加载失败</div>
-          <div className="page-error-detail">{error}</div>
-          <button className="retry-btn" onClick={refetch}>重试</button>
-        </div>
-      ) : null}
-
-      {!loading && !error ? (
-        <section className="card">
-          <div className="strategy-list-container">
-            <div className="table-shell data-table-shell">
-              <table className="data-table" style={{ tableLayout: 'auto' }}>
-                <thead>
-                  <tr>
-                    <th>代码</th>
-                    <th>名称</th>
-                    <th>概念</th>
-                    <th>入池日</th>
-                    <th className="right">涨跌幅</th>
-                    <th className="right">收盘价</th>
-                    <th className="right">换手率</th>
-                    <th className="right">流通市值</th>
-                    <th>行业</th>
-                    <th className="center">买入信号</th>
-                    <th className="center">卖出信号</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stocks.length === 0 ? (
-                    <tr><td colSpan={11}>
-                      <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
-                        暂无ML选股的交易标的。股票需经过每日入选→持续观察→触发确认三级流程才会进入此池。
-                      </div>
-                    </td></tr>
-                  ) : stocks.map((s: MlSelectTriggeredStock) => (
-                    <tr key={s.ts_code + s.entry_date} style={{ cursor: 'pointer' }}
-                      onClick={() => openStock(s.ts_code, s.name, s.close, onOpen)}>
-                      <td className="c-sec numeric-muted">{s.ts_code}</td>
-                      <td style={{ fontWeight: 500 }}>{s.name}</td>
-                      <td><ConceptBadge concept={s.primary_concept} /></td>
-                      <td className="numeric-muted">{s.entry_date}</td>
-                      <td className="right numeric" style={{ color: pnlColor(s.pct_chg), fontWeight: 500 }}>{pnlText(s.pct_chg)}</td>
-                      <td className="right numeric">{fmt(s.close)}</td>
-                      <td className="right numeric">{s.turnover_rate_f != null ? fmt(s.turnover_rate_f) + '%' : '--'}</td>
-                      <td className="right numeric">{s.circ_mv_yi != null ? fmt(s.circ_mv_yi, 1) + '亿' : '--'}</td>
-                      <td>{s.industry ?? '--'}</td>
-                      <td className="center">{s.buy_signal ? <span className="status-badge source-badge source-badge-info">{s.buy_signal}</span> : '--'}</td>
-                      <td className="center">{s.sell_signal ? <span className="status-badge source-badge source-badge-warning">{s.sell_signal}</span> : '--'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      ) : null}
-    </>
-  );
-}
-
-// ══════════════════════════════════════════
 // Main Page
 // ══════════════════════════════════════════
 
@@ -398,11 +314,9 @@ export default function MlSelectPage() {
       <div className="page-tabs">
         <button type="button" className={`page-tab-btn${mainTab === 'daily' ? ' active' : ''}`} onClick={() => setMainTab('daily')}>每日入选</button>
         <button type="button" className={`page-tab-btn${mainTab === 'watch' ? ' active' : ''}`} onClick={() => setMainTab('watch')}>持续观察池</button>
-        <button type="button" className={`page-tab-btn${mainTab === 'triggered' ? ' active' : ''}`} onClick={() => setMainTab('triggered')}>交易标的池</button>
       </div>
       {mainTab === 'daily' && <DailyTab selectedDate={selectedDate} onOpen={onOpen} />}
       {mainTab === 'watch' && <WatchTab selectedDate={selectedDate} onOpen={onOpen} />}
-      {mainTab === 'triggered' && <TriggeredTab selectedDate={selectedDate} onOpen={onOpen} />}
       <StockDrawer stock={selected} onClose={() => setSelected(null)} />
     </div>
   );

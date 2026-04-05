@@ -28,6 +28,7 @@ export const STRATEGY_LABEL_MAP: Record<string, string> = {
   PATTERN_T2UP9: 'T-2大涨蓄势',
   PATTERN_GREEN10: '近10日阳线',
   WEAK_BUY: '弱市吸筹',
+  ML_SELECT: 'ML智能选股',
   BREAKOUT: '突破策略',
   PORTFOLIO_REDUCE: '组合减仓',
   RESONANCE_PLUS: '多策略共振',
