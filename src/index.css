@@ -9866,3 +9866,164 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .regime-badge.bearish { background: rgba(59,130,246,0.15); color: #3B82F6; }
 .regime-badge.weak { background: rgba(34,197,94,0.15); color: #22C55E; }
 
+/* ============================================================
+   Portfolio Overview Card — Dashboard 组合概览卡片
+   3 级分层：L1 主 KPI / L2 状态 / L3 明细
+   追加时间：2026-04-19
+   ============================================================ */
+
+.s-card-link {
+  font-size: 11px;
+  color: var(--accent, #3B82F6);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.s-card-link:hover {
+  opacity: 0.8;
+}
+
+.s-portfolio-overview {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 0 0;
+}
+.s-portfolio-overview-loading {
+  padding: 12px;
+  text-align: center;
+  color: #8c909f;
+  font-size: 13px;
+}
+
+/* 分隔线 */
+.s-portfolio-overview-divider {
+  height: 1px;
+  background: rgba(66, 71, 84, 0.22);
+  width: 100%;
+}
+
+/* 通用标签 */
+.s-portfolio-overview-label {
+  font-family: Inter, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: #8c909f;
+  letter-spacing: 0.3px;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  white-space: nowrap;
+}
+
+/* L1 — 3 列 KPI */
+.s-portfolio-overview-l1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 4px 0 10px 0;
+}
+.s-portfolio-overview-kpi {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.s-portfolio-overview-main {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+  letter-spacing: -0.3px;
+}
+.s-portfolio-overview-sub {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.1;
+  margin-top: 4px;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+/* L2 — 3 列 stat */
+.s-portfolio-overview-l2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 10px 0;
+}
+.s-portfolio-overview-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.s-portfolio-overview-stat-value {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.s-portfolio-overview-stat-value .s-mono {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #e0e2ed;
+}
+.s-portfolio-overview-stat-value.s-value-up .s-mono { color: #ff5451; }
+.s-portfolio-overview-stat-value.s-value-down .s-mono { color: #22C55E; }
+.s-portfolio-overview-stat-value .s-unit {
+  font-family: Inter, 'PingFang SC', sans-serif;
+  font-size: 11px;
+  color: #8c909f;
+  margin-left: 2px;
+}
+
+/* L3 — 明细横条 */
+.s-portfolio-overview-l3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  font-family: Inter, 'PingFang SC', sans-serif;
+  font-size: 11px;
+  color: #8c909f;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.s-portfolio-overview-detail-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.s-portfolio-overview-detail-label {
+  color: #8c909f;
+  opacity: 0.75;
+}
+.s-portfolio-overview-detail-item .s-mono {
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: #c2c6d6;
+}
+.s-portfolio-overview-detail-sub {
+  color: #8c909f;
+  opacity: 0.7;
+  font-size: 10px;
+  margin-left: 2px;
+}
+.s-portfolio-overview-detail-dot {
+  color: #8c909f;
+  opacity: 0.5;
+}
+
+/* 语义色 — A股红涨绿跌 */
+.s-portfolio-overview .s-value-up,
+.s-portfolio-overview-kpi .s-value-up { color: #ff5451 !important; }
+.s-portfolio-overview .s-value-down,
+.s-portfolio-overview-kpi .s-value-down { color: #22C55E !important; }
+.s-portfolio-overview .s-value-neutral,
+.s-portfolio-overview-kpi .s-value-neutral { color: #e0e2ed !important; }
+

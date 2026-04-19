@@ -459,47 +459,113 @@ export default function Dashboard() {
           <div className="card-body dashboard-module-body" style={{ padding: '12px 16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <h3 className="card-title s-card-title">组合概览<InfoTip data={DASHBOARD_META.portfolio_overview} /></h3>
-              <a href="/portfolio" style={{ fontSize: 11, color: '#3B82F6', textDecoration: 'none' }}>组合 →</a>
+              <a href="/portfolio" className="s-card-link">组合 →</a>
             </div>
             {portfolioRaw ? (() => {
               const snap = portfolioRaw.snapshot ?? {};
               const nav = snap.total_nav ?? 0;
-              const initCap = portfolioRaw.initial_capital ?? 1000000;
+              const initCap = portfolioRaw.initial_capital ?? 10000000;
               const cumPct = (snap.cumulative_pnl_pct ?? 0) * 100;
+              const cumAmt = nav - initCap;
               const startDate = portfolioRaw.start_date ?? '';
               const daysDiff = startDate ? Math.max(1, Math.floor((Date.now() - new Date(startDate).getTime()) / 86400000)) : 1;
               const annPct = cumPct / daysDiff * 365;
               const mv = snap.snap_market_value ?? 0;
               const cash = snap.cash ?? 0;
               const unrealPnl = portfolioRaw.total_unrealized_pnl ?? 0;
+              const totalCost = portfolioRaw.total_cost ?? 0;
+              const unrealPnlPct = totalCost > 0 ? (unrealPnl / totalCost) * 100 : 0;
               const posCnt = portfolioRaw.position_count ?? 0;
               const cashRatio = (portfolioRaw.cash_ratio ?? 0) * 100;
-              const fmtMoney = (v: number) => v >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString();
+              const dailyPnl = snap.daily_pnl ?? 0;
+              const dailyPnlPct = (snap.daily_pnl_pct ?? 0) * 100;
+              const maxDD = portfolioRaw.max_drawdown_pct ?? 0;
+
+              const fmtMoney = (v: number) => Math.abs(v) >= 10000 ? `${(v / 10000).toFixed(1)}万` : Math.round(v).toLocaleString();
+              const fmtMoneySigned = (v: number) => `${v >= 0 ? '+' : '-'}¥${fmtMoney(Math.abs(v))}`;
               const fmtPct = (v: number) => `${v >= 0 ? '+' : ''}${v.toFixed(2)}%`;
-              const pctColor = (v: number) => v > 0 ? '#ff5451' : v < 0 ? '#22C55E' : '#e0e2ed';
-              const cells: { label: string; value: string; color?: string }[] = [
-                { label: '总资产', value: fmtMoney(nav) },
-                { label: '本金', value: fmtMoney(initCap) },
-                { label: '累计', value: fmtPct(cumPct), color: pctColor(cumPct) },
-                { label: '年化', value: fmtPct(annPct), color: pctColor(annPct) },
-                { label: '市值', value: fmtMoney(mv) },
-                { label: '现金', value: fmtMoney(cash) },
-                { label: '浮盈', value: `${unrealPnl >= 0 ? '+' : ''}${fmtMoney(unrealPnl)}`, color: pctColor(unrealPnl) },
-                { label: '持仓', value: `${posCnt}只` },
-                { label: '现金比', value: `${cashRatio.toFixed(0)}%` },
-              ];
+              const colorClass = (v: number) => v > 0 ? 's-value-up' : v < 0 ? 's-value-down' : 's-value-neutral';
+
               return (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, padding: '8px 12px' }}>
-                  {cells.map((c) => (
-                    <div key={c.label}>
-                      <div style={{ fontSize: 11, color: '#666', marginBottom: 2 }}>{c.label}</div>
-                      <div style={{ fontSize: 13, fontWeight: 400, color: c.color ?? '#e0e2ed', fontVariantNumeric: 'tabular-nums' }}>{c.value}</div>
+                <div className="s-portfolio-overview">
+                  {/* L1 — 3 平等 KPI */}
+                  <div className="s-portfolio-overview-l1">
+                    <div className="s-portfolio-overview-kpi">
+                      <div className="s-portfolio-overview-label">今日盈亏</div>
+                      <div className={`s-portfolio-overview-main ${colorClass(dailyPnl)}`}>{fmtMoneySigned(dailyPnl)}</div>
+                      <div className={`s-portfolio-overview-sub ${colorClass(dailyPnl)}`}>{fmtPct(dailyPnlPct)}</div>
                     </div>
-                  ))}
+                    <div className="s-portfolio-overview-kpi">
+                      <div className="s-portfolio-overview-label">累计收益</div>
+                      <div className={`s-portfolio-overview-main ${colorClass(cumPct)}`}>{fmtPct(cumPct)}</div>
+                      <div className={`s-portfolio-overview-sub ${colorClass(cumPct)}`}>{fmtMoneySigned(cumAmt)}</div>
+                    </div>
+                    <div className="s-portfolio-overview-kpi">
+                      <div className="s-portfolio-overview-label">总资产</div>
+                      <div className="s-portfolio-overview-main s-value-neutral">¥{fmtMoney(nav)}</div>
+                      <div className="s-portfolio-overview-sub">&nbsp;</div>
+                    </div>
+                  </div>
+
+                  {/* L2 — 3 状态 */}
+                  <div className="s-portfolio-overview-divider" />
+                  <div className="s-portfolio-overview-l2">
+                    <div className="s-portfolio-overview-stat">
+                      <div className="s-portfolio-overview-label">持仓数</div>
+                      <div className="s-portfolio-overview-stat-value">
+                        <span className="s-mono">{posCnt}</span>
+                        <span className="s-unit">只</span>
+                      </div>
+                    </div>
+                    <div className="s-portfolio-overview-stat">
+                      <div className="s-portfolio-overview-label">现金比</div>
+                      <div className="s-portfolio-overview-stat-value">
+                        <span className="s-mono">{cashRatio.toFixed(0)}</span>
+                        <span className="s-unit">%</span>
+                      </div>
+                    </div>
+                    <div className="s-portfolio-overview-stat">
+                      <div className="s-portfolio-overview-label">最大回撤</div>
+                      <div className={`s-portfolio-overview-stat-value ${maxDD > 0 ? 's-value-down' : 's-value-neutral'}`}>
+                        <span className="s-mono">-{maxDD.toFixed(2)}</span>
+                        <span className="s-unit">%</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* L3 — 明细 */}
+                  <div className="s-portfolio-overview-divider" />
+                  <div className="s-portfolio-overview-l3">
+                    <span className="s-portfolio-overview-detail-item">
+                      <span className="s-portfolio-overview-detail-label">本金</span>
+                      <span className="s-mono">{fmtMoney(initCap)}</span>
+                    </span>
+                    <span className="s-portfolio-overview-detail-dot">·</span>
+                    <span className="s-portfolio-overview-detail-item">
+                      <span className="s-portfolio-overview-detail-label">市值</span>
+                      <span className="s-mono">{fmtMoney(mv)}</span>
+                    </span>
+                    <span className="s-portfolio-overview-detail-dot">·</span>
+                    <span className="s-portfolio-overview-detail-item">
+                      <span className="s-portfolio-overview-detail-label">现金</span>
+                      <span className="s-mono">{fmtMoney(cash)}</span>
+                    </span>
+                    <span className="s-portfolio-overview-detail-dot">·</span>
+                    <span className="s-portfolio-overview-detail-item">
+                      <span className="s-portfolio-overview-detail-label">年化</span>
+                      <span className={`s-mono ${colorClass(annPct)}`}>{fmtPct(annPct)}</span>
+                    </span>
+                    <span className="s-portfolio-overview-detail-dot">·</span>
+                    <span className="s-portfolio-overview-detail-item">
+                      <span className="s-portfolio-overview-detail-label">浮盈</span>
+                      <span className={`s-mono ${colorClass(unrealPnl)}`}>{fmtMoneySigned(unrealPnl)}</span>
+                      <span className="s-portfolio-overview-detail-sub">({fmtPct(unrealPnlPct)})</span>
+                    </span>
+                  </div>
                 </div>
               );
             })() : (
-              <div style={{ padding: 12, textAlign: 'center', color: '#8c909f', fontSize: 13 }}>加载中...</div>
+              <div className="s-portfolio-overview-loading">加载中...</div>
             )}
 
             <div style={{ borderTop: '1px solid rgba(30, 45, 69, 0.3)', margin: '12px 0' }}></div>
