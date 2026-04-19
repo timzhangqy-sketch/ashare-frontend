@@ -559,7 +559,7 @@ export default function Dashboard() {
                     <span className="s-portfolio-overview-detail-item">
                       <span className="s-portfolio-overview-detail-label">浮盈</span>
                       <span className={`s-mono ${colorClass(unrealPnl)}`}>{fmtMoneySigned(unrealPnl)}</span>
-                      <span className="s-portfolio-overview-detail-sub">({fmtPct(unrealPnlPct)})</span>
+                      <span className={`s-portfolio-overview-detail-sub ${colorClass(unrealPnl)}`}>({fmtPct(unrealPnlPct)})</span>
                     </span>
                   </div>
                 </div>

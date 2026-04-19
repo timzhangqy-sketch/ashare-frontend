@@ -9930,7 +9930,7 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   font-family: 'JetBrains Mono', 'SF Mono', monospace;
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum' 1;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 700;
   line-height: 1.15;
   white-space: nowrap;
@@ -9962,7 +9962,7 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
 .s-portfolio-overview-stat-value {
   display: flex;
   align-items: baseline;
-  gap: 2px;
+  gap: 0;
 }
 .s-portfolio-overview-stat-value .s-mono {
   font-family: 'JetBrains Mono', 'SF Mono', monospace;
@@ -9978,7 +9978,7 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   font-family: Inter, 'PingFang SC', sans-serif;
   font-size: 11px;
   color: #8c909f;
-  margin-left: 2px;
+  margin-left: 1px;
 }
 
 /* L3 — 明细横条 */
@@ -10009,11 +10009,13 @@ svg:focus, svg *:focus, .recharts-wrapper *, .recharts-surface {
   color: #c2c6d6;
 }
 .s-portfolio-overview-detail-sub {
-  color: #8c909f;
   opacity: 0.7;
   font-size: 10px;
   margin-left: 2px;
 }
+.s-portfolio-overview-detail-sub.s-value-up { color: #ff5451; }
+.s-portfolio-overview-detail-sub.s-value-down { color: #22C55E; }
+.s-portfolio-overview-detail-sub.s-value-neutral { color: #8c909f; }
 .s-portfolio-overview-detail-dot {
   color: #8c909f;
   opacity: 0.5;
